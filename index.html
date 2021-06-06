@@ -5,8 +5,96 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zap</title>
+    <style>
+        :root {
+            --side: #2E87C4;
+            --bottom: #3D4149;
+            --top: #E3E3E3;
+            --shadow: rgba(0, 0, 0, 0.25);
+        }
+
+        html, body {
+            overflow: hidden;
+        }
+
+        @keyframes boxMove {
+            0% { transform: scale(var(--initialScale)) rotate(var(--initialAngle)); }
+            100% { transform: scale(var(--endScale)) rotate(var(--endAngle)); } 
+        }
+
+        @keyframes boxStart {
+            0% { filter: brightness(0%); }
+            100% { filter: brightness(100%); } 
+        }
+
+        .box {
+            top: calc(50% - 10vmin);
+            left: calc(50% - 10vmin);
+            width: 20vmin;
+            height: 20vmin;
+            position: absolute;
+            border-radius: 3.33vmin;
+            animation: boxMove 4s linear infinite, boxStart 4s linear 1;
+            background-color: var(--side);
+            background-image: radial-gradient(circle at 50% 10%, var(--top) 5%, transparent 80%),
+                radial-gradient(circle at 50% 90%, var(--bottom) 25%, transparent);
+        }
+
+        .box::before {
+            position: absolute;
+            z-index: -1;
+            top: -5vmin; right: -5vmin; bottom: -5vmin; left: -5vmin;
+            border-radius: 3.33vmin;
+            border: inherit;
+            border-color: transparent;
+            background: inherit;
+            background-clip: border-box;
+            filter: blur(2.5vmin);
+            content: ''
+        }
+
+        .box0 { --initialScale: 0.30; --endScale: 1.00; --initialAngle: +10deg; --endAngle: +00deg; }
+        .box1 { --initialScale: 1.00; --endScale: 1.50; --initialAngle: +00deg; --endAngle: -10deg; }
+        .box2 { --initialScale: 1.50; --endScale: 2.00; --initialAngle: -10deg; --endAngle: -20deg; }
+        .box3 { --initialScale: 2.00; --endScale: 3.00; --initialAngle: -20deg; --endAngle: -25deg; }
+        .box4 { --initialScale: 3.00; --endScale: 4.00; --initialAngle: -25deg; --endAngle: -30deg; }
+        .box5 { --initialScale: 4.00; --endScale: 5.00; --initialAngle: -30deg; --endAngle: -40deg; }
+        .box6 { --initialScale: 5.00; --endScale: 6.50; --initialAngle: -40deg; --endAngle: -50deg; }
+        .box7 { --initialScale: 6.50; --endScale: 8.00; --initialAngle: -50deg; --endAngle: -60deg; }
+        .box8 { --initialScale: 8.00; --endScale: 10.0; --initialAngle: -60deg; --endAngle: -70deg; }
+        .box9 { --initialScale: 10.0; --endScale: 14.0; --initialAngle: -70deg; --endAngle: -85deg; }
+        .box10 { --initialScale: 14.0; --endScale: 20.0; --initialAngle: -85deg; --endAngle: -99deg; }
+
+        @keyframes show {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .box0 {
+            animation: boxMove 4s linear infinite, boxStart 4s linear 1, show 4s linear infinite;
+        }
+
+        img {
+            top: calc(50% - 20vmin);
+            left: calc(50% - 20vmin);
+            width: 40vmin;
+            height: 40vmin;
+            position: absolute;
+        }
+    </style>
 </head>
 <body>
-    <p>Hello, world!</p>
+    <div class="box box10"></div>
+    <div class="box box9"></div>
+    <div class="box box8"></div>
+    <div class="box box7"></div>
+    <div class="box box6"></div>
+    <div class="box box5"></div>
+    <div class="box box4"></div>
+    <div class="box box3"></div>
+    <div class="box box2"></div>
+    <div class="box box1"></div>
+    <div class="box box0"></div>
+    <img src="a.png" alt="Avatar" width="120px">
 </body>
 </html>
