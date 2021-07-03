@@ -4,6 +4,10 @@
     font-family: sans-serif;
 }
 
+body {
+    scroll-behavior: smooth;
+}
+
 ::-webkit-scrollbar{
 	width: 12px;
 }
@@ -126,7 +130,7 @@ h2 {
 }
 
 .icon {
-    filter: invert(13%) sepia(20%) saturate(5440%) hue-rotate(175deg) brightness(93%) contrast(98%);*/
+    filter: invert(13%) sepia(20%) saturate(5440%) hue-rotate(175deg) brightness(93%) contrast(98%);
 }
 
 #contact h2 {
