@@ -4,10 +4,6 @@
     font-family: sans-serif;
 }
 
-body {
-    scroll-behavior: smooth;
-}
-
 ::-webkit-scrollbar{
 	width: 12px;
 }
@@ -26,6 +22,7 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     perspective: 2px;
+    scroll-behavior: smooth;
 }
 
 .header {
