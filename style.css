@@ -1,0 +1,144 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+::-webkit-scrollbar{
+	width: 12px;
+}
+::-webkit-scrollbar-track{
+	background: #023047; 
+}
+
+::-webkit-scrollbar-thumb{
+	background: #fca311;
+    border-radius: 6px;
+    z-index: 500;
+}
+
+.container {
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    perspective: 2px;
+}
+
+.header {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: #023047;
+    top: 0;
+    left: 0;
+    right: 12px;
+    z-index: 500;
+}
+
+.header a {
+    text-decoration: none;
+    color: #fff;
+    padding: 18px;
+    font-size: 20px;
+}
+
+.header a:hover {
+    color: #fca311;
+}
+
+.header a:first-child {
+    margin-left: 5%;
+}
+
+#home {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: #023047;
+}
+
+#home .content {
+    position: absolute;  
+    top: 0;
+    left: 20%;
+    right: 0%;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: translateZ(-2px) scale(2);
+    color: #fff;
+}
+
+#home .content * {
+    margin: 8px;
+}
+
+#home .content span {
+    color: #8ecae6;
+    font-size: 24px;
+}
+
+#home .content h1 {
+    font-size: 56px;
+}
+
+#home .content p {
+    font-size: 40px;
+    color: #fca311;
+}
+
+#skills {
+    padding-top: 60px;
+    background: #fff;
+    height: calc(100vh - 60px);
+}
+
+h2 {
+    margin: 0 auto;
+    margin-bottom: 40px;
+    width: fit-content;
+    font-size: 36px;
+    color: #023047;
+}
+
+#skills .skill-list {
+    width: 50%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.skill {
+    width: 240px;
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 5px;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.20);
+    font-size: 24px;
+    color: #023047;
+}
+
+.icon {
+    filter: invert(13%) sepia(20%) saturate(5440%) hue-rotate(175deg) brightness(93%) contrast(98%);*/
+}
+
+#contact h2 {
+    text-decoration: underline;
+    margin-bottom: 15px;
+}
+
+.logo-container {
+    width: 120px;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    margin-bottom: 120px;
+}
