@@ -93,7 +93,8 @@
 #skills {
     padding-top: 60px;
     background: #fff;
-    height: calc(100vh - 60px);
+    height: fit-content;
+    min-height: calc(100vh - 60px);
 }
 
 h2 {
