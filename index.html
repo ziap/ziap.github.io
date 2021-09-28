@@ -1,64 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Zap's personal website">
-    <title>Zap Bui</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="header">
-        <a href="#home">Home</a>
-        <a href="#skills">Skills</a>
-        <a href="#contact">Contact</a>
-    </div>
-    <div class="container">
-        <div id="home">
-            <div class="content">
-                <span>Nice to meet you!</span>
-                <h1>I am Zap</h1>
-                <p>Software/web developer</p>
-            </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Zap's personal profile">
+        <title>Zap</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="about-container">
+            <section>
+                <h1>About me</h1>
+                <p>I'm Zap, a high school student.</p>
+                <hr />
+                <p>
+                    <span class="attr">Age</span><b><span id="yo"></span></b> year old
+                </p>
+                <p><span class="attr">Languages</span>Vietnamese (native), English</p>
+                <p><span class="attr">Code</span>C++, JavaScript, Python, C#, CSS, HTML</p>
+                <p><span class="attr">Flatform</span>Web, Linux, Android, Windows</p>
+            </section>
         </div>
-        <div id="skills">
-            <h2>Skills</h2>
-            <div class="skill-list">
-                <div class="skill">
-                    <img src="resource/html5-brands.svg" class="icon" alt="html5" height="120px">
-                    HTML5
-                </div>
-                <div class="skill">
-                    <img src="resource/css3-brands.svg" class="icon" alt="css3" height="120px">
-                    CSS3
-                </div>
-                <div class="skill">
-                    <img src="resource/js-brands.svg" class="icon" alt="js" height="120px">
-                    JavaScript
-                </div>
-                <div class="skill">
-                    <img src="resource/cpp-brands.svg" class="icon" alt="cpp" height="120px">
-                    C++
-                </div>
-                <div class="skill">
-                    <img src="resource/python-brands.svg" class="icon" alt="python" height="120px">
-                    Python
-                </div>
-                <div class="skill">
-                    <img src="resource/git-brands.svg" class="icon" alt="git" height="120px">
-                    Git/Github
-                </div>
-            </div>
-        </div>
-        <div id="contact">
-            <h2>Contact</h2>
-            <div class="logo-container">
-                <a href="https://github.com/ziap" title="My Github"><img src="resource/github-brands.svg" class="icon" alt="github" height="48px"></a>
-                <a href="https://www.linkedin.com/in/ziap/" title="My LinkedIn"><img src="resource/linkedin-brands.svg" class="icon" alt="linkedin" height="48px"></a>
-            </div>
-        </div>
-    </div>
-    
-</body>
+        <section class="project-container">
+            <header class="search-header">
+                <input type="text" id="search-bar" placeholder="Search for project..." />
+            </header>
+            <div id="projects"></div>
+            <p>See more on <a href="http://github.com/ziap">my Github</a>.</p>
+        </section>
+    </body>
+    <script src="script.js"></script>
 </html>
