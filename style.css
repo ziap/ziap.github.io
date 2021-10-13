@@ -12,16 +12,16 @@
     bottom: 0;
     width: 360px;
     padding: 20px;
-    background: #3b4252;
+    background: #024f97;
 }
 
 body {
-    background: #2e3440;
+    background: #1a1b4b;
     color: #eceff4;
 }
 
 a {
-    color: #88c0d0;
+    color: #3a9efd;
     text-decoration: underline dotted;
 }
 
@@ -54,7 +54,7 @@ h3 {
     right: 0;
     left: 400px;
     padding: 15px 45px;
-    background: #8fbcbb;
+    background: #f7a400;
 }
 
 #search-bar {
@@ -80,7 +80,7 @@ h3 {
     position: relative;
     padding-bottom: 100%;
     border-radius: 10px;
-    background-image: linear-gradient(45deg, #8fbcbb, #5e81ac);
+    background-image: linear-gradient(45deg, #3a9efd, #f7a400);
     overflow: hidden;
 }
 
@@ -94,7 +94,7 @@ h3 {
     background: #fff;
     overflow: hidden;
     filter: grayscale(1);
-    opacity: 0.3;
+    opacity: 0.6;
     box-shadow: none;
 }
 
@@ -162,6 +162,16 @@ p {
 @media (max-width: 500px) {
     #projects {
         gap: 0;
+    }
+
+    .search-header {
+        padding: 15px 0;
+        display: flex;
+    }
+
+    #search-bar {
+        width: 76%;
+        margin: 0 auto;
     }
 
     .project {
