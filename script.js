@@ -16,7 +16,7 @@
         container.className = 'image-container'
         img.className = 'thumbnail'
         title.className = 'title'
-        img.src = `https://raw.githubusercontent.com/ziap/${repo.name}/${repo.default_branch}/logo.png`
+        img.src = proj.href + '/logo.pnt'
         img.alt = repo.name.split('-').join(' ')
         title.innerHTML = img.alt.toUpperCase()
 
