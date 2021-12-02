@@ -1,5 +1,5 @@
 ;(async () => {
-    document.getElementById('yo').innerHTML = new Date(Date.now() - new Date('1-12-2005')).getFullYear() - 1970
+    document.getElementById('yo').innerHTML = new Date(Date.now() - new Date('1/12/2005').getTime()).getFullYear() - 1970
     const response = await fetch('https://api.github.com/users/ziap/repos')
     const data = await response.json()
 
