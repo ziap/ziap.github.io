@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Zap's personal profile">
-        <meta name="google-site-verification" content="6tOCjyHRxxo0cLjzNYjLsFwK_6YufPWNvNU69ghp5HE" />
-        
-        <title>Zap</title>
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <div class="about-container">
-            <section>
-                <h1>About me</h1>
-                <p>I'm Zap, a high school student.</p>
-                <hr />
-                <p>
-                    <span class="attr">Age</span><b><span id="yo"></span></b> year old
-                </p>
-                <p><span class="attr">Languages</span>Vietnamese (native), English</p>
-                <p><span class="attr">Code</span>C++, JavaScript, Python, C#, CSS, HTML</p>
-                <p><span class="attr">Flatform</span>Web, Linux, Android, Windows</p>
-            </section>
-        </div>
-        <section class="project-container">
-            <header class="search-header">
-                <input type="text" id="search-bar" placeholder="Search for project..." />
-            </header>
-            <div id="projects"></div>
-            <p>See more on <a href="http://github.com/ziap">my Github</a>.</p>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Zap's personal profile">
+    <meta name="google-site-verification" content="6tOCjyHRxxo0cLjzNYjLsFwK_6YufPWNvNU69ghp5HE" />
+
+    <title>Zap</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://api.github.com">
+    <link rel="preconnect" href="https://raw.githubusercontent.com">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="about-container">
+        <section>
+            <h1>About me</h1>
+            <p>I'm Zap, a high school student.</p>
+            <hr />
+            <p>
+                <span class="attr">Age</span><b><span id="yo"></span></b> year old
+            </p>
+            <p><span class="attr">Languages</span>Vietnamese (native), English</p>
+            <p><span class="attr">Code</span>C++, JavaScript, Python, C#, CSS, HTML</p>
+            <p><span class="attr">Flatform</span>Web, Linux, Android, Windows</p>
         </section>
-    </body>
-    <script src="script.js"></script>
+    </div>
+    <section class="project-container">
+        <header class="search-header">
+            <input type="text" id="search-bar" placeholder="Search for project..." />
+        </header>
+        <div id="projects"></div>
+        <p>See more on <a href="http://github.com/ziap">my Github</a>.</p>
+    </section>
+</body>
+<script type="module" src="script.js"></script>
+
 </html>

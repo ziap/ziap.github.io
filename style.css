@@ -55,6 +55,8 @@ h3 {
     left: 400px;
     padding: 15px 45px;
     background: #f7a400;
+    display: flex;
+    justify-content: flex-end;
 }
 
 #search-bar {
@@ -64,7 +66,6 @@ h3 {
     background-repeat: no-repeat;
     font-size: 16px;
     padding: 12px 20px 12px 40px;
-    float: right;
     border: 1px solid #4c566a;
     color: #4c566a;
     border-radius: 50px;
@@ -105,12 +106,12 @@ h3 {
     grid-auto-flow: dense;
 }
 
-.project:hover .image-container {
+.project:hover .image-container, .project:focus .image-container {
     filter: none;
     opacity: 1;
 }
 
-.project:hover {
+.project:hover, .project:focus {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
@@ -153,36 +154,7 @@ p {
         display: none;
     }
 
-    .image-container {
-        filter: none;
-        opacity: 1;
-    }
-}
-
-@media (max-width: 500px) {
-    #projects {
-        gap: 0;
-    }
-
-    .search-header {
-        padding: 15px 0;
-        display: flex;
-    }
-
     #search-bar {
-        width: 76%;
-        margin: 0 auto;
-    }
-
-    .project {
-        border-radius: 0;
-    }
-
-    .project-container {
-        padding: 77px 0 0 0;
-    }
-
-    p {
-        margin: 16px;
+        flex-grow: 1;
     }
 }
