@@ -171,6 +171,7 @@ p {
     }
 
     .about-container {
+        pointer-events: none;
         z-index: 1;
         inset: 50vh 0 0 0;
         width: unset;
