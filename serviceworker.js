@@ -1,32 +1,48 @@
-
-const PRECACHE = 'precache';
-// A list of local resources we always want to be cached.
+const PRECACHE = 'precache'
 const PRECACHE_URLS = [
     'index.html',
     './', // Alias for index.html
     'style.css',
     'script.js',
     'img/magnifying-glass-solid.svg'
-];
+]
 
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(PRECACHE)
+        caches
+            .open(PRECACHE)
             .then(cache => cache.addAll(PRECACHE_URLS))
             .then(self.skipWaiting())
-    );
-});
+    )
+})
 
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request).then(cachedResponse => {
-            return cachedResponse || caches.open(PRECACHE).then(cache => {
-                // Cache-first for images
-                if (event.request.destination === 'image') return fetch(event.request).then(response => cache.put(event.request, response.clone()).then(() => response))
+    // Cache-first for images
+    if (event.target == 'image')
+        event.respondWith(
+            caches
+                .match(event.request)
+                .then(
+                    cachedResponse =>
+                        cachedResponse ||
+                        caches
+                            .open(PRECACHE)
+                            .then(cache =>
+                                fetch(event.request).then(response =>
+                                    cache.put(event.request, response.clone()).then(() => response)
+                                )
+                            )
+                )
+        )
+    // Online-first for other requests
+    else
+        event.respondWith(
+            caches.open(PRECACHE).then(cache =>
+                fetch(event.request)
+                    .then(response => cache.put(event.request, response.clone()).then(() => response))
+                    .catch(() => caches.match(event.request).then(cachedResponse => cachedResponse))
+            )
+        )
 
-                // TODO: implement online-first cache strategy for API
-                return fetch(event.request)
-            })
-        })
-    )
+    // TODO: Add 404 page
 })
