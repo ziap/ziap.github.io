@@ -6,13 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Zap's personal profile">
-
+    <meta name="theme-color" content="#38bdf8">
     <title>Zap</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://api.github.com">
     <link rel="preconnect" href="https://raw.githubusercontent.com">
     <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/apple-icon-180.png">
 </head>
 
 <body>
@@ -39,5 +41,15 @@
     </section>
 </body>
 <script type="module" src="script.js"></script>
+<script type="module">
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+            navigator.serviceWorker
+                .register("serviceworker.js")
+                .then(res => console.log("service worker registered"))
+                .catch(err => console.log("service worker not registered", err))
+        })
+    }
+</script>
 
 </html>
