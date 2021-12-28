@@ -18,7 +18,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
     // Cache-first for images
-    if (event.target == 'image')
+    if (event.request.destination == 'image')
         event.respondWith(
             caches
                 .match(event.request)
