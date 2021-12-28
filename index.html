@@ -17,9 +17,9 @@
     <link rel="apple-touch-icon" href="icons/apple-icon-180.png">
 </head>
 
-<body>
+<body hidden>
     <div class="about-container">
-        <section>
+        <section class="about">
             <h1>About me</h1>
             <p>I'm Zap, a high school student.</p>
             <hr />
@@ -46,8 +46,6 @@
         window.addEventListener("load", function () {
             navigator.serviceWorker
                 .register("serviceworker.js")
-                .then(res => console.log("service worker registered"))
-                .catch(err => console.log("service worker not registered", err))
         })
     }
 </script>

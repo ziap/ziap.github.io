@@ -18,12 +18,16 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 360px;
-    padding: 20px;
+    width: 400px;
     background: var(--about-bg);
 }
 
-body {
+.about {
+    position: absolute;
+    inset: 20px;
+}
+
+html, body {
     background: var(--main-bg);
     color: var(--main-text);
 }
