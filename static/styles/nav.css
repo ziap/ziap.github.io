@@ -1,11 +1,11 @@
 .nav__bg {
   background: #fff;
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1;
-  box-shadow: rgba(232, 238, 244, 0.25) 0px 10px 10px 0px;
+  box-shadow: rgba(232, 238, 244, 0.15) 0px 10px 10px 0px;
 }
 
 .nav__container {
