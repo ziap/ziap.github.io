@@ -1,0 +1,64 @@
+[projects.repalette]
+name        = "Repalette"
+description = """
+A website and command line utility that allows you to theme an image to a
+certain color palette.
+"""
+web_demo    = true
+recent      = true
+
+[projects.uttt]
+name        = "Ultimate tic-tac-toe"
+description = """
+A browser-based Ultimate tic-tac-toe game with a powerful Monte Carlo tree
+search AI adversary."""
+web_demo    = true
+recent      = true
+
+[projects.2048-ai]
+name        = "2048 AI"
+description = """
+A very efficient expectimax 2048 AI algorithm.
+"""
+web_demo    = true
+recent      = true
+
+[projects.tetris]
+name        = "Tetris clone"
+description = """
+A simple Tetris implementation in C and OpenGL.
+"""
+web_demo    = true
+
+[projects.dotfiles]
+name        = "My dotfiles"
+description = """
+A custom wayland desktop environment fine-tuned to my development workflow and
+daily usage.
+"""
+
+[projects.2048-tdl]
+name        = "2048 Temporal Difference Learning"
+description = """
+A 2048 playing algorithm with an N-Tuple Network trained using Backward
+Temporal Coherence Learning with restart.
+"""
+
+[projects.pathtracer]
+name        = "Path tracer"
+description = """
+A real-time, GPU accelerated, interactive path tracing engine written in C and
+OpenGL.
+"""
+
+[projects.voronoi]
+name        = "Voronoi diagram"
+description = """
+A Real-time, dynamic Voronoi diagram renderer on the GPU with C and OpenGL.
+"""
+web_demo    = true
+
+[projects.mandelbrot]
+name        = "Mandelbrot"
+description = "Web and native Mandelbrot renderer and explorer"
+web_demo    = true

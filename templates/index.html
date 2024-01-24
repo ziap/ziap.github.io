@@ -47,7 +47,7 @@
     <div class="works">
       <h2 class="works__title">Recent works</h2>
         <div class="works__card__container">
-          {% set works = load_data(path="works.toml") %}
+          {% set works = load_data(path="projects.toml") %}
           {% for id, work in works.projects %}
             {% if work.recent %}
               <div class="works__card">
