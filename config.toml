@@ -1,9 +1,9 @@
 # The URL the site will be built for
-base_url = "https://example.com"
+base_url = "https://zapb.vercel.app"
 
 compile_sass = false
 minify_html = true
-build_search_index = true
+build_search_index = false
 
 [markdown]
 # Whether to do syntax highlighting
