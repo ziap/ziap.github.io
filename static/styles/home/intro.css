@@ -32,12 +32,6 @@
   max-width: 30rem;
 }
 
-.intro__title {
-  color: var(--secondary-color);
-  font-size: 2.5rem;
-  margin-top: 1rem;
-}
-
 .intro__right {
   position: relative;
   flex: 5;

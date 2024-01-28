@@ -14,12 +14,6 @@
   padding: 1rem 1rem;
 }
 
-.error__code {
-  color: var(--secondary-color);
-  margin-top: 1rem;
-  font-size: 2.5rem;
-}
-
 .error__cta {
   display: block;
   padding: 0.5rem 1.5rem;

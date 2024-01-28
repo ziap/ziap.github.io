@@ -1,4 +1,7 @@
-[projects.repalette]
+# TODO: Refactor this into a section
+
+[[projects]]
+id          = "repalette"
 name        = "Repalette"
 description = """
 A website and command line utility that allows you to theme an image to a
@@ -7,15 +10,19 @@ certain color palette.
 web_demo    = true
 recent      = true
 
-[projects.uttt]
+[[projects]]
+id          = "uttt"
 name        = "Ultimate tic-tac-toe"
 description = """
-A browser-based Ultimate tic-tac-toe game with a powerful Monte Carlo tree
+A browser-based [Ultimate
+tic-tac-toe](//en.wikipedia.org/wiki/Ultimate_tic-tac-toe) game with a powerful
+Monte Carlo tree
 search AI adversary."""
 web_demo    = true
 recent      = true
 
-[projects.2048-ai]
+[[projects]]
+id          = "2048-ai"
 name        = "2048 AI"
 description = """
 A very efficient expectimax 2048 AI algorithm.
@@ -23,42 +30,52 @@ A very efficient expectimax 2048 AI algorithm.
 web_demo    = true
 recent      = true
 
-[projects.tetris]
+[[projects]]
+id          = "tetris"
 name        = "Tetris clone"
 description = """
 A simple Tetris implementation in C and OpenGL.
 """
 web_demo    = true
 
-[projects.dotfiles]
+[[projects]]
+id          = "dotfiles"
 name        = "My dotfiles"
 description = """
 A custom wayland desktop environment fine-tuned to my development workflow and
 daily usage.
 """
 
-[projects.2048-tdl]
+[[projects]]
+id          = "2048-tdl"
 name        = "2048 Temporal Difference Learning"
 description = """
 A 2048 playing algorithm with an N-Tuple Network trained using Backward
 Temporal Coherence Learning with restart.
 """
 
-[projects.pathtracer]
+[[projects]]
+id          = "pathtracer"
 name        = "Path tracer"
 description = """
 A real-time, GPU accelerated, interactive path tracing engine written in C and
 OpenGL.
 """
 
-[projects.voronoi]
+[[projects]]
+id          = "voronoi"
 name        = "Voronoi diagram"
 description = """
-A Real-time, dynamic Voronoi diagram renderer on the GPU with C and OpenGL.
+A Real-time, dynamic [Voronoi diagram](//en.wikipedia.org/wiki/Voronoi_diagram)
+renderer on the GPU with C and OpenGL.
 """
 web_demo    = true
 
-[projects.mandelbrot]
+[[projects]]
+id          = "mandelbrot"
 name        = "Mandelbrot"
-description = "Web and native Mandelbrot renderer and explorer"
+description = """
+Web and native [Mandelbrot](//en.wikipedia.org/wiki/Mandelbrot_set) renderer
+and explorer
+"""
 web_demo    = true
