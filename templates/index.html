@@ -51,16 +51,16 @@
           {% for work in works.projects | filter(attribute="recent") %}
             <div class="works__card">
               <div class="works__card__desc">
-              <img class="works__card__img" src="/images/works/{{ work.id }}.png" alt="Preview of the {{ work.name }} project">
+              <img class="works__card__img" src="/images/projects/{{ work.id }}.png" alt="Preview of the {{ work.name }} project">
                 <h3>{{ work.name }}</h3>
                 {{ work.description | markdown | safe }}
               </div>
               <div class="works__card__menu">
-                <a class="works__card__btn" href="//github.com/ziap/{{ work.id }}">
-                  {% include "icons/github.html" %} Code
+                <a class="link-btn" href="//github.com/ziap/{{ work.id }}">
+                  Code {% include "icons/github.html" %}
                 </a>
-                <a class="works__card__btn" href="//ziap.github.io/{{ work.id }}">
-                  {% include "icons/play.html" %} Demo
+                <a class="link-btn" href="//ziap.github.io/{{ work.id }}">
+                  Demo {% include "icons/play.html" %}
                 </a>
               </div>
             </div>

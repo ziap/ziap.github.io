@@ -1,0 +1,36 @@
+.content {
+  max-width: var(--body-width);
+  padding: 1rem 1rem 3rem 1rem;
+  margin: 0 auto;
+}
+
+.projects {
+  margin: 3rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+  gap: 2rem;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.project__img {
+  display: block;
+  width: 100%;
+  border-radius: 0.25rem;
+  box-shadow: 0.3rem 0.3rem 0 0 var(--accent-color);
+}
+
+.project__links {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.project__title {
+  color: var(--secondary-color);
+}

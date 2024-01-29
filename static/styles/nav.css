@@ -46,7 +46,6 @@
 }
 
 .nav__link {
-  color: var(--text-color);
   padding: 0.5rem;
   border-radius: 0.3rem;
   text-decoration: none;

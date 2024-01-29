@@ -42,17 +42,17 @@ web_demo    = true
 id          = "dotfiles"
 name        = "My dotfiles"
 description = """
-A custom wayland desktop environment fine-tuned to my development workflow and
+A custom Wayland desktop environment fine-tuned to my development workflow and
 daily usage.
 """
 
 [[projects]]
-id          = "2048-tdl"
-name        = "2048 Temporal Difference Learning"
+id          = "raycasting"
+name        = "Raycaster"
 description = """
-A 2048 playing algorithm with an N-Tuple Network trained using Backward
-Temporal Coherence Learning with restart.
+A native and web Wolfenstein-style ray-casting pseudo-3D renderer in C++.
 """
+web_demo    = true
 
 [[projects]]
 id          = "pathtracer"
@@ -75,7 +75,7 @@ web_demo    = true
 id          = "mandelbrot"
 name        = "Mandelbrot"
 description = """
-Web and native [Mandelbrot](//en.wikipedia.org/wiki/Mandelbrot_set) renderer
-and explorer
+A native and mobile-friendly web application for rendering and viewing the
+[Mandelbrot set](//en.wikipedia.org/wiki/Mandelbrot_set).
 """
 web_demo    = true

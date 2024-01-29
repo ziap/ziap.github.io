@@ -61,6 +61,27 @@
       margin-top: 1rem;
       font-size: 2.5rem;
     }
+
+    .link-btn {
+      font-size: 0.8rem;
+      padding: 0.5em 1em;
+      border-radius: 0.6em;
+      font-weight: bold;
+      text-decoration: none;
+      background: var(--accent-color);
+      transition: background 300ms;
+      display: flex;
+      align-items: center;
+      gap: 1ch;
+
+      &:hover {
+        background: var(--accent-hover-color)
+      }
+
+      >svg {
+        fill: var(--text-color);
+      }
+    }
     </style>
     {% block head %}{% endblock %}
   </head>
