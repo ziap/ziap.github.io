@@ -22,33 +22,32 @@
           <p>This website is where I share things that I'm interested in, mostly but not exclusively, about the topics above.</p>
 
           <div class="intro__cta__container">
-            <a class="intro__cta intro__cta2" href="/posts">My blog {% include "icons/pen.html" %}</a>
+            <a class="intro__cta intro__cta2" href="/blog">My blog {% include "icons/pen.html" %}</a>
             <a class="intro__cta intro__cta1" href="/works">My projects {% include "icons/tools.html" %}</a>
           </div>
         </div>
 
         <div class="intro__right">
-          <div class="intro__tile__container"><div class="intro__tile"></div></div><div class="intro__tile__container"><div class="intro__tile"></div></div><div class="intro__tile__container"><div class="intro__tile"></div></div><div class="intro__tile__container"><div class="intro__tile"></div></div><div class="intro__tile__container"> <div class="intro__tile"></div></div><div class="intro__tile__container"><div class="intro__tile"></div></div><div class="intro__tile__container"><div class="intro__tile"></div></div><div class="intro__tile__container"><div class="intro__tile"></div></div><div class="intro__tile__container">
-          </div>
-          <svg class="intro__right__blob" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path d="M58.8,-52.4C69.3,-33.8,66.1,-9.7,61.1,14.6C56.1,38.9,49.2,63.5,32.8,73.4C16.4,83.2,-9.5,78.5,-31.9,67.3C-54.3,56.1,-73.1,38.5,-77.8,17.8C-82.6,-3,-73.2,-27,-57.9,-46.7C-42.6,-66.4,-21.3,-81.8,1.4,-83C24.2,-84.1,48.3,-71,58.8,-52.4Z" transform="translate(100 100)" />
-          </svg>
+          {% for _ in range(end=8) %}
+            <div class="intro__tile__container">
+              <div class="intro__tile"></div>
+            </div>
+          {% endfor %}
+          <div class="intro__tile__container"></div>
+          {% include "home/blob.html" %}
         </div>
       </div>
 
     </header>
   </div>
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 349 960 192" preserveAspectRatio="none" class="works__split">
-    <path d="M0 412L26.7 414.8C53.3 417.7 106.7 423.3 160 429C213.3 434.7 266.7 440.3 320 425C373.3 409.7 426.7 373.3 480 364.7C533.3 356 586.7 375 640 394C693.3 413 746.7 432 800 424.5C853.3 417 906.7 383 933.3 366L960 349L960 541L933.3 541C906.7 541 853.3 541 800 541C746.7 541 693.3 541 640 541C586.7 541 533.3 541 480 541C426.7 541 373.3 541 320 541C266.7 541 213.3 541 160 541C106.7 541 53.3 541 26.7 541L0 541Z" stroke-linecap="round" stroke-linejoin="miter">
-    </path>
-  </svg>
+  {% include "home/split1.html" %}
 
   <div class="works__bg">
     <div class="works">
       <h2 class="works__title">Recent works</h2>
         <div class="works__card__container">
           {% set works = load_data(path="projects.toml") %}
-          {% for work in works.projects | filter(attribute="recent") %}
+          {% for work in works.projects | filter(attribute="web_demo") | slice(end=3) %}
             <div class="works__card">
               <div class="works__card__desc">
               <img class="works__card__img" src="/images/projects/{{ work.id }}.png" alt="Preview of the {{ work.name }} project">
@@ -56,10 +55,10 @@
                 {{ work.description | markdown | safe }}
               </div>
               <div class="works__card__menu">
-                <a class="link-btn" href="//github.com/ziap/{{ work.id }}">
+                <a class="works__card__btn" href="//github.com/ziap/{{ work.id }}">
                   Code {% include "icons/github.html" %}
                 </a>
-                <a class="link-btn" href="//ziap.github.io/{{ work.id }}">
+                <a class="works__card__btn" href="//ziap.github.io/{{ work.id }}">
                   Demo {% include "icons/play.html" %}
                 </a>
               </div>
@@ -69,10 +68,6 @@
       <a href="/works" class="works__link">All works</a>
     </div>
   </div>
-  
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 960 168" preserveAspectRatio="none" class="works__split">
-    <path
-      d="M0 164L26.7 161.3C53.3 158.7 106.7 153.3 160 138.8C213.3 124.3 266.7 100.7 320 100.5C373.3 100.3 426.7 123.7 480 128C533.3 132.3 586.7 117.7 640 111.5C693.3 105.3 746.7 107.7 800 118.5C853.3 129.3 906.7 148.7 933.3 158.3L960 168L960 0L933.3 0C906.7 0 853.3 0 800 0C746.7 0 693.3 0 640 0C586.7 0 533.3 0 480 0C426.7 0 373.3 0 320 0C266.7 0 213.3 0 160 0C106.7 0 53.3 0 26.7 0L0 0Z"
-      stroke-linecap="round" stroke-linejoin="miter"></path>
-  </svg>
+
+  {% include "home/split2.html" %}
 {% endblock %}
