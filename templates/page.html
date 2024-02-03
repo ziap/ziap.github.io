@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block head %}
-  {% for css in page.extra.css %}
-    <link rel="stylesheet" href="/styles/{{ css }}">
-  {% endfor %}
+  {% if page.extra.css %}
+    {% for css in page.extra.css %}
+      <link rel="stylesheet" href="/styles/{{ css }}">
+    {% endfor %}
+  {% endif %}
 
   <style>
   .content {
