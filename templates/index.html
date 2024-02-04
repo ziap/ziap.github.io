@@ -36,13 +36,13 @@
             </div>
           {% endfor %}
           <div class="intro__tile__container"></div>
-          {% include "home/blob.html" %}
+          {{ macros::inline(path="assets/home/blob.svg") }}
         </div>
       </div>
 
     </header>
   </div>
-  {% include "home/split1.html" %}
+  {{ macros::inline(path="assets/home/split1.svg") }}
 
   <div class="works__bg">
     <div class="works">
@@ -71,5 +71,5 @@
     </div>
   </div>
 
-  {% include "home/split2.html" %}
+  {{ macros::inline(path="assets/home/split2.svg") }}
 {% endblock %}

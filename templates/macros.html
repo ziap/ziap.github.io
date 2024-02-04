@@ -1,4 +1,8 @@
-{% macro icon(name) %}
-  {% set data = load_data(path="icons/" ~ name ~ ".svg") %}
+{% macro inline(path) %}
+  {% set data = load_data(path=path) %}
   {{ data | safe }}
+{% endmacro %}
+
+{% macro icon(name) %}
+  {{ self::inline(path="assets/icons/" ~ name ~ ".svg") }}
 {% endmacro %}
