@@ -1,0 +1,4 @@
+{% macro icon(name) %}
+  {% set data = load_data(path="icons/" ~ name ~ ".svg") %}
+  {{ data | safe }}
+{% endmacro %}

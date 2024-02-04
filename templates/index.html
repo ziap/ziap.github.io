@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% import "macros.html" as macros %}
+
 {% block navigation %}
 {% endblock %}
 
@@ -22,8 +24,8 @@
           <p>This website is where I share things that I'm interested in, mostly but not exclusively, about the topics above.</p>
 
           <div class="intro__cta__container">
-            <a class="intro__cta intro__cta2" href="/blog">My blog {% include "icons/pen.html" %}</a>
-            <a class="intro__cta intro__cta1" href="/works">My projects {% include "icons/tools.html" %}</a>
+            <a class="intro__cta intro__cta2" href="/blog">My blog {{ macros::icon(name="pen") }}</a>
+            <a class="intro__cta intro__cta1" href="/works">My projects {{ macros::icon(name="tools") }}</a>
           </div>
         </div>
 
@@ -56,10 +58,10 @@
               </div>
               <div class="works__card__menu">
                 <a class="works__card__btn" href="//github.com/ziap/{{ work.id }}">
-                  Code {% include "icons/github.html" %}
+                  Code {{ macros::icon(name="github") }}
                 </a>
                 <a class="works__card__btn" href="//ziap.github.io/{{ work.id }}">
-                  Demo {% include "icons/play.html" %}
+                  Code {{ macros::icon(name="play") }}
                 </a>
               </div>
             </div>

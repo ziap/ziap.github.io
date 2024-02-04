@@ -1,3 +1,5 @@
+{% import "macros.html" as macros %}
+
 <div class="projects">
   {% set works = load_data(path="projects.toml") %}
   {% for work in works.projects %}
@@ -10,12 +12,12 @@
 
     <div class="project__links">
       <a href="//github.com/ziap/{{ work.id }}" class="project__btn">
-        Code {% include "icons/github.html" %}
+        Code {{ macros::icon(name="github") }}
       </a>
 
       {% if work.web_demo %}
       <a href="//ziap.github.io/{{ work.id }}" class="project__btn">
-        Demo {% include "icons/play.html" %}
+        Demo {{ macros::icon(name="play") }}
       </a>
       {% endif %}
     </div>
