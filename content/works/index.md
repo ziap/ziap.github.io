@@ -1,5 +1,5 @@
 +++
-title = "Projects"
+title = "My projects"
 template = "page.html"
 
 [extra]
@@ -12,4 +12,4 @@ new concepts and techniques.
 
 {{ projects() }}
 
-For more of my projects, check out my [Github](//github.com/ziap).
+For more of my projects, check out my [GitHub](//github.com/ziap).
