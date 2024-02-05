@@ -1,7 +1,3 @@
-{% macro inline(path) %}
-  {{ load_data(path=path) | safe }}
-{% endmacro %}
-
 {% macro icon(name) %}
-  {{ self::inline(path="assets/icons/" ~ name ~ ".svg") }}
+  {{ load_data(path="assets/icons/" ~ name ~ ".svg") | safe }}
 {% endmacro %}

@@ -36,13 +36,13 @@
             </div>
           {% endfor %}
           <div class="intro__tile__container"></div>
-          {{ macros::inline(path="assets/home/blob.svg") }}
+          {{ load_data(path="assets/home/blob.svg") | safe }}
         </div>
       </div>
 
     </header>
   </div>
-  {{ macros::inline(path="assets/home/split1.svg") }}
+  {{ load_data(path="assets/home/split1.svg") | safe }}
 
   <div class="works__bg">
     <div class="works">
@@ -71,5 +71,5 @@
     </div>
   </div>
 
-  {{ macros::inline(path="assets/home/split2.svg") }}
+  {{ load_data(path="assets/home/split2.svg") | safe }}
 {% endblock %}
