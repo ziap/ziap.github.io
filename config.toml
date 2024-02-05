@@ -6,7 +6,6 @@ author = "Zap"
 description = "Bui Huy Giap's personal website and blog"
 
 compile_sass = false
-minify_html = true
 build_search_index = false
 
 generate_feed = true
