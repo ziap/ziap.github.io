@@ -137,7 +137,7 @@
   width: fit-content;
   text-decoration: none;
   font-weight: 600;
-  border-radius: 0.4rem;
+  border-radius: 10px;
 }
 
 .intro__cta1 {

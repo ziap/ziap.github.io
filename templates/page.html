@@ -7,18 +7,12 @@
     {% endfor %}
   {% endif %}
 
-  <style>
-  .content {
-    max-width: var(--body-width);
-    padding: 1rem 1rem 3rem 1rem;
-    margin: 0 auto;
-  }
-  </style>
+  <link rel="stylesheet" href="/styles/page.css">
 {% endblock %}
 
 {% block content %}
   <h1 class="title">{{ page.title }}</h1>
-  <article>
+  <article class="content__body">
     {{ page.content | safe }}
   </article>
 {% endblock %}

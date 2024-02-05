@@ -5,7 +5,6 @@
   left: 0;
   right: 0;
   z-index: 1;
-  box-shadow: rgba(232, 238, 244, 0.2) 0px 10px 10px 0px;
 }
 
 .nav__container {
@@ -49,7 +48,7 @@
 .nav__link {
   color: var(--secondary-color);
   padding: 0.5rem;
-  border-radius: 0.3rem;
+  border-radius: 6px;
   text-decoration: none;
 
   &:hover {
