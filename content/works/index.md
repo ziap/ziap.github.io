@@ -1,6 +1,5 @@
 +++
 title = "My projects"
-template = "page.html"
 
 [extra]
 css = ["works.css"]

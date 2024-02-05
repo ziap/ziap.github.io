@@ -1,6 +1,5 @@
 +++
 title = "About me"
-template = "page.html"
 
 [extra]
 css = ["about.css"]
