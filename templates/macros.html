@@ -1,6 +1,5 @@
 {% macro inline(path) %}
-  {% set data = load_data(path=path) %}
-  {{ data | safe }}
+  {{ load_data(path=path) | safe }}
 {% endmacro %}
 
 {% macro icon(name) %}
