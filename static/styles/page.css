@@ -9,39 +9,39 @@
     scroll-margin-top: 5rem;
   }
 
-  & table {
+  table {
     display: block;
     width: max-content;
     max-width: 100%;
     overflow: auto;
   }
 
-  & pre {
+  pre {
     overflow: auto;
     padding: 1rem;
     border-radius: 6px;
   }
 
-  & blockquote {
+  blockquote {
     margin: 0;
     padding: 0 1em;
     color: #656d76;
     border-left: solid var(--bg-color2) .3em;
   }
 
-  & ol ol,
-  & ul ol {
+  ol ol,
+  ul ol {
     list-style-type: lower-roman;
   }
 
-  & ul ul ol,
-  & ul ol ol,
-  & ol ul ol,
-  & ol ol ol {
+  ul ul ol,
+  ul ol ol,
+  ol ul ol,
+  ol ol ol {
     list-style-type: lower-alpha;
   }
 
-  & table {
+  table {
     border-collapse: collapse;
     border-spacing: 0;
     margin: 1rem 0;
@@ -53,7 +53,21 @@
 
     th, td {
       padding: 0.4em 0.8em;
-      border: solid var(--bg-color2) 1px;
+      border: solid var(--bg-color2) 2px;
+    }
+  }
+
+  pre table {
+    margin: 0;
+
+    td:nth-of-type(1) {
+      padding: 0 1ch 0 0;
+      user-select: none;
+    }
+
+    th, td {
+      padding: 0;
+      border: none;
     }
   }
 
@@ -65,7 +79,7 @@
     }
   }
 
-  & img {
+  img {
     display: block;
     margin: 1rem 0;
     border-radius: 6px;
