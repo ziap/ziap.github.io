@@ -1,0 +1,102 @@
+.content {
+  max-width: var(--body-width);
+  padding: 1rem 1rem 3rem 1rem;
+  margin: 0 auto;
+}
+
+.content__body {
+  overflow-wrap: break-word;
+
+  * {
+    scroll-margin-top: 5rem;
+  }
+
+  table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+  }
+
+  pre {
+    overflow: auto;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  blockquote {
+    margin: 0;
+    padding: 0 1em;
+    color: #656d76;
+    border-left: solid var(--bg-color2) .3em;
+  }
+
+  ol ol,
+  ul ol {
+    list-style-type: lower-roman;
+  }
+
+  ul ul ol,
+  ul ol ol,
+  ol ul ol,
+  ol ol ol {
+    list-style-type: lower-alpha;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 1rem 0;
+
+    th {
+      background: #eff3f7;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    th, td {
+      padding: 0.4em 0.8em;
+      border: solid var(--bg-color2) 2px;
+    }
+  }
+
+  pre table {
+    margin: 0;
+
+    td:nth-of-type(1) {
+      padding: 0 1rem 0 0;
+      text-align: right;
+      user-select: none;
+    }
+
+    th, td {
+      padding: 0;
+      border: none;
+    }
+  }
+
+  .footnote-definition {
+    margin-top: 1rem;
+
+    &>p {
+      display: inline;
+    }
+
+    &+.footnote-definition {
+      margin-top: 0;
+    }
+  }
+
+  img {
+    display: block;
+    margin: 1rem 0;
+    border-radius: 6px;
+    max-width: 100%;
+  }
+
+  hr {
+    border: none;
+    height: 3px;
+    background: var(--bg-color2);
+  }
+}
