@@ -4,6 +4,7 @@ base_url = "https://zapb.vercel.app"
 title = "Zap's website"
 author = "Zap"
 description = "Bui Huy Giap's personal website and blog"
+output_dir = ".dist"
 
 compile_sass = false
 build_search_index = false
