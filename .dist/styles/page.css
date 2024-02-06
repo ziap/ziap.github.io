@@ -4,6 +4,31 @@
   margin: 0 auto;
 }
 
+.content__header {
+  margin: 1rem 0 1.75rem 0;
+}
+
+.content__title {
+  margin: 0;
+}
+
+.content__meta {
+  margin: 1rem 0 3rem 0;
+  display: flex;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+}
+
+.content__data {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+
+  &>svg {
+    fill: var(--text-color);
+  }
+}
+
 .content__body {
   overflow-wrap: break-word;
 
@@ -18,11 +43,19 @@
     overflow: auto;
   }
 
+  code {
+    background: var(--bg-color2);
+    border-radius: 4px;
+    padding: 0 0.25ch;
+  }
+
   pre {
     padding: 1rem;
     border-radius: 8px;
 
     code {
+      background: unset;
+      margin: 0;
       display: block;
       overflow: auto;
     }

@@ -1,3 +1,17 @@
 {% macro icon(name) %}
   {{ load_data(path="assets/icons/" ~ name ~ ".svg") | safe }}
 {% endmacro %}
+
+{% macro read_time(wc) %}
+  {% set wpm = 212 %}
+  {% set time = wc / wpm | round(method="ceil") %}
+  {{ time }}
+
+  {% if time == 1 %}
+    minute
+  {% else %}
+    minutes
+  {% endif %}
+
+  read
+{% endmacro %}
