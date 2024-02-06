@@ -5,6 +5,8 @@
 }
 
 .content__body {
+  overflow-wrap: break-word;
+
   * {
     scroll-margin-top: 5rem;
   }
@@ -72,10 +74,14 @@
   }
 
   .footnote-definition {
-    margin: 1rem 0;
+    margin-top: 1rem;
 
-    &>p{
+    &>p {
       display: inline;
+    }
+
+    &+.footnote-definition {
+      margin-top: 0;
     }
   }
 
@@ -84,5 +90,11 @@
     margin: 1rem 0;
     border-radius: 6px;
     max-width: 100%;
+  }
+
+  hr {
+    border: none;
+    height: 3px;
+    background: var(--bg-color2);
   }
 }
