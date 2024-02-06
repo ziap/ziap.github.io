@@ -62,7 +62,7 @@ Tables aren't part of the core Markdown spec, but Hugo supports supports them ou
 
 #### Code block with backticks
 
-```
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -87,21 +87,6 @@ Tables aren't part of the core Markdown spec, but Hugo supports supports them ou
       <p>Test</p>
     </body>
     </html>
-
-#### Code block with syntax highlighting
-
-```html
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Example HTML5 Document</title>
-</head>
-<body>
-  <p>Test</p>
-</body>
-</html>
-```
 
 #### Code block with line number
 
