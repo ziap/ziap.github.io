@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://zapb.vercel.app"
+base_url = "https://ziap.github.io"
 
 title = "Zap's website"
 author = "Zap"

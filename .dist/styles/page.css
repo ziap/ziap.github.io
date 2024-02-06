@@ -23,9 +23,10 @@
   display: flex;
   align-items: center;
   gap: 1ch;
+  color: var(--secondary-color);
 
   &>svg {
-    fill: var(--text-color);
+    fill: var(--secondary-color);
   }
 }
 
@@ -34,6 +35,10 @@
 
   * {
     scroll-margin-top: 5rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--secondary-color);
   }
 
   table {

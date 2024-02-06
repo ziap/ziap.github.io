@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: https://zapb.vercel.app/sitemap.xml
+Sitemap: https://ziap.github.io/sitemap.xml
