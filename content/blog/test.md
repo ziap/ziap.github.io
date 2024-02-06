@@ -1,185 +1,163 @@
 +++
-title = "Test blog post"
-+++
+title = "Markdown Syntax Guide"
++++ 
 
-A 2048 agent with N-Tuple Network trained using Backward Temporal Coherence Learning.
+This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.
 
-<!-- more -->
+<!--more-->
 
-```cpp
-static float update(board::t b, float* w, float u, u64 l) {
-  auto value = 0.0f;
-  for (auto i = 0; i < 8; i++) {
-    auto ind = index(b);
-    auto alpha = 1.0f;
-    if constexpr (tc) {
-      auto& error = w[ind + l];
-      auto& abs_error = w[ind + 2 * l];
-      if (abs_error != 0) alpha = std::abs(error) / abs_error;
-      error += u;
-      abs_error += std::abs(u);
-    }
-    w[ind] += alpha * u;
-    value += w[ind];
+## Paragraph
 
-    if (i & 1) b = board::flip(b);
-    else
-      b = board::transpose(b);
-  }
-  return value;
-}
-```
+Xerum, quo qui aut unt expliquam qui dolut labo. Aque venitatiusda cum, voluptionse latur sitiae dolessi aut parist aut dollo enim qui voluptate ma dolestendit peritin re plis aut quas inctum laceat est volestemque commosa as cus endigna tectur, offic to cor sequas etum rerum idem sintibus eiur? Quianimin porecus evelectur, cum que nis nust voloribus ratem aut omnimi, sitatur? Quiatem. Nam, omnis sum am facea corem alique molestrunt et eos evelece arcillit ut aut eos eos nus, sin conecerem erum fuga. Ri oditatquam, ad quibus unda veliamenimin cusam et facea ipsamus es exerum sitate dolores editium rerore eost, temped molorro ratiae volorro te reribus dolorer sperchicium faceata tiustia prat.
 
-### Blockquote without attribution
+Itatur? Quiatae cullecum rem ent aut odis in re eossequodi nonsequ idebis ne sapicia is sinveli squiatum, core et que aut hariosam ex eat.
+
+## Headings
+
+The following HTML `<h1>`—`<h6>` elements represent six levels of section headings. `<h1>` is the highest section level while `<h6>` is the lowest.
+
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+
+## Blockquotes
+
+The blockquote element represents content that is quoted from another source, optionally with a citation which must be within a `footer` or `cite` element, and optionally with in-line changes such as annotations and abbreviations.
+
+#### Blockquote without attribution
 
 > Tiam, ad mint andaepu dandae nostion secatur sequo quae.
 > **Note** that you can use *Markdown syntax* within a blockquote.
 
-## Benchmark (Intel® Core™ i5-8300H Processor)
+#### Blockquote with attribution
 
-### Score
+> Don't communicate by sharing memory, share memory by communicating.<br>
+> — <cite>Rob Pike[^1]</cite>
 
-1 ply search is the trained model without any tree search algorithm
+[^1]: The above quote is excerpted from Rob Pike's [talk](https://www.youtube.com/watch?v=PAAkCSZUG1c) during Gopherfest, November 18, 2015.
 
-3 ply is depth 2 expectimax search with the trained model for evaluation function
+## Tables
 
-| Depth | Games  | Score  | % 32768 | % 16384 | % 8192 |
-| ----- | ------ | ------ | ------- | ------- | ------ |
-| 1 ply | 100000 | 201381 | 3.62    | 37.14   | 73.86  |
-| 3 ply | 1000   | 419479 | 35.7    | 80.2    | 95.5   |
+Tables aren't part of the core Markdown spec, but Hugo supports supports them out-of-the-box.
 
-You can achieve similar results with:
+   Name | Age
+--------|------
+    Bob | 27
+  Alice | 23
 
-```sh
-# Build the program with the 4x6 tuple network
-make STRUCTURE=nw4x6
+#### Inline Markdown within tables
 
-# Train the network with 1000000 episodes, α = 1.0, λ = 0.5, TC and restart strategy
-./2048 train -e 1000 -a 1.0 -l 0.5 -c -o -r
+| Italics   | Bold     | Code   |
+| --------  | -------- | ------ |
+| *italics* | **bold** | `code` |
 
-# Run the agent for 10000 games with no search
-./2048 agent -e 10000
+| A                                                        | B                                                                                                             | C                                                                                                                                    | D                                                 | E                                                          | F                                                                    |
+|----------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|------------------------------------------------------------|----------------------------------------------------------------------|
+| Lorem ipsum dolor sit amet, consectetur adipiscing elit. | Phasellus ultricies, sapien non euismod aliquam, dui ligula tincidunt odio, at accumsan nulla sapien eget ex. | Proin eleifend dictum ipsum, non euismod ipsum pulvinar et. Vivamus sollicitudin, quam in pulvinar aliquam, metus elit pretium purus | Proin sit amet velit nec enim imperdiet vehicula. | Ut bibendum vestibulum quam, eu egestas turpis gravida nec | Sed scelerisque nec turpis vel viverra. Vivamus vitae pretium sapien |
 
-# Run the agent for 300 games with 3 ply search
-./2048 agent -e 300 -d 2
+## Code Blocks
+
+#### Code block with backticks
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Example HTML5 Document</title>
+</head>
+<body>
+  <p>Test</p>
+</body>
+</html>
 ```
 
-### Tuple networks
+#### Code block indented with four spaces
 
-| Structure | Size   | Max tile | Speed (1 thread) | Speed (8 threads) | Speed (3 ply, 8 threads) |
-| --------- | ------ | -------- | ---------------- | ----------------- | ------------------------ |
-| nw5x4     | 1.25MB |  8192    | 5901430 moves/s  | 20643753 moves/s  | 40542 moves/s            |
-| nw4x5     | 16MB   | 16384    | 5560291 moves/s  | 18563599 moves/s  | 50428 moves/s            |
-| nw6x5     | 24MB   | 16384    | 3905823 moves/s  | 12509119 moves/s  | 37908 moves/s            |
-| nw4x6     | 256MB  | 32768    | 2553369 moves/s  |  8381214 moves/s  | 40051 moves/s            |
-| nw8x6     | 512MB  | 32768    | 1525958 moves/s  |  4279976 moves/s  | 19764 moves/s            |
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>Example HTML5 Document</title>
+    </head>
+    <body>
+      <p>Test</p>
+    </body>
+    </html>
 
-## Features
+#### Code block with line number
 
-- Backward TD(λ) learning.
-- N-Tuple Network with configurable structure.
-- Optional temporal coherence learning and restart strategy.
-- Expectimax search with configurable depth.
-- [Webview](https://github.com/webview/webview) based GUI application.
-- Multi-threaded training and evaluation.
-
-To achieve high speed and fast learning, both the agent and training code are heavily optimized:
-
-- 64-bit bitboard representation.
-- Table lookup for movement and reward.
-- Transposistion table with Zobrist Hash.
-- Bit optimizations.
-- Efficient N-Tuple Network implementation with static structure.
-
-![](https://picsum.photos/1920/1080)
-
-## Usage
-
-Download and unzip the trained model (8x6tuple network) [here](../../releases/latest).
-
-### Build
-
-GCC and GNU Make are required to build the program.
-Currently, the makefile only supports Linux. Building the program on other platforms should be possible, but not tested.
-Cross platform build script is planned.
-
-To build the GUI, you need to install the GTK+ development libraries and webkit2gtk-4.0 and enable the submodule.
-
-Building the program on Google Colaboratory is also supported if you disable the GUI.
-
-#### Build steps
-
-```sh
-make [Options]
+```html,linenos
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Example HTML5 Document</title>
+</head>
+<body>
+  <p>Test</p>
+</body>
+</html>
 ```
 
-Parameters:
+#### Diff code block
 
-- **STRUCTURE**: The tuple network structure. (default: nw4x6)
-- **ENABLE_GUI**: Enable the GUI. (default: true)
-- **EXTRAS**: Extra compiler options for profiling, etc.
-
-Available structures: (See [benchmark](#tuple-networks))
-
-### Train model
-
-```sh
-./2048 train [Options]
+```diff
+[dependencies.bevy]
+git = "https://github.com/bevyengine/bevy"
+rev = "11f52b8c72fc3a568e8bb4a4cd1f3eb025ac2e13"
+- features = ["dynamic"]
++ features = ["jpeg", "dynamic"]
 ```
 
-Parameters:
+## List Types
 
-```
--a <alpha>    -- Set the learning rate
-                 default: 0.1
--l <lambda>   -- Set the trace decay
-                 default: 0.5
--e <episodes> -- Set the number of training games * 1000
-                 default: 1
--t <threads>  -- Set the number of threads
-                 default: 1 (0 uses all threads)
--i            -- Enable reading from a binary file
--o            -- Enable writing to a binary file
--c            -- Enable temporal coherence learning
--r            -- Enable restart strategy
--h            -- Show this message
-```
+#### Ordered List
 
-### Run agent
+1. First item
+2. Second item
+3. Third item
 
-```sh
-./2048 agent [Options]
-```
+#### Unordered List
 
-Parameters:
+* List item
+* Another item
+* And another item
 
-```
--d <depth>    -- Set the search depth
-                 default: 0
--e <episodes> -- Set the number of games to play
-                 default: 1
--t <threads>  -- Set the number of threads
-                 default: 1 (0 uses all threads)
--g            -- Enable the GUI
--h            -- Show this message                        
-```
+#### Nested ordered list
 
-Example:
+1. First item
+2. Second item
+3. Third item
+    1. Indented item
+    2. Indented item
+4. Fourth item 
 
-```sh
-./agent -d2 -i100 -t 0 # 3 ply, 100 games, multi-threaded
-./agent -d4 -g         # 5 ply, enable GUI
-```
+#### Nested unordered list
 
-Example game with the GUI:
+* Fruit
+  * Apple
+  * Orange
+  * Banana
+* Dairy
+  * Milk
+  * Cheese
 
-![](gui.png)
+## Other Elements — abbr, sub, sup, kbd, mark
 
-## Todo
+<abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
 
-- [ ] Add multi-stage learning
-- [ ] Add more settings to the GUI application
+H<sub>2</sub>O
 
-# License
+X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
 
-This app is licensed under the MIT license.
+Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
+
+Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
+
+## Images
+
+![The San Juan Mountains are beautiful!](//mdg.imgix.net/assets/images/san-juan-mountains.jpg?auto=format&fit=clip&q=40&w=1080 "San Juan Mountains")
