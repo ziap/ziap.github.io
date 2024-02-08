@@ -4,12 +4,6 @@
 
 {% block head %}
   <style>
-    .content {
-      max-width: var(--body-width);
-      padding: 1rem 1rem 4rem 1rem;
-      margin: 0 auto;
-    }
-
     .post {
       margin-bottom: 4rem;
 
@@ -36,7 +30,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="/styles/post-header.css">
+  <link rel="stylesheet" href="/styles/page.css">
 {% endblock %}
 
 {% block content %}
@@ -45,7 +39,9 @@
       <div class="post">
         {{ macros::post_header(page=post) }}
 
-        {{ post.summary | safe }}
+        <article class="content__body">
+          {{ post.summary | safe }}
+        </article>
 
         <a class="post__read-more" href="{{ post.permalink | safe }}">Read more {{ macros::icon(name="arrow") }}</a>
       </div>
