@@ -115,3 +115,29 @@
     background: var(--bg-color2);
   }
 }
+
+.post-header {
+  margin: 1rem 0 2rem 0;
+}
+
+.post-header__title {
+  margin: 0;
+}
+
+.post-header__meta {
+  margin: 1rem 0;
+  display: flex;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+}
+
+.post-header__data {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+  color: var(--secondary-color);
+
+  &>svg {
+    fill: var(--secondary-color);
+  }
+}
