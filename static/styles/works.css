@@ -41,7 +41,7 @@
     background: var(--accent-hover-color)
   }
 
-  >svg {
+  &>svg {
     fill: var(--text-color);
   }
 }

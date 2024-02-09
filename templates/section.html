@@ -3,33 +3,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-  <style>
-    .post {
-      margin-bottom: 4rem;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    .post__read-more {
-      color: var(--secondary-color);
-      font-weight: 600;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 1ch;
-      transition: padding 300ms;
-
-      &>svg {
-        fill: var(--secondary-color);
-      }
-
-      &:hover {
-        padding-left: 0.5rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="/styles/section.css">
   <link rel="stylesheet" href="/styles/page.css">
 {% endblock %}
 
@@ -47,4 +21,6 @@
       </div>
     {% endfor %}
   </div>
+
+  {# TODO: Add pagination #}
 {% endblock %}

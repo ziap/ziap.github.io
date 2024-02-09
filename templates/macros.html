@@ -2,17 +2,16 @@
   {{ load_data(path="assets/icons/" ~ name ~ ".svg") | safe }}
 {% endmacro %}
 
-{% macro read_time(wc) %}
+{% macro reading_time(word_count) %}
   {% set wpm = 212 %}
-  {% set time = wc / wpm | round(method="ceil") %}
-  {{ time }}
+  {% set time = word_count / wpm | round(method="ceil") %}
 
+  {{ time }}
   {% if time == 1 %}
     minute
   {% else %}
     minutes
   {% endif %}
-
   read
 {% endmacro %}
 
@@ -28,7 +27,7 @@
 
         <div class="post-header__data">
           {{ self::icon(name="clock") }}
-          {{ self::read_time(wc=page.word_count) }}
+          {{ self::reading_time(word_count=page.word_count) }}
         </div>
       </div>
     {% endif %}

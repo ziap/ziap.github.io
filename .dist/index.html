@@ -18,6 +18,7 @@
     
   <link rel="stylesheet" href="/styles/home/intro.css">
   <link rel="stylesheet" href="/styles/home/works.css">
+  <link rel="stylesheet" href="/styles/home/posts.css">
   <script type="module" src="/js/slider.js"></script>
 
   </head>
@@ -26,10 +27,10 @@
 
 
     <div class="container">
-      <div class="content">
+      <main class="content">
         
   <div class="intro__bg">
-    <header class="intro__container">
+    <div class="intro__container">
       
 
 <nav class="nav">
@@ -48,7 +49,7 @@
 </nav>
 
 
-      <div class="intro">
+      <section class="intro">
         <div class="intro__left">
           <h1 class="title">Hi, I&rsquo;m Zap</h1>
           <p>I work with graphics, AI, web technologies, and performance.</p>
@@ -113,123 +114,158 @@
 </svg>
 
         </div>
-      </div>
+      </section>
 
-    </header>
+    </div>
   </div>
+
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 349 960 192" preserveAspectRatio="none" class="works__split">
   <path d="M0 412L26.7 414.8C53.3 417.7 106.7 423.3 160 429C213.3 434.7 266.7 440.3 320 425C373.3 409.7 426.7 373.3 480 364.7C533.3 356 586.7 375 640 394C693.3 413 746.7 432 800 424.5C853.3 417 906.7 383 933.3 366L960 349L960 541L933.3 541C906.7 541 853.3 541 800 541C746.7 541 693.3 541 640 541C586.7 541 533.3 541 480 541C426.7 541 373.3 541 320 541C266.7 541 213.3 541 160 541C106.7 541 53.3 541 26.7 541L0 541Z" stroke-linecap="round" stroke-linejoin="miter"/>
 </svg>
 
-
   <div class="works__bg">
-    <div class="works">
-      <h2 class="works__title">Recent works</h2>
-        <div class="works__card__container">
-          
-          
-            <div class="works__card">
-              <div class="works__card__desc">
-              <img class="works__card__img" src="/images/projects/repalette.png" alt="Preview of the Repalette project">
-                <h3>Repalette</h3>
-                <p>A website and command line utility that allows you to theme an image to a
+    <section class="works">
+      <header class="works__header">
+        <h2 class="works__title">Recent works</h2>
+        <a href="/works" class="works__link">All works 
+  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+  <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+  <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+</svg>
+
+</a>
+      </header>
+      <div class="works__card__container">
+        
+        
+          <div class="works__card">
+            <div class="works__card__desc">
+            <img class="works__card__img" src="/images/projects/repalette.png" alt="Preview of the Repalette project">
+              <h3>Repalette</h3>
+              <p>A website and command line utility that allows you to theme an image to a
 certain color palette.</p>
 
-              </div>
-              <div class="works__card__menu">
-                <a class="works__card__btn" href="//github.com/ziap/repalette">
-                  Code 
+            </div>
+            <div class="works__card__menu">
+              <a class="works__card__btn" href="//github.com/ziap/repalette">
+                Code 
   <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 496 512">
   <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
   <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
 </svg>
 
 
-                </a>
-                <a class="works__card__btn" href="//ziap.github.io/repalette">
-                  Code 
+              </a>
+              <a class="works__card__btn" href="//ziap.github.io/repalette">
+                Code 
   <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512">
   <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
   <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
 </svg>
 
 
-                </a>
-              </div>
+              </a>
             </div>
-          
-            <div class="works__card">
-              <div class="works__card__desc">
-              <img class="works__card__img" src="/images/projects/uttt.png" alt="Preview of the Ultimate tic-tac-toe project">
-                <h3>Ultimate tic-tac-toe</h3>
-                <p>A browser-based <a href="//en.wikipedia.org/wiki/Ultimate_tic-tac-toe">Ultimate
+          </div>
+        
+          <div class="works__card">
+            <div class="works__card__desc">
+            <img class="works__card__img" src="/images/projects/uttt.png" alt="Preview of the Ultimate tic-tac-toe project">
+              <h3>Ultimate tic-tac-toe</h3>
+              <p>A browser-based <a href="//en.wikipedia.org/wiki/Ultimate_tic-tac-toe">Ultimate
 tic-tac-toe</a> game with a powerful
 Monte Carlo tree
 search AI adversary.</p>
 
-              </div>
-              <div class="works__card__menu">
-                <a class="works__card__btn" href="//github.com/ziap/uttt">
-                  Code 
+            </div>
+            <div class="works__card__menu">
+              <a class="works__card__btn" href="//github.com/ziap/uttt">
+                Code 
   <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 496 512">
   <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
   <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
 </svg>
 
 
-                </a>
-                <a class="works__card__btn" href="//ziap.github.io/uttt">
-                  Code 
+              </a>
+              <a class="works__card__btn" href="//ziap.github.io/uttt">
+                Code 
   <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512">
   <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
   <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
 </svg>
 
 
-                </a>
-              </div>
+              </a>
             </div>
-          
-            <div class="works__card">
-              <div class="works__card__desc">
-              <img class="works__card__img" src="/images/projects/2048-ai.png" alt="Preview of the 2048 AI project">
-                <h3>2048 AI</h3>
-                <p>A very efficient expectimax 2048 AI algorithm.</p>
+          </div>
+        
+          <div class="works__card">
+            <div class="works__card__desc">
+            <img class="works__card__img" src="/images/projects/2048-ai.png" alt="Preview of the 2048 AI project">
+              <h3>2048 AI</h3>
+              <p>A very efficient expectimax 2048 AI algorithm.</p>
 
-              </div>
-              <div class="works__card__menu">
-                <a class="works__card__btn" href="//github.com/ziap/2048-ai">
-                  Code 
+            </div>
+            <div class="works__card__menu">
+              <a class="works__card__btn" href="//github.com/ziap/2048-ai">
+                Code 
   <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 496 512">
   <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
   <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3 .3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5 .3-6.2 2.3zm44.2-1.7c-2.9 .7-4.9 2.6-4.6 4.9 .3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3 .7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3 .3 2.9 2.3 3.9 1.6 1 3.6 .7 4.3-.7 .7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3 .7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3 .7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/>
 </svg>
 
 
-                </a>
-                <a class="works__card__btn" href="//ziap.github.io/2048-ai">
-                  Code 
+              </a>
+              <a class="works__card__btn" href="//ziap.github.io/2048-ai">
+                Code 
   <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512">
   <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
   <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
 </svg>
 
 
-                </a>
-              </div>
+              </a>
             </div>
-          
-        </div>
-      <a href="/works" class="works__link">All works</a>
-    </div>
+          </div>
+        
+      </div>
+    </section>
   </div>
-
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 960 168" preserveAspectRatio="none" class="works__split">
   <path d="M0 164L26.7 161.3C53.3 158.7 106.7 153.3 160 138.8C213.3 124.3 266.7 100.7 320 100.5C373.3 100.3 426.7 123.7 480 128C533.3 132.3 586.7 117.7 640 111.5C693.3 105.3 746.7 107.7 800 118.5C853.3 129.3 906.7 148.7 933.3 158.3L960 168L960 0L933.3 0C906.7 0 853.3 0 800 0C746.7 0 693.3 0 640 0C586.7 0 533.3 0 480 0C426.7 0 373.3 0 320 0C266.7 0 213.3 0 160 0C106.7 0 53.3 0 26.7 0L0 0Z" stroke-linecap="round" stroke-linejoin="miter"/>
 </svg>
 
 
-      </div>
+  <div class="posts__bg">
+    
+    <section class="posts">
+      <h2 class="posts__title">Recent posts</h2>
+        
+      
+      <ul class="posts__list">
+        
+          <li>
+            <div>Feb 09, 2024</div>
+            <a href="https:&#x2F;&#x2F;ziap.github.io&#x2F;blog&#x2F;new-website&#x2F;">
+              <h3 class="posts__item__title">Rewriting my website and starting a blog</h3>
+            </a>
+          </li>
+        
+      </ul>
+
+      <a href="/blog" class="posts__link">All posts 
+  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+  <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+  <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+</svg>
+
+</a>
+    </section>
+  </div>
+
+
+      </main>
 
       <footer class="footer__container">
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 352.5 960 188.5" preserveAspectRatio="none" class="footer__split">

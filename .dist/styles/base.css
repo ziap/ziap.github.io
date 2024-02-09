@@ -20,6 +20,12 @@ html {
   line-height: 1.5;
 }
 
+@media print {
+  html {
+    font-size: 1rem;
+  }
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -50,5 +56,6 @@ ul, ol {
 .title {
   color: var(--secondary-color);
   margin-top: 1rem;
+  font-size: 2rem;
   margin: 1rem 0 2rem 0;
 }

@@ -38,4 +38,4 @@ For personal projects, I prefer making things from scratch for educational
 purposes. But for work, I used many frameworks, and my personal favorites are
 [Svelte](//svelte.dev/) for front-ends and [Starlette](//www.starlette.io/) for
 back-ends. This website is built with [Zola](//www.getzola.org) because of its
-ease of setup, incredible speed, and flexible template engine.
+ease of setting up, incredible speed, and flexible template engine.
