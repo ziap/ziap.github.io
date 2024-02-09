@@ -29,7 +29,8 @@
   }
 
   pre {
-    padding: 1rem;
+    font-size: 0.8rem;
+    padding: 0.8rem;
     border-radius: 8px;
 
     code {
@@ -38,6 +39,11 @@
       display: block;
       overflow: auto;
     }
+  }
+  
+  del {
+    text-decoration-color: var(--accent-color);
+    text-decoration-thickness: 3px;
   }
 
   blockquote {

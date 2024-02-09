@@ -1,3 +1,12 @@
+.works__header {
+  display: flex;
+  margin-bottom: 2rem;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .works__bg {
   background: var(--bg-color1);
 }
@@ -18,8 +27,7 @@
 
 .works__title {
   font-size: 2rem;
-  text-align: center;
-  margin: 0 0 3rem 0;
+  margin: 0;
 }
 
 .works__card__container {
@@ -65,30 +73,41 @@
     background: var(--accent-hover-color)
   }
 
-  >svg {
+  &>svg {
     fill: var(--text-color);
   }
 }
 
 .works__link {
   width: fit-content;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+
   font-size: 0.8rem;
-  margin: 2rem auto 0 auto;
   text-decoration: none;
-  padding: 0.3rem 0.9rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 6px;
   border: solid 3px var(--text-color);
   transition: color 300ms, background 300ms;
 
+  &>svg {
+    fill: var(--text-color);
+    transition: fill 300ms;
+  }
+
   &:hover {
     color: var(--bg-color1);
     background: var(--text-color);
+
+    &>svg {
+      fill: var(--bg-color1);
+    }
   }
 }
 
 .works__card__img {
   display: block;
   width: 100%;
-  border-radius: 6px;
+  border-radius: 8px;
 }
