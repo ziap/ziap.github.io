@@ -4,18 +4,18 @@ date  = "2024-02-10"
 +++
 
 When I first heard about run-time polymorphism in C++ using virtual methods, my
-first thoughts was like: "This is cool and all but why would I ever use this."
-then I continued to ignore it because I can always just work around instead of
-using it. Until recently my college lecturer told me that virtual methods is
-great for designing and maintaining applications with thousands of objects, I
-figured that I should write about what run-time polymorphism is, and why I
-think that there are better alternatives to it.
+first thoughts were like, "This is cool and all, but why would I ever use
+this?" Then I continued to ignore it because I could always just work around it
+instead of using it. Until recently, my college lecturer told me that using
+virtual methods is great for designing and maintaining applications with
+thousands of objects. I figured that I should write about what run-time
+polymorphism is, and why I still think that I don't need it.
 
 <!-- more -->
 
 # A brief introduction to polymorphism in C++
 
-Polymorphism means "many-shape", and in programming it means designing an API
+Polymorphism means "many-shape", and in programming, it means designing an API
 that works with multiple "shapes" of input, for example, a function that takes
 multiple data-type. Consider the following function:
 
@@ -48,9 +48,9 @@ double add_area(Shape *shape1, Shape *shape2) {
 The `Shape` class is called an "abstract" class, which means that it can't be
 allocated and can only serves as an interface for other classes to inherit
 from. Which means that the function `add_area` takes two pointers that point to
-two arbitrary objects that inherits from the `Shape` class. What make this
+two arbitrary objects that inherits from the `Shape` class. What makes this
 different from the previous example is that this is an actual function, not a
-template, and the objects that those pointers point to is determined at
+template, and the objects that those pointers point to are determined at
 run-time, not at compile-time.
 
 ```c++
@@ -66,12 +66,12 @@ delete shape2;
 # A simple example
 
 Run-time polymorphism is often used when the data-type is not known at compile
-time. Maybe the user want to select what type of shape to add the area
-together. Let's extend the previous example to include run-time data, you have
-to import the shapes from a file. For demonstration purpose the file format is
-extremely simple, it's a text file with every line contains a string
+time. Maybe the users want to select what type of shape to add the area
+together. Let's extend the previous example to include run-time data. You have
+to import the shapes from a file. For demonstration purposes, the file format
+is extremely simple. It's a text file with every line containing a string
 representing the shape type, and floating point numbers representing the shape
-attributes. The shape types, their attributes and how to compute the area is
+attributes. The shape types, their attributes and how to compute the area are
 described in the table below:
 
 | shape type  | attributes    | area formula         |
@@ -101,10 +101,10 @@ double total_area(Shape **shapes, size_t shapes_len) {
 
 The `Shape` class is the same as the above, but notice that we need double
 pointer indirection, because every shape in the array is still a pointer to the
-actual non-abstract shape. This means that every single shape is its own heap
-allocation, which is pretty expensive and you can mess up if you're not careful.
-So instead of using raw pointers here is a safer and potentially faster version
-of the previous function:
+actual non-abstract shape. This means that every single shape is allocated
+individually on the heap, which is pretty expensive, and you can mess up if
+you're not careful. So instead of using raw pointers, in the spirit of C++,
+here is a safer and potentially faster version of the previous function:
 
 ```c++
 double total_area(std::span<std::unique_ptr<Shape>> shapes) {
@@ -118,10 +118,10 @@ double total_area(std::span<std::unique_ptr<Shape>> shapes) {
 }
 ```
 
-It's arguably uglier but the `std::unique_ptr` saves us from the hassle of
-cleaning up memory and since we're using smart pointers anyways I'm throwing in
-`std::span` -- a new C++20 feature -- as well so we don't have to pass in the
-length, we can use the range-based for loop for iteration, and the function
+It's arguably uglier, but the `std::unique_ptr` saves us from the hassle of
+cleaning up memory, and since we're using smart pointers anyways, I'm throwing
+in `std::span`---a new C++20 feature---as well so we don't have to pass in
+the length, we can use the range-based for loop for iteration, and the function
 automatically works with `std::vector`s.
 
 ```c++
@@ -135,11 +135,11 @@ shapes.push_back(std::make_unique<Triangle>(3, 4, 5));
 std::cout << total_area(shapes) << '\n'; // 46.566370614359172
 ```
 
-This is great! It automatically figure out how to compute the area for every
-shape that we throw at it, we don't need to manually handle every single case,
+This is great! It automatically figures out how to compute the area for every
+shape that we throw at it. We don't need to manually handle every single case,
 and even though the shapes are heap allocated `std::unique_ptr`, makes working
-with them less painful. Also notice how I didn't show a single line of code on
-how to compute the area, because with polymorphism it actually doesn't matter.
+with them less painful. Also, notice how I didn't show a single line of code on
+how to compute the area, because with polymorphism, it actually doesn't matter.
 But currently we still hard-code the shapes, so this is possible even with
 compile-time polymorphism. So let's justify this by importing the shapes from
 the file.
@@ -198,11 +198,11 @@ std::vector<std::unique_ptr<Shape>> get_shapes(const char *file_path) {
 }
 ```
 
-Okay now it's no longer pretty. We tried so hard not to write the code that
-handle different shape types, but now when reading the file we can't avoid
+Okay, now it's no longer pretty. We tried so hard not to write the code that
+handles different shape types, but now, when reading the file, we can't avoid
 writing it. But if we don't import the shape from the files dynamically at
-run-time then it's the same as compile-time polymorphism. Also, if we want to
-do tweak the function, like for example "Get the total area of all circles and
+run-time, then it's the same as compile-time polymorphism. Also, if we want to
+tweak the function, like, for example: "Get the total area of all circles and
 triangles", we need to update the abstract class to expose more information:
 
 ```c++
@@ -229,24 +229,24 @@ double total_area_circles_and_triangles(std::span<std::unique_ptr<Shape>> shapes
 ```
 
 Then we need to manually implement the new method for all shapes. So run-time
-polymorphism sounds great on paper, but in the end we have to manually do lots
-of stuffs. I'm probably missing something and I'm happy to have my mind changed
-but as of right now I think that run-time polymorphism falls apart when you
-really think about it.
+polymorphism sounds great on paper, but in the end, we have to manually do lots
+of stuffs. I'm probably missing something, and I'm happy to have my mind
+changed. But as of right now, I think that run-time polymorphism falls apart
+when you really think about it.
 
 # The alternative
 
-The most obvious solution is to just read the file and process it compute the
+The most obvious solution is to just read the file, process it, and compute the
 total area immediately. But let's pretend that we absolutely have to store the
 data into an array first, and perform the computation on the stored array.
 Maybe we want to do something else with the array other than doing the
-computation. So how do we store multiple shapes in the same array without
-run-time polymorphism? The answer is to use a data structure known as a
-tagged-union. There are `std::variant` in C++ but I think that it's more
-convenient to just literally use a tag and a union. In fact, this structure is
-so simple that you don't even need any of C++'s features and just write it in
-plain C. The only C++ feature I use right now (other than member function) is
-`enum class` only because it is scoped and because I'm in C++ anyways.
+computation. So, how do we store multiple shapes in the same array without
+run-time polymorphism? The answer is to use a data structure known as a tagged
+union. There are `std::variant` in C++, but I think that it's more convenient
+to just literally use a tag and a union. In fact, this structure is so simple
+that you don't even need any of C++'s features and just write it in plain C.
+The only C++ feature I use right now (other than member functions) is `enum
+class` only because it is scoped and because I'm in C++ anyways.
 
 ```c++
 struct Shape {
@@ -297,17 +297,17 @@ struct Shape {
 };
 ```
 
-Before we don't have to care about how the shapes are implemented but now we do
-because it's no longer hidden behind abstract classes and virtual methods.
-Remember, they're hidden, abstracted away but they're still there, I think that
-the code that compute the area in every derived class is the same as the same
-code but in the switch cases. Also we have to manually handle different shapes
-in the `area` method. But as we saw before manually handling different cases is
-inevitable at run-time, so I don't think there's a good reason to avoid it. You
-might wonder "What happen when you add a new shape?". Well, just add a new
-shape to the enum and the compiler will emit a warning that you haven't handled
-all enum values. Constructing a shape is also simple using designated
-initializers.
+Before, we did't have to care about how the shapes were implemented but now we
+do because it's no longer hidden behind abstract classes and virtual methods.
+Remember, they're hidden and abstracted away, but they're still there. I think
+that the code that computes the area in every derived class is the same as the
+same code, but in the switch cases. It feels like we have to manually handle
+different shapes in the `area` method. But as we saw before, manually handling
+different cases is inevitable at run-time, so I don't think there's a good
+reason to avoid it. You might wonder: "What happens when you add a new shape?".
+Well, just add a new shape to the enum and the compiler will emit a warning
+that you haven't handled all enum values. Constructing a shape is also simple
+with designated initializers.
 
 ```c++
 Shape square = {
@@ -325,14 +325,14 @@ Shape triangle = {
 };
 ```
 
-You can even use a factory function to simplify creation of shapes buf I think
-that designated initializers are good enough. One of the downsides of this
-approach is reduced type-safety. There's nothing preventing you from accessing
-the radius of a square. If you know your union then it's fine but mistakes can
-happen and this is one place where you can mess up. Now `Shape` is an actual
-class and its instances *are* shapes and not pointers pointing to the actual
-shape. This effectively remove one level of indirection and all shapes can be
-in the same contiguous memory region.
+You can even use a factory function to simplify the creation of shapes, but I
+think that designated initializers are good enough. One of the downsides of
+this approach is reduced type safety. There's nothing preventing you from
+accessing the radius of a square. If you know your union, then it's fine. But
+mistakes can happen, and this is one place where you can mess up. Now `Shape`
+is an actual class, its instances *are* shapes and not pointers pointing to the
+actual shape. This effectively removes one level of indirection, so all shapes
+can be in the same contiguous memory region.
 
 ```c++
 double total_area(std::span<Shape> shapes) {
@@ -346,9 +346,9 @@ double total_area(std::span<Shape> shapes) {
 }
 ```
 
-Now we don't have to worry about cleaning up individual shape or even have to
-use `std::unique_ptr`, and it might even help with performance! But before that
-lets see how do we import the shapes from the file.
+Now we don't have to worry about cleaning up individual shape, or even have to
+use `std::unique_ptr`, and it might even help with performance! But before
+that, let's see how do we import the shapes from the file.
 
 ```c++
 static const std::unordered_map<std::string_view, Shape::Types> shape_map = {
@@ -384,7 +384,7 @@ std::vector<Shape> read_file(const char *file_path) {
 ```
 
 This, in my opinion, is even nicer than the previous implementation. We already
-have the `Shape::Types` enum for the tag, so we can easily reused them here.
+have the `Shape::Types` enum for the tag, so we can easily reuse it here.
 Remember `double attrs[0]`? It's an array representing the underlying values of
 the shape attributes. Because the file is already in the correct order, we can
 just push items into that array instead of matching the shape type and
@@ -406,41 +406,41 @@ double total_area_circles_and_triangles(std::span<Shape> shapes) {
 }
 ```
 
-You don't need to edit all the shapes just to add that. So by not avoiding to
-handle different shapes manually we increased the flexibility of our code and
-sometimes adding features is easier because of it.
+You don't need to edit all the shapes just to add that. So by not avoiding
+handling different shapes manually, we increased the flexibility of our code,
+and sometimes adding features is easier because of it.
 
 # Benchmark and conclusion
 
-So lets finally get into the performance of these two methods. I generated a
-one million shapes of those four types, and measure the time they take to
-compute the total area.
+So, let's finally get into the performance of these two methods. I generated a
+one million shapes of those four types, and measured the time it took to
+compute the total area for both of the methods.
 
-| Optimizaion | Polymorphism | Tagged-union |
+| Optimizaion | Polymorphism | Tagged union |
 | ----------- | ------------ | ------------ |
 | `-O0`       | 25628us      | 15758us      |
 | `-O3`       | 6908us       | 5100us       |
 
-The tagged-union method is 1.6 times faster without optimizations and 1.35
-times faster with `-O3` optimization. As you can see the individual heap
-allocation and virtual method has a noticable overhead. And this is just 4
+The tagged union method is 1.6 times faster without optimizations and 1.35
+times faster with `-O3` optimization. As you can see, the individual heap
+allocation and virtual method have a noticeable overhead. And this is just 4
 different variants and 1 virtual method. The overhead will add up even further.
 
 So, my take is that run-time polymorphism in C++ doesn't actually prevent you
 from manually handling all cases at run-time, isn't very flexible, you have to
 worry about memory safety, and the performance is worse. You can do the same
-thing with tagged-union, it's as easy to add more variants, and have higher
+thing with tagged union---it's as easy to add more variants, and have higher
 performance. Because of this, I can't see why I should use abstract classes and
-virtual method in C++.
+virtual methods in C++.
 
-# Bonus content: Polymorphism and Tagged-union in Rust
+# Bonus content: Polymorphism and Tagged union in Rust
 
 ## Polymorphism using Trait
 
 So that's about C++, but what about polymorphism in other languages? In Rust,
-methods and other shared behaviour are defined using Trait instead of
-inheritance. For example, instead of "Square" and "Circle" inherits "Shape",
-"Square" and "Circle" has the trait "Area".
+methods and other shared behaviors are defined using Trait instead of
+inheritance. For example, instead of `Square` and `Circle` inheriting `Shape`,
+they instead have the trait `Area`.
 
 ```rust
 trait Area {
@@ -459,7 +459,7 @@ impl Area for Square {
 ```
 
 Compile-time polymorphism in Rust is also defined using generics like in C++,
-but you have to constraint the generic parameter with a trait to access its
+but you have to constrain the generic parameter with a trait to access its
 methods:
 
 ```rust
@@ -469,10 +469,10 @@ where T1: Area, T2: Area {
 }
 ```
 
-What cool about Rust is that Trait can be thought of as an abstract class or
+What's cool about Rust is that Trait can be thought of as an abstract class or
 interface. So for run-time polymorphism, no extra boilerplate is required.
-There are also no separation between virtual and regular method like in C++.
-The method are instead marked to be "dynamically dispatched" using the `dyn`
+There's also no separation between virtual and regular methods, like in C++.
+The methods are instead marked to be "dynamically dispatched" using the `dyn`
 keyword.
 
 ```rust
@@ -483,7 +483,7 @@ fn add_area(shape1: &dyn Area, shape2: &dyn Area) -> f64 {
 
 Similar to the C++ version, `&dyn Area` just points to an object with the
 `Area` trait, but there are differences between Rust polymorphism and C++
-polymorphism which I won't go into detail here. To determine the type at
+polymorphism, which I won't go into detail here. To determine the type at
 run-time, you actually need to use a "boxed trait", which is heap-allocated,
 also similar to C++.
 
@@ -503,16 +503,16 @@ let shape2: Box<dyn Area> = if random_bool() {
 dbg!(add_area(shape1.as_ref(), shape2.as_ref()))
 ```
 
-I really like Rust trait, it makes compile-time and run-time polymorphism feels
-very similar. Because the methods are guaranteed to exists you have better
-editor completion than in C++. The error messages are also nicer. You can add
-traits to existing types, or even primitive ones, so you can have `((2 - 5) as
-i32).abs()`.
+I really like Rust's trait; it makes compile-time and run-time polymorphism
+feels very similar. Because the methods are guaranteed to exist, you have
+better editor completion than in C++. The error messages are also nicer. You
+can add traits to existing types, or even primitive ones, so you can have
+`((2 - 5) as i32).abs()`.
 
-## Enum as tagged-union
+## Enum as tagged union
 
-Now for tagged-union. In rust they are implemented as enum, and they are much,
-much more pleasant to use than their C++ counterpart.
+Now for tagged union. In rust they are called `enum`, and they are much, much
+more pleasant to use than their C++ counterpart.
 
 ```rust
 enum Shapes {
@@ -524,7 +524,7 @@ enum Shapes {
 ```
 
 You don't have as much control over the memory layout as you do in C++, but it
-is completely type-safe as you have to pattern-match the enum to get the
+is completely type-safe, as you have to pattern-match the enum to get the
 underlying data.
 
 ```rust
@@ -543,8 +543,8 @@ impl Area for Shapes {
 }
 ```
 
-Rust enum is extremely convenient and is the backbone of many features such as
-`Option` or `Result`. While I don't have as much controls as in C++, because
+Rust enum is extremely convenient and is the backbone of many features, such as
+`Option` or `Result`. While I don't have as much control as in C++, because
 enum is a built-in language feature of Rust, constructing and accessing them
 feel so much more natural.
 
@@ -575,6 +575,6 @@ if (square.tag == Shape::Types::SQUARE) {
 }
 ```
 
-I still prefer this over `std::variant`, and definitely prefer this over using
-run-time polymorphism, but I think that Rust enum are superior with its safety
-and convenience.
+I still prefer this over `std::variant`, and definitely over using run-time
+polymorphism, but I think that Rust enum is superior with its safety and
+convenience.
