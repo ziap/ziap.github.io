@@ -83,7 +83,7 @@
         
       {% set section = get_section(path="blog/_index.md") %}
       <ul class="posts__list">
-        {% for post in section.pages | slice(end=4) %}
+        {% for post in section.pages | slice(end=6) %}
           <li>
             <div>{{ post.date | date(format="%b %d, %Y") }}</div>
             <a href="{{ post.permalink }}">

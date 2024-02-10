@@ -12,7 +12,34 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
+    margin-top: 1em;
+    margin-bottom: 0.8em;
+    font-weight: 600;
     color: var(--secondary-color);
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+  }
+
+  h4 {
+    font-size: 0.9rem;
+  }
+
+  h5 {
+    font-size: 0.7875rem;
+  }
+
+  h6 {
+    font-size: 0.765rem;
   }
 
   table {
@@ -128,6 +155,10 @@
 
 .post-header__title {
   margin: 0;
+}
+
+.post-header__link {
+  text-decoration: none;
 }
 
 .post-header__meta {

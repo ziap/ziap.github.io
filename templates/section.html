@@ -11,7 +11,7 @@
   <div class="posts">
     {% for post in section.pages %}
       <div class="post">
-        {{ macros::post_header(page=post) }}
+        {{ macros::post_header(page=post, link=true) }}
 
         <article class="content__body">
           {{ post.summary | safe }}

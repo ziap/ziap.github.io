@@ -15,9 +15,15 @@
   read
 {% endmacro %}
 
-{% macro post_header(page) %}
+{% macro post_header(page, link=false) %}
   <header class="post-header">
+    {% if link %}
+      <a href="{{ page.permalink }}" class="post-header__link">
+    {% endif %}
     <h1 class="post-header__title title">{{ page.title }}</h1>
+    {% if link %}
+      </a>
+    {% endif %}
     {% if page.date %}
       <div class="post-header__meta">
         <div class="post-header__data">
