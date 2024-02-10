@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bui Huy Giap&#x27;s personal website and blog">
+    <title>
+      
+        
+          A faster, more flexible alternative to run-time polymorphism in C++ feat. Rust |
+        
+
+        Zap&#x27;s website
+      
+    </title>
+    <link rel="stylesheet" href="/styles/base.css">
+    <link rel="stylesheet" href="/styles/nav.css">
+    <link rel="stylesheet" href="/styles/footer.css">
+    <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="RSS">
+    
+  
+
+  <link rel="stylesheet" href="/styles/page.css">
+
+  </head>
+  <body>
+    
+      <div class="nav__bg">
+        <div class="nav__container">
+          
+
+<nav class="nav">
+  <h3 class="nav__title">
+    <a href="/" class="nav__title__link">Zap</a>
+  </h3>
+  <ul class="nav__links">
+    
+      <li><a class="nav__link" href="/works">Works</a></li>
+    
+      <li><a class="nav__link" href="/blog">Blog</a></li>
+    
+      <li><a class="nav__link" href="/about">About</a></li>
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    
+
+    <div class="container">
+      <main class="content">
+        
+  
+  <header class="post-header">
+    
+    <h1 class="post-header__title title">A faster, more flexible alternative to run-time polymorphism in C++ feat. Rust</h1>
+    
+    
+      <div class="post-header__meta">
+        <div class="post-header__data">
+          
+  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+  <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+  <path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm112 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z"/>
+</svg>
+
+
+          Sat, Feb 10 2024
+        </div>
+
+        <div class="post-header__data">
+          
+  <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+  <!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+  <path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
+</svg>
+
+
+          
+  
+  
+
+  13
+  
+    minutes
+  
+  read
+
+        </div>
+      </div>
+    
+  </header>
+
+
+  <article class="content__body">
+    <p>When I first heard about run-time polymorphism in C++ using virtual methods, my
+first thoughts was like: “This is cool and all but why would I ever use this.”
+then I continued to ignore it because I can always just work around instead of
+using it. Until recently my college lecturer told me that virtual methods is
+great for designing and maintaining applications with thousands of objects, I
+figured that I should write about what run-time polymorphism is, and why I
+think that there are better alternatives to it.</p>
+<span id="continue-reading"></span><h1 id="a-brief-introduction-to-polymorphism-in-c">A brief introduction to polymorphism in C++</h1>
+<p>Polymorphism means “many-shape”, and in programming it means designing an API
+that works with multiple “shapes” of input, for example, a function that takes
+multiple data-type. Consider the following function:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">template</span><span style="color:#abb2bf;">&lt;</span><span style="color:#cd74e8;">class</span><span style="color:#abb2bf;"> T1, T2&gt;
+</span><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">add_area</span><span style="color:#abb2bf;">(T1 </span><span style="color:#eb6772;">shape1</span><span style="color:#abb2bf;">, T2 </span><span style="color:#eb6772;">shape2</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> shape1.</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">() </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> shape2.</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>This function is polymorphic because it works with any data-type with a member
+function <code>area</code>. However, the template arguments <code>T1</code> and <code>T2</code> needs to be
+determined at compile-time, so we only achieved compile-time polymorphism.
+Run-time polymorphism is a bit complicated:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">class </span><span style="color:#f0c678;">Shape </span><span style="color:#adb7c9;">{
+</span><span style="color:#cd74e8;">public</span><span style="color:#adb7c9;">:
+</span><span style="color:#adb7c9;">  </span><span style="color:#5cb3fa;">Shape</span><span style="color:#adb7c9;">() {}
+</span><span style="color:#adb7c9;">  
+</span><span style="color:#adb7c9;">  </span><span style="color:#cd74e8;">virtual double </span><span style="color:#5cb3fa;">area</span><span style="color:#adb7c9;">() </span><span style="color:#cd74e8;">const </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#adb7c9;">;
+</span><span style="color:#adb7c9;">  </span><span style="color:#cd74e8;">virtual </span><span style="color:#5cb3fa;">~Shape</span><span style="color:#adb7c9;">() = </span><span style="color:#cd74e8;">default</span><span style="color:#adb7c9;">;
+</span><span style="color:#adb7c9;">}</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">add_area</span><span style="color:#abb2bf;">(Shape </span><span style="color:#adb7c9;">*</span><span style="color:#eb6772;">shape1</span><span style="color:#abb2bf;">, Shape </span><span style="color:#adb7c9;">*</span><span style="color:#eb6772;">shape2</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> shape1-&gt;</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">() </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> shape2-&gt;</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>The <code>Shape</code> class is called an “abstract” class, which means that it can’t be
+allocated and can only serves as an interface for other classes to inherit
+from. Which means that the function <code>add_area</code> takes two pointers that point to
+two arbitrary objects that inherits from the <code>Shape</code> class. What make this
+different from the previous example is that this is an actual function, not a
+template, and the objects that those pointers point to is determined at
+run-time, not at compile-time.</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#abb2bf;">Shape </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;">shape1 </span><span style="color:#adb7c9;">= </span><span style="color:#eb6772;">random_bool</span><span style="color:#abb2bf;">() </span><span style="color:#adb7c9;">? </span><span style="color:#cd74e8;">new </span><span style="color:#eb6772;">Square</span><span style="color:#abb2bf;">(</span><span style="color:#db9d63;">4</span><span style="color:#abb2bf;">) </span><span style="color:#adb7c9;">: </span><span style="color:#cd74e8;">new </span><span style="color:#eb6772;">Circle</span><span style="color:#abb2bf;">(</span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">);
+</span><span style="color:#abb2bf;">Shape </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;">shape2 </span><span style="color:#adb7c9;">= </span><span style="color:#eb6772;">random_bool</span><span style="color:#abb2bf;">() </span><span style="color:#adb7c9;">? </span><span style="color:#cd74e8;">new </span><span style="color:#eb6772;">Square</span><span style="color:#abb2bf;">(</span><span style="color:#db9d63;">4</span><span style="color:#abb2bf;">) </span><span style="color:#adb7c9;">: </span><span style="color:#cd74e8;">new </span><span style="color:#eb6772;">Circle</span><span style="color:#abb2bf;">(</span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">);
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">std::cout </span><span style="color:#adb7c9;">&lt;&lt; </span><span style="color:#eb6772;">add_area</span><span style="color:#abb2bf;">(shape1, shape2) </span><span style="color:#adb7c9;">&lt;&lt; </span><span style="color:#9acc76;">&#39;</span><span style="color:#5ebfcc;">\n</span><span style="color:#9acc76;">&#39;</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">delete</span><span style="color:#abb2bf;"> shape1;
+</span><span style="color:#cd74e8;">delete</span><span style="color:#abb2bf;"> shape2;
+</span></code></pre>
+<h1 id="a-simple-example">A simple example</h1>
+<p>Run-time polymorphism is often used when the data-type is not known at compile
+time. Maybe the user want to select what type of shape to add the area
+together. Let’s extend the previous example to include run-time data, you have
+to import the shapes from a file. For demonstration purpose the file format is
+extremely simple, it’s a text file with every line contains a string
+representing the shape type, and floating point numbers representing the shape
+attributes. The shape types, their attributes and how to compute the area is
+described in the table below:</p>
+<table><thead><tr><th>shape type</th><th>attributes</th><th>area formula</th></tr></thead><tbody>
+<tr><td>“square”</td><td>side</td><td>side * side</td></tr>
+<tr><td>“rectangle”</td><td>width, height</td><td>width * height</td></tr>
+<tr><td>“circle”</td><td>radius</td><td>radius * radius * PI</td></tr>
+<tr><td>“triangle”</td><td>3 sides</td><td>Heron’s formula<sup class="footnote-reference"><a href="#1">1</a></sup></td></tr>
+</tbody></table>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://en.wikipedia.org/wiki/Heron&#x27;s_formula">https://en.wikipedia.org/wiki/Heron's_formula</a></p>
+</div>
+<p>We can’t tell what shape they are until we have read the file at run-time. So
+to get the total area of the entire file, we need a run-time polymorphic
+function:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">total_area</span><span style="color:#abb2bf;">(Shape </span><span style="color:#adb7c9;">**</span><span style="color:#eb6772;">shapes</span><span style="color:#abb2bf;">, size_t </span><span style="color:#eb6772;">shapes_len</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> result </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">for </span><span style="color:#abb2bf;">(size_t i </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">; i </span><span style="color:#adb7c9;">&lt;</span><span style="color:#abb2bf;"> shapes_len; </span><span style="color:#adb7c9;">++</span><span style="color:#abb2bf;">i) {
+</span><span style="color:#abb2bf;">    result </span><span style="color:#adb7c9;">+=</span><span style="color:#abb2bf;"> shapes[i]-&gt;</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> result;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>The <code>Shape</code> class is the same as the above, but notice that we need double
+pointer indirection, because every shape in the array is still a pointer to the
+actual non-abstract shape. This means that every single shape is its own heap
+allocation, which is pretty expensive and you can mess up if you’re not careful.
+So instead of using raw pointers here is a safer and potentially faster version
+of the previous function:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">total_area</span><span style="color:#abb2bf;">(std::span&lt;std::unique_ptr&lt;Shape&gt;&gt; </span><span style="color:#eb6772;">shapes</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> result </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">for </span><span style="color:#abb2bf;">(std::unique_ptr&lt;Shape&gt; </span><span style="color:#adb7c9;">&amp;</span><span style="color:#abb2bf;">shape </span><span style="color:#adb7c9;">:</span><span style="color:#abb2bf;"> shapes) {
+</span><span style="color:#abb2bf;">    result </span><span style="color:#adb7c9;">+=</span><span style="color:#abb2bf;"> shape-&gt;</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> result;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>It’s arguably uglier but the <code>std::unique_ptr</code> saves us from the hassle of
+cleaning up memory and since we’re using smart pointers anyways I’m throwing in
+<code>std::span</code> – a new C++20 feature – as well so we don’t have to pass in the
+length, we can use the range-based for loop for iteration, and the function
+automatically works with <code>std::vector</code>s.</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#abb2bf;">std::vector&lt;std::unique_ptr&lt;Shape&gt;&gt; shapes;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">shapes.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Square&gt;(</span><span style="color:#db9d63;">4</span><span style="color:#abb2bf;">));
+</span><span style="color:#abb2bf;">shapes.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Circle&gt;(</span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">));
+</span><span style="color:#abb2bf;">shapes.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Rectangle&gt;(</span><span style="color:#db9d63;">3</span><span style="color:#abb2bf;">, </span><span style="color:#db9d63;">4</span><span style="color:#abb2bf;">));
+</span><span style="color:#abb2bf;">shapes.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Triangle&gt;(</span><span style="color:#db9d63;">3</span><span style="color:#abb2bf;">, </span><span style="color:#db9d63;">4</span><span style="color:#abb2bf;">, </span><span style="color:#db9d63;">5</span><span style="color:#abb2bf;">));
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">std::cout </span><span style="color:#adb7c9;">&lt;&lt; </span><span style="color:#eb6772;">total_area</span><span style="color:#abb2bf;">(shapes) </span><span style="color:#adb7c9;">&lt;&lt; </span><span style="color:#9acc76;">&#39;</span><span style="color:#5ebfcc;">\n</span><span style="color:#9acc76;">&#39;</span><span style="color:#abb2bf;">; </span><span style="font-style:italic;color:#5f697a;">// 46.566370614359172
+</span></code></pre>
+<p>This is great! It automatically figure out how to compute the area for every
+shape that we throw at it, we don’t need to manually handle every single case,
+and even though the shapes are heap allocated <code>std::unique_ptr</code>, makes working
+with them less painful. Also notice how I didn’t show a single line of code on
+how to compute the area, because with polymorphism it actually doesn’t matter.
+But currently we still hard-code the shapes, so this is possible even with
+compile-time polymorphism. So let’s justify this by importing the shapes from
+the file.</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">enum class </span><span style="color:#abb2bf;">ShapeTypes {
+</span><span style="color:#abb2bf;">  SQUARE,
+</span><span style="color:#abb2bf;">  RECTANGLE,
+</span><span style="color:#abb2bf;">  CIRCLE,
+</span><span style="color:#abb2bf;">  TRIANGLE
+</span><span style="color:#abb2bf;">};
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">static const</span><span style="color:#abb2bf;"> std::unordered_map&lt;std::string_view, ShapeTypes&gt; shape_map </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;square&quot;</span><span style="color:#abb2bf;">, ShapeTypes::SQUARE},
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;rectangle&quot;</span><span style="color:#abb2bf;">, ShapeTypes::RECTANGLE},
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;circle&quot;</span><span style="color:#abb2bf;">, ShapeTypes::CIRCLE},
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;triangle&quot;</span><span style="color:#abb2bf;">, ShapeTypes::TRIANGLE}
+</span><span style="color:#abb2bf;">};
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">std::vector&lt;std::unique_ptr&lt;Shape&gt;&gt; </span><span style="color:#5cb3fa;">get_shapes</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">const char </span><span style="color:#adb7c9;">*</span><span style="color:#eb6772;">file_path</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  std::vector&lt;std::unique_ptr&lt;Shape&gt;&gt; result;
+</span><span style="color:#abb2bf;">  std::ifstream </span><span style="color:#eb6772;">fin</span><span style="color:#abb2bf;">(file_path);
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">char</span><span style="color:#abb2bf;"> type_str[</span><span style="color:#db9d63;">16</span><span style="color:#abb2bf;">];
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">while </span><span style="color:#abb2bf;">(fin </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> type_str) {
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">switch </span><span style="color:#abb2bf;">(shape_map.</span><span style="color:#eb6772;">find</span><span style="color:#abb2bf;">(type_str)-&gt;</span><span style="color:#eb6772;">second</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> ShapeTypes::SQUARE: {
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> side;
+</span><span style="color:#abb2bf;">        fin </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> side;
+</span><span style="color:#abb2bf;">        result.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Square&gt;(side));
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">break</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">      }
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> ShapeTypes::RECTANGLE: {
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> width, height;
+</span><span style="color:#abb2bf;">        fin </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> width </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> height;
+</span><span style="color:#abb2bf;">        result.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Rectangle&gt;(width, height));
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">break</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">      }
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> ShapeTypes::CIRCLE: {
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> radius;
+</span><span style="color:#abb2bf;">        fin </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> radius;
+</span><span style="color:#abb2bf;">        result.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Circle&gt;(radius));
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">break</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">      }
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> ShapeTypes::TRIANGLE: {
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> side1, side2, side3;
+</span><span style="color:#abb2bf;">        fin </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> side1 </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> side2 </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> side3;
+</span><span style="color:#abb2bf;">        result.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">make_unique</span><span style="color:#abb2bf;">&lt;Triangle&gt;(side1, side2, side3));
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">break</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">      }
+</span><span style="color:#abb2bf;">    }
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> result;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>Okay now it’s no longer pretty. We tried so hard not to write the code that
+handle different shape types, but now when reading the file we can’t avoid
+writing it. But if we don’t import the shape from the files dynamically at
+run-time then it’s the same as compile-time polymorphism. Also, if we want to
+do tweak the function, like for example “Get the total area of all circles and
+triangles”, we need to update the abstract class to expose more information:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">class </span><span style="color:#f0c678;">Shape </span><span style="color:#adb7c9;">{
+</span><span style="color:#cd74e8;">public</span><span style="color:#adb7c9;">:
+</span><span style="color:#adb7c9;">  </span><span style="color:#5cb3fa;">Shape</span><span style="color:#adb7c9;">() {}
+</span><span style="color:#adb7c9;">  
+</span><span style="color:#adb7c9;">  </span><span style="color:#cd74e8;">virtual double </span><span style="color:#5cb3fa;">area</span><span style="color:#adb7c9;">() </span><span style="color:#cd74e8;">const </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#adb7c9;">;
+</span><span style="color:#adb7c9;">  </span><span style="color:#cd74e8;">virtual double </span><span style="color:#5cb3fa;">is_circle_or_triangle</span><span style="color:#adb7c9;">() </span><span style="color:#cd74e8;">const </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#adb7c9;">;
+</span><span style="color:#adb7c9;">  </span><span style="color:#cd74e8;">virtual </span><span style="color:#5cb3fa;">~Shape</span><span style="color:#adb7c9;">() = </span><span style="color:#cd74e8;">default</span><span style="color:#adb7c9;">;
+</span><span style="color:#adb7c9;">}</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">total_area_circles_and_triangles</span><span style="color:#abb2bf;">(std::span&lt;std::unique_ptr&lt;Shape&gt;&gt; </span><span style="color:#eb6772;">shapes</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> result </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">for </span><span style="color:#abb2bf;">(std::unique_ptr&lt;Shape&gt; </span><span style="color:#adb7c9;">&amp;</span><span style="color:#abb2bf;">shape </span><span style="color:#adb7c9;">:</span><span style="color:#abb2bf;"> shapes) {
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(shape-&gt;</span><span style="color:#eb6772;">is_circle_or_triangle</span><span style="color:#abb2bf;">()) {
+</span><span style="color:#abb2bf;">      result </span><span style="color:#adb7c9;">+=</span><span style="color:#abb2bf;"> shape-&gt;</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">    }
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> result;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>Then we need to manually implement the new method for all shapes. So run-time
+polymorphism sounds great on paper, but in the end we have to manually do lots
+of stuffs. I’m probably missing something and I’m happy to have my mind changed
+but as of right now I think that run-time polymorphism falls apart when you
+really think about it.</p>
+<h1 id="the-alternative">The alternative</h1>
+<p>The most obvious solution is to just read the file and process it compute the
+total area immediately. But let’s pretend that we absolutely have to store the
+data into an array first, and perform the computation on the stored array.
+Maybe we want to do something else with the array other than doing the
+computation. So how do we store multiple shapes in the same array without
+run-time polymorphism? The answer is to use a data structure known as a
+tagged-union. There are <code>std::variant</code> in C++ but I think that it’s more
+convenient to just literally use a tag and a union. In fact, this structure is
+so simple that you don’t even need any of C++’s features and just write it in
+plain C. The only C++ feature I use right now (other than member function) is
+<code>enum class</code> only because it is scoped and because I’m in C++ anyways.</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">struct </span><span style="color:#abb2bf;">Shape {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">enum class </span><span style="color:#abb2bf;">Types {
+</span><span style="color:#abb2bf;">    SQUARE,
+</span><span style="color:#abb2bf;">    RECTANGLE,
+</span><span style="color:#abb2bf;">    CIRCLE,
+</span><span style="color:#abb2bf;">    TRIANGLE
+</span><span style="color:#abb2bf;">  };
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  Types tag;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">union </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">struct </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> side;
+</span><span style="color:#abb2bf;">    } square;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">struct </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> width, height;
+</span><span style="color:#abb2bf;">    } rectangle;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">struct </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> radius;
+</span><span style="color:#abb2bf;">    } circle;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">struct </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> sides[</span><span style="color:#db9d63;">3</span><span style="color:#abb2bf;">];
+</span><span style="color:#abb2bf;">    } triangle;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> attrs[</span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">];
+</span><span style="color:#abb2bf;">  };
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">area</span><span style="color:#abb2bf;">() </span><span style="color:#cd74e8;">const </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">switch </span><span style="color:#abb2bf;">(tag) {
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> Types::SQUARE: </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> square.</span><span style="color:#eb6772;">side </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;"> square.</span><span style="color:#eb6772;">side</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> Types::RECTANGLE: </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> rectangle.</span><span style="color:#eb6772;">width </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;"> rectangle.</span><span style="color:#eb6772;">height</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> Types::CIRCLE: </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> circle.</span><span style="color:#eb6772;">radius </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;"> circle.</span><span style="color:#eb6772;">radius </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;"> M_PI;
+</span><span style="color:#abb2bf;">      </span><span style="color:#cd74e8;">case</span><span style="color:#abb2bf;"> Types::TRIANGLE: {
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">const double </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;">sides </span><span style="color:#adb7c9;">=</span><span style="color:#abb2bf;"> triangle.</span><span style="color:#eb6772;">sides</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">const double</span><span style="color:#abb2bf;"> s </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">(sides[</span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">] </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> sides[</span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">] </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> sides[</span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">]) </span><span style="color:#adb7c9;">* </span><span style="color:#db9d63;">0.5</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">return </span><span style="color:#5ebfcc;">sqrt</span><span style="color:#abb2bf;">(s </span><span style="color:#adb7c9;">* </span><span style="color:#abb2bf;">(s </span><span style="color:#adb7c9;">-</span><span style="color:#abb2bf;"> sides[</span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">]) </span><span style="color:#adb7c9;">* </span><span style="color:#abb2bf;">(s </span><span style="color:#adb7c9;">-</span><span style="color:#abb2bf;"> sides[</span><span style="color:#db9d63;">1</span><span style="color:#abb2bf;">]) </span><span style="color:#adb7c9;">* </span><span style="color:#abb2bf;">(s </span><span style="color:#adb7c9;">-</span><span style="color:#abb2bf;"> sides[</span><span style="color:#db9d63;">2</span><span style="color:#abb2bf;">]));
+</span><span style="color:#abb2bf;">      }
+</span><span style="color:#abb2bf;">    }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">    </span><span style="color:#eb6772;">__builtin_unreachable</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">};
+</span></code></pre>
+<p>Before we don’t have to care about how the shapes are implemented but now we do
+because it’s no longer hidden behind abstract classes and virtual methods.
+Remember, they’re hidden, abstracted away but they’re still there, I think that
+the code that compute the area in every derived class is the same as the same
+code but in the switch cases. Also we have to manually handle different shapes
+in the <code>area</code> method. But as we saw before manually handling different cases is
+inevitable at run-time, so I don’t think there’s a good reason to avoid it. You
+might wonder “What happen when you add a new shape?”. Well, just add a new
+shape to the enum and the compiler will emit a warning that you haven’t handled
+all enum values. Constructing a shape is also simple using designated
+initializers.</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#abb2bf;">Shape square </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">  .</span><span style="color:#eb6772;">type </span><span style="color:#adb7c9;">=</span><span style="color:#abb2bf;"> Shape::Types::SQUARE,
+</span><span style="color:#abb2bf;">  .</span><span style="color:#eb6772;">square </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    .</span><span style="color:#eb6772;">side </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">4
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">};
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">Shape triangle </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">  .</span><span style="color:#eb6772;">type </span><span style="color:#adb7c9;">=</span><span style="color:#abb2bf;"> Shape::Types::TRIANGLE,
+</span><span style="color:#abb2bf;">  .</span><span style="color:#eb6772;">triangle </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    .</span><span style="color:#eb6772;">sides </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{</span><span style="color:#db9d63;">3</span><span style="color:#abb2bf;">, </span><span style="color:#db9d63;">4</span><span style="color:#abb2bf;">, </span><span style="color:#db9d63;">5</span><span style="color:#abb2bf;">}
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">};
+</span></code></pre>
+<p>You can even use a factory function to simplify creation of shapes buf I think
+that designated initializers are good enough. One of the downsides of this
+approach is reduced type-safety. There’s nothing preventing you from accessing
+the radius of a square. If you know your union then it’s fine but mistakes can
+happen and this is one place where you can mess up. Now <code>Shape</code> is an actual
+class and its instances <em>are</em> shapes and not pointers pointing to the actual
+shape. This effectively remove one level of indirection and all shapes can be
+in the same contiguous memory region.</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">total_area</span><span style="color:#abb2bf;">(std::span&lt;Shape&gt; </span><span style="color:#eb6772;">shapes</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> result </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">  
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">for </span><span style="color:#abb2bf;">(Shape </span><span style="color:#adb7c9;">&amp;</span><span style="color:#abb2bf;">shape </span><span style="color:#adb7c9;">:</span><span style="color:#abb2bf;"> shapes) {
+</span><span style="color:#abb2bf;">    result </span><span style="color:#adb7c9;">+=</span><span style="color:#abb2bf;"> shape.</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> result;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>Now we don’t have to worry about cleaning up individual shape or even have to
+use <code>std::unique_ptr</code>, and it might even help with performance! But before that
+lets see how do we import the shapes from the file.</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">static const</span><span style="color:#abb2bf;"> std::unordered_map&lt;std::string_view, Shape::Types&gt; shape_map </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;square&quot;</span><span style="color:#abb2bf;">, Shape::Types::SQUARE},
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;rectangle&quot;</span><span style="color:#abb2bf;">, Shape::Types::RECTANGLE},
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;circle&quot;</span><span style="color:#abb2bf;">, Shape::Types::CIRCLE},
+</span><span style="color:#abb2bf;">  {</span><span style="color:#9acc76;">&quot;triangle&quot;</span><span style="color:#abb2bf;">, Shape::Types::TRIANGLE}
+</span><span style="color:#abb2bf;">};
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">std::vector&lt;Shape&gt; </span><span style="color:#5cb3fa;">read_file</span><span style="color:#abb2bf;">(</span><span style="color:#cd74e8;">const char </span><span style="color:#adb7c9;">*</span><span style="color:#eb6772;">file_path</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  std::vector&lt;Shape&gt; result;
+</span><span style="color:#abb2bf;">  std::ifstream </span><span style="color:#eb6772;">fin</span><span style="color:#abb2bf;">(file_path);
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  std::string line;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">while </span><span style="color:#abb2bf;">(std::</span><span style="color:#eb6772;">getline</span><span style="color:#abb2bf;">(fin, line)) {
+</span><span style="color:#abb2bf;">    std::stringstream </span><span style="color:#eb6772;">ss</span><span style="color:#abb2bf;">(line);
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">char</span><span style="color:#abb2bf;"> type_str[</span><span style="color:#db9d63;">16</span><span style="color:#abb2bf;">];
+</span><span style="color:#abb2bf;">    ss </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> type_str;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">    Shape shape;
+</span><span style="color:#abb2bf;">    shape.</span><span style="color:#eb6772;">tag </span><span style="color:#adb7c9;">=</span><span style="color:#abb2bf;"> shape_map.</span><span style="color:#eb6772;">find</span><span style="color:#abb2bf;">(type_str)-&gt;</span><span style="color:#eb6772;">second</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">    
+</span><span style="color:#abb2bf;">    size_t attrs_len </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> attr;
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">while </span><span style="color:#abb2bf;">(ss </span><span style="color:#adb7c9;">&gt;&gt;</span><span style="color:#abb2bf;"> attr) shape.</span><span style="color:#eb6772;">attrs</span><span style="color:#abb2bf;">[attrs_len</span><span style="color:#adb7c9;">++</span><span style="color:#abb2bf;">] </span><span style="color:#adb7c9;">=</span><span style="color:#abb2bf;"> attr;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">    result.</span><span style="color:#eb6772;">push_back</span><span style="color:#abb2bf;">(shape);
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> result;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>This, in my opinion, is even nicer than the previous implementation. We already
+have the <code>Shape::Types</code> enum for the tag, so we can easily reused them here.
+Remember <code>double attrs[0]</code>? It’s an array representing the underlying values of
+the shape attributes. Because the file is already in the correct order, we can
+just push items into that array instead of matching the shape type and
+constructing the correct shape. So by having more control over the memory
+layout, we can analyze and reduce some repetition. What about the example of
+only adding the area of circles and triangles? It’s just a single if statement:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#cd74e8;">double </span><span style="color:#5cb3fa;">total_area_circles_and_triangles</span><span style="color:#abb2bf;">(std::span&lt;Shape&gt; </span><span style="color:#eb6772;">shapes</span><span style="color:#abb2bf;">) {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">double</span><span style="color:#abb2bf;"> result </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">  
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">for </span><span style="color:#abb2bf;">(Shape </span><span style="color:#adb7c9;">&amp;</span><span style="color:#abb2bf;">shape </span><span style="color:#adb7c9;">:</span><span style="color:#abb2bf;"> shapes) {
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(shape.</span><span style="color:#eb6772;">tag </span><span style="color:#adb7c9;">==</span><span style="color:#abb2bf;"> Shape::Types::CIRCLE </span><span style="color:#adb7c9;">||</span><span style="color:#abb2bf;"> shape.</span><span style="color:#eb6772;">tag </span><span style="color:#adb7c9;">==</span><span style="color:#abb2bf;"> Shape::Types::TRIANGLE) {
+</span><span style="color:#abb2bf;">      result </span><span style="color:#adb7c9;">+=</span><span style="color:#abb2bf;"> shape.</span><span style="color:#eb6772;">area</span><span style="color:#abb2bf;">();
+</span><span style="color:#abb2bf;">    }
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">return</span><span style="color:#abb2bf;"> result;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>You don’t need to edit all the shapes just to add that. So by not avoiding to
+handle different shapes manually we increased the flexibility of our code and
+sometimes adding features is easier because of it.</p>
+<h1 id="benchmark-and-conclusion">Benchmark and conclusion</h1>
+<p>So lets finally get into the performance of these two methods. I generated a
+one million shapes of those four types, and measure the time they take to
+compute the total area.</p>
+<table><thead><tr><th>Optimizaion</th><th>Polymorphism</th><th>Tagged-union</th></tr></thead><tbody>
+<tr><td><code>-O0</code></td><td>25628us</td><td>15758us</td></tr>
+<tr><td><code>-O3</code></td><td>6908us</td><td>5100us</td></tr>
+</tbody></table>
+<p>The tagged-union method is 1.6 times faster without optimizations and 1.35
+times faster with <code>-O3</code> optimization. As you can see the individual heap
+allocation and virtual method has a noticable overhead. And this is just 4
+different variants and 1 virtual method. The overhead will add up even further.</p>
+<p>So, my take is that run-time polymorphism in C++ doesn’t actually prevent you
+from manually handling all cases at run-time, isn’t very flexible, you have to
+worry about memory safety, and the performance is worse. You can do the same
+thing with tagged-union, it’s as easy to add more variants, and have higher
+performance. Because of this, I can’t see why I should use abstract classes and
+virtual method in C++.</p>
+<h1 id="bonus-content-polymorphism-and-tagged-union-in-rust">Bonus content: Polymorphism and Tagged-union in Rust</h1>
+<h2 id="polymorphism-using-trait">Polymorphism using Trait</h2>
+<p>So that’s about C++, but what about polymorphism in other languages? In Rust,
+methods and other shared behaviour are defined using Trait instead of
+inheritance. For example, instead of “Square” and “Circle” inherits “Shape”,
+“Square” and “Circle” has the trait “Area”.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#6c7079;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#cd74e8;">trait </span><span style="color:#abb2bf;">Area {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">fn </span><span style="color:#5cb3fa;">area</span><span style="color:#abb2bf;">(</span><span style="color:#adb7c9;">&amp;</span><span style="color:#eb6772;">self</span><span style="color:#abb2bf;">) -&gt; </span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">}
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">struct </span><span style="color:#abb2bf;">Square {
+</span><span style="color:#abb2bf;">  </span><span style="color:#eb6772;">side</span><span style="color:#abb2bf;">: </span><span style="color:#cd74e8;">f64
+</span><span style="color:#abb2bf;">}
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">impl </span><span style="color:#abb2bf;">Area </span><span style="color:#cd74e8;">for </span><span style="color:#abb2bf;">Square {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">fn </span><span style="color:#5cb3fa;">area</span><span style="color:#abb2bf;">(</span><span style="color:#adb7c9;">&amp;</span><span style="color:#eb6772;">self</span><span style="color:#abb2bf;">) -&gt; </span><span style="color:#cd74e8;">f64 </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    </span><span style="color:#eb6772;">self</span><span style="color:#abb2bf;">.side </span><span style="color:#adb7c9;">* </span><span style="color:#eb6772;">self</span><span style="color:#abb2bf;">.side
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>Compile-time polymorphism in Rust is also defined using generics like in C++,
+but you have to constraint the generic parameter with a trait to access its
+methods:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#6c7079;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#cd74e8;">fn </span><span style="color:#5cb3fa;">add_area</span><span style="color:#abb2bf;">&lt;T1, T2&gt;(</span><span style="color:#eb6772;">shape1</span><span style="color:#abb2bf;">: T1, </span><span style="color:#eb6772;">shape2</span><span style="color:#abb2bf;">: T2) -&gt; </span><span style="color:#cd74e8;">f64
+</span><span style="color:#cd74e8;">where</span><span style="color:#abb2bf;"> T1: Area, T2: Area {
+</span><span style="color:#abb2bf;">  shape1.</span><span style="color:#5ebfcc;">area</span><span style="color:#abb2bf;">() </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> shape2.</span><span style="color:#5ebfcc;">area</span><span style="color:#abb2bf;">()
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>What cool about Rust is that Trait can be thought of as an abstract class or
+interface. So for run-time polymorphism, no extra boilerplate is required.
+There are also no separation between virtual and regular method like in C++.
+The method are instead marked to be “dynamically dispatched” using the <code>dyn</code>
+keyword.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#6c7079;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#cd74e8;">fn </span><span style="color:#5cb3fa;">add_area</span><span style="color:#abb2bf;">(</span><span style="color:#eb6772;">shape1</span><span style="color:#abb2bf;">: </span><span style="color:#adb7c9;">&amp;</span><span style="color:#abb2bf;">dyn Area, </span><span style="color:#eb6772;">shape2</span><span style="color:#abb2bf;">: </span><span style="color:#adb7c9;">&amp;</span><span style="color:#abb2bf;">dyn Area) -&gt; </span><span style="color:#cd74e8;">f64 </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">  shape1.</span><span style="color:#5ebfcc;">area</span><span style="color:#abb2bf;">() </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> shape2.</span><span style="color:#5ebfcc;">area</span><span style="color:#abb2bf;">()
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>Similar to the C++ version, <code>&amp;dyn Area</code> just points to an object with the
+<code>Area</code> trait, but there are differences between Rust polymorphism and C++
+polymorphism which I won’t go into detail here. To determine the type at
+run-time, you actually need to use a “boxed trait”, which is heap-allocated,
+also similar to C++.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#6c7079;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#cd74e8;">let</span><span style="color:#abb2bf;"> shape1: Box&lt;dyn Area&gt; </span><span style="color:#adb7c9;">= </span><span style="color:#cd74e8;">if </span><span style="color:#5ebfcc;">random_bool</span><span style="color:#abb2bf;">() {
+</span><span style="color:#abb2bf;">    Box::new(Square { side: </span><span style="color:#db9d63;">4.0 </span><span style="color:#abb2bf;">})
+</span><span style="color:#abb2bf;">} </span><span style="color:#cd74e8;">else </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    Box::new(Circle { radius: </span><span style="color:#db9d63;">2.0 </span><span style="color:#abb2bf;">})
+</span><span style="color:#abb2bf;">};
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">let</span><span style="color:#abb2bf;"> shape2: Box&lt;dyn Area&gt; </span><span style="color:#adb7c9;">= </span><span style="color:#cd74e8;">if </span><span style="color:#5ebfcc;">random_bool</span><span style="color:#abb2bf;">() {
+</span><span style="color:#abb2bf;">    Box::new(Square { side: </span><span style="color:#db9d63;">4.0 </span><span style="color:#abb2bf;">})
+</span><span style="color:#abb2bf;">} </span><span style="color:#cd74e8;">else </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    Box::new(Circle { radius: </span><span style="color:#db9d63;">2.0 </span><span style="color:#abb2bf;">})
+</span><span style="color:#abb2bf;">};
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">dbg!(</span><span style="color:#5ebfcc;">add_area</span><span style="color:#abb2bf;">(shape1.</span><span style="color:#5ebfcc;">as_ref</span><span style="color:#abb2bf;">(), shape2.</span><span style="color:#5ebfcc;">as_ref</span><span style="color:#abb2bf;">()))
+</span></code></pre>
+<p>I really like Rust trait, it makes compile-time and run-time polymorphism feels
+very similar. Because the methods are guaranteed to exists you have better
+editor completion than in C++. The error messages are also nicer. You can add
+traits to existing types, or even primitive ones, so you can have <code>((2 - 5) as i32).abs()</code>.</p>
+<h2 id="enum-as-tagged-union">Enum as tagged-union</h2>
+<p>Now for tagged-union. In rust they are implemented as enum, and they are much,
+much more pleasant to use than their C++ counterpart.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#6c7079;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#cd74e8;">enum </span><span style="color:#abb2bf;">Shapes {
+</span><span style="color:#abb2bf;">  Square(</span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">),
+</span><span style="color:#abb2bf;">  Rectangle(</span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">, </span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">),
+</span><span style="color:#abb2bf;">  Circle(</span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">),
+</span><span style="color:#abb2bf;">  Triangle(</span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">, </span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">, </span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">)
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>You don’t have as much control over the memory layout as you do in C++, but it
+is completely type-safe as you have to pattern-match the enum to get the
+underlying data.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#6c7079;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#cd74e8;">impl </span><span style="color:#abb2bf;">Area </span><span style="color:#cd74e8;">for </span><span style="color:#abb2bf;">Shapes {
+</span><span style="color:#abb2bf;">  </span><span style="color:#cd74e8;">fn </span><span style="color:#5cb3fa;">area</span><span style="color:#abb2bf;">(</span><span style="color:#adb7c9;">&amp;</span><span style="color:#eb6772;">self</span><span style="color:#abb2bf;">) -&gt; </span><span style="color:#cd74e8;">f64 </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    </span><span style="color:#cd74e8;">match </span><span style="color:#eb6772;">self </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">      Shapes::Square(side) </span><span style="color:#adb7c9;">=&gt;</span><span style="color:#abb2bf;"> side </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;"> side,
+</span><span style="color:#abb2bf;">      Shapes::Rectangle(width, height) </span><span style="color:#adb7c9;">=&gt;</span><span style="color:#abb2bf;"> width </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;"> height,
+</span><span style="color:#abb2bf;">      Shapes::Circle(radius) </span><span style="color:#adb7c9;">=&gt;</span><span style="color:#abb2bf;"> radius </span><span style="color:#adb7c9;">*</span><span style="color:#abb2bf;"> radius </span><span style="color:#adb7c9;">* </span><span style="color:#cd74e8;">f64</span><span style="color:#abb2bf;">::consts::</span><span style="color:#db9d63;">PI</span><span style="color:#abb2bf;">,
+</span><span style="color:#abb2bf;">      Shapes::Triangle(side1, side2, side3) </span><span style="color:#adb7c9;">=&gt; </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">        </span><span style="color:#cd74e8;">let</span><span style="color:#abb2bf;"> s </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">0.5 </span><span style="color:#adb7c9;">* </span><span style="color:#abb2bf;">(side1 </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> side2 </span><span style="color:#adb7c9;">+</span><span style="color:#abb2bf;"> side3);
+</span><span style="color:#abb2bf;">        (s </span><span style="color:#adb7c9;">* </span><span style="color:#abb2bf;">(s </span><span style="color:#adb7c9;">-</span><span style="color:#abb2bf;"> side1) </span><span style="color:#adb7c9;">* </span><span style="color:#abb2bf;">(s </span><span style="color:#adb7c9;">-</span><span style="color:#abb2bf;"> side2) </span><span style="color:#adb7c9;">* </span><span style="color:#abb2bf;">(s </span><span style="color:#adb7c9;">-</span><span style="color:#abb2bf;"> side3)).</span><span style="color:#5ebfcc;">sqrt</span><span style="color:#abb2bf;">()
+</span><span style="color:#abb2bf;">      },
+</span><span style="color:#abb2bf;">    }
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>Rust enum is extremely convenient and is the backbone of many features such as
+<code>Option</code> or <code>Result</code>. While I don’t have as much controls as in C++, because
+enum is a built-in language feature of Rust, constructing and accessing them
+feel so much more natural.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#6c7079;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#cd74e8;">let</span><span style="color:#abb2bf;"> square </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">Shapes::Square(</span><span style="color:#db9d63;">4.0</span><span style="color:#abb2bf;">);
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">if let</span><span style="color:#abb2bf;"> Square(side) </span><span style="color:#adb7c9;">=</span><span style="color:#abb2bf;"> square {
+</span><span style="color:#abb2bf;">    dbg!(side);
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>Compare this to the C++ version:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#6c7079;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="font-style:italic;color:#5f697a;">// I can write and use a factory function but still I have to write more code
+</span><span style="color:#abb2bf;">Shape square </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">  .</span><span style="color:#eb6772;">tag </span><span style="color:#adb7c9;">=</span><span style="color:#abb2bf;"> Shape::Types::SQUARE,
+</span><span style="color:#abb2bf;">  .</span><span style="color:#eb6772;">square </span><span style="color:#adb7c9;">= </span><span style="color:#abb2bf;">{
+</span><span style="color:#abb2bf;">    .</span><span style="color:#eb6772;">side </span><span style="color:#adb7c9;">= </span><span style="color:#db9d63;">4
+</span><span style="color:#abb2bf;">  }
+</span><span style="color:#abb2bf;">};
+</span><span style="color:#abb2bf;">
+</span><span style="color:#cd74e8;">if </span><span style="color:#abb2bf;">(square.</span><span style="color:#eb6772;">tag </span><span style="color:#adb7c9;">==</span><span style="color:#abb2bf;"> Shape::Types::SQUARE) {
+</span><span style="color:#abb2bf;">  std::cout </span><span style="color:#adb7c9;">&lt;&lt;</span><span style="color:#abb2bf;"> square.</span><span style="color:#eb6772;">square</span><span style="color:#abb2bf;">.</span><span style="color:#eb6772;">side </span><span style="color:#adb7c9;">&lt;&lt; </span><span style="color:#9acc76;">&#39;</span><span style="color:#5ebfcc;">\n</span><span style="color:#9acc76;">&#39;</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">
+</span><span style="color:#abb2bf;">  </span><span style="font-style:italic;color:#5f697a;">// Nothing prevents me from doing this
+</span><span style="color:#abb2bf;">  std::cout </span><span style="color:#adb7c9;">&lt;&lt;</span><span style="color:#abb2bf;"> square.</span><span style="color:#eb6772;">rectangle</span><span style="color:#abb2bf;">.</span><span style="color:#eb6772;">height </span><span style="color:#adb7c9;">&lt;&lt; </span><span style="color:#9acc76;">&#39;</span><span style="color:#5ebfcc;">\n</span><span style="color:#9acc76;">&#39;</span><span style="color:#abb2bf;">;
+</span><span style="color:#abb2bf;">}
+</span></code></pre>
+<p>I still prefer this over <code>std::variant</code>, and definitely prefer this over using
+run-time polymorphism, but I think that Rust enum are superior with its safety
+and convenience.</p>
+
+  </article>
+
+      </main>
+
+      <footer class="footer__container">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 352.5 960 188.5" preserveAspectRatio="none" class="footer__split">
+  <path d="M0 441L22.8 424.5C45.7 408 91.3 375 137 360.8C182.7 346.7 228.3 351.3 274 369.3C319.7 387.3 365.3 418.7 411.2 414.2C457 409.7 503 369.3 548.8 368C594.7 366.7 640.3 404.3 686 421.7C731.7 439 777.3 436 823 429.8C868.7 423.7 914.3 414.3 937.2 409.7L960 405L960 541L937.2 541C914.3 541 868.7 541 823 541C777.3 541 731.7 541 686 541C640.3 541 594.7 541 548.8 541C503 541 457 541 411.2 541C365.3 541 319.7 541 274 541C228.3 541 182.7 541 137 541C91.3 541 45.7 541 22.8 541L0 541Z" fill="#f7f9fb"/>
+  <path d="M0 477L22.8 467C45.7 457 91.3 437 137 423.8C182.7 410.7 228.3 404.3 274 401.7C319.7 399 365.3 400 411.2 413.5C457 427 503 453 548.8 464.2C594.7 475.3 640.3 471.7 686 456.5C731.7 441.3 777.3 414.7 823 404.5C868.7 394.3 914.3 400.7 937.2 403.8L960 407L960 541L937.2 541C914.3 541 868.7 541 823 541C777.3 541 731.7 541 686 541C640.3 541 594.7 541 548.8 541C503 541 457 541 411.2 541C365.3 541 319.7 541 274 541C228.3 541 182.7 541 137 541C91.3 541 45.7 541 22.8 541L0 541Z" fill="#eff3f7"/>
+  <path d="M0 459L22.8 456.2C45.7 453.3 91.3 447.7 137 456.7C182.7 465.7 228.3 489.3 274 494.8C319.7 500.3 365.3 487.7 411.2 476C457 464.3 503 453.7 548.8 451.7C594.7 449.7 640.3 456.3 686 462.5C731.7 468.7 777.3 474.3 823 473.2C868.7 472 914.3 464 937.2 460L960 456L960 541L937.2 541C914.3 541 868.7 541 823 541C777.3 541 731.7 541 686 541C640.3 541 594.7 541 548.8 541C503 541 457 541 411.2 541C365.3 541 319.7 541 274 541C228.3 541 182.7 541 137 541C91.3 541 45.7 541 22.8 541L0 541Z" fill="#e8eef4" stroke="#e8eef4"/>
+</svg>
+
+  <div class="footer__bg">
+    <div class="footer">
+      &copy; 2024 Zap (Huy-Giap Bui).
+      Content on this site is licensed under <a href="//creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+    </div>
+
+    
+  </div>
+</footer>
+
+    </div>
+  </body>
+</html>
