@@ -289,11 +289,12 @@ triangles”, we need to update the abstract class to expose more information:</
 </span><span>  </span><span style="color:#c678dd;">return</span><span> result;
 </span><span>}
 </span></code></pre>
-<p>Then we need to manually implement the new method for all shapes. So run-time
-polymorphism sounds great on paper, but in the end, we have to manually do lots
-of stuffs. I’m probably missing something, and I’m happy to have my mind
-changed. But as of right now, I think that run-time polymorphism falls apart
-when you really think about it.</p>
+<p>Then we need to manually implement the new method for all shapes. So while
+run-time polymorphism sounds great on paper, it falls apart when you actually
+write the entire system that operates at run-time. What really changed is that
+run-time polymorphism hides away the difficulty of maintaining multiple types
+of data in some places. It might be useful in certain circumstances, but the
+difficulty is still there.</p>
 <h1 id="the-alternative">The alternative</h1>
 <p>The most obvious solution is to just read the file, process it, and compute the
 total area immediately. But let’s pretend that we absolutely have to store the
@@ -452,25 +453,9 @@ only adding the area of circles and triangles? It’s just a single if statement
 <p>You don’t need to edit all the shapes just to add that. So by not avoiding
 handling different shapes manually, we increased the flexibility of our code,
 and sometimes adding features is easier because of it.</p>
-<h1 id="benchmark-and-conclusion">Benchmark and conclusion</h1>
-<p>So, let’s finally get into the performance of these two methods. I generated a
-one million shapes of those four types, and measured the time it took to
-compute the total area for both of the methods.</p>
-<table><thead><tr><th>Optimizaion</th><th>Polymorphism</th><th>Tagged union</th></tr></thead><tbody>
-<tr><td><code>-O0</code></td><td>25.628 ms</td><td>15.758 ms</td></tr>
-<tr><td><code>-O3</code></td><td>6.908 ms</td><td>5.100 ms</td></tr>
-</tbody></table>
-<p>The tagged union method is 1.6 times faster without optimizations and 1.35
-times faster with <code>-O3</code> optimization. As you can see, the individual heap
-allocation and virtual method have a noticeable overhead. And this is just 4
-different variants and 1 virtual method. The overhead will add up even further.</p>
-<p>So, my take is that run-time polymorphism in C++ doesn’t actually prevent you
-from manually handling all cases at run-time, isn’t very flexible, you have to
-worry about memory safety, and the performance is worse. You can do the same
-thing with tagged union—it’s as easy to add more variants, and have higher
-performance. Because of this, I can’t see why I should use abstract classes and
-virtual methods in C++.</p>
 <h1 id="bonus-content-polymorphism-and-tagged-union-in-rust">Bonus content: Polymorphism and Tagged union in Rust</h1>
+<p>If you are not interested, feel free to skip to the
+<a href="https://ziap.github.io/blog/polymorphism/#benchmark-and-conclusion">benchmark</a>.</p>
 <h2 id="polymorphism-using-trait">Polymorphism using Trait</h2>
 <p>So that’s about C++, but what about polymorphism in other languages? In Rust,
 methods and other shared behaviors are defined using Trait instead of
@@ -530,7 +515,7 @@ also similar to C++.</p>
 feels very similar. Because the methods are guaranteed to exist, you have
 better editor completion than in C++. The error messages are also nicer. You
 can add traits to existing types, or even primitive ones, so you can have
-<code>((2 - 5) as i32).abs()</code>.</p>
+<code>(69 + 420).is_prime()</code>.</p>
 <h2 id="enum-as-tagged-union">Enum as tagged union</h2>
 <p>Now for tagged union. In rust they are called <code>enum</code>, and they are much, much
 more pleasant to use than their C++ counterpart.</p>
@@ -587,6 +572,24 @@ feel so much more natural.</p>
 <p>I still prefer this over <code>std::variant</code>, and definitely over using run-time
 polymorphism, but I think that Rust enum is superior with its safety and
 convenience.</p>
+<h1 id="benchmark-and-conclusion">Benchmark and conclusion</h1>
+<p>So, let’s finally get into the performance of these two methods. I generated a
+one million shapes of those four types, and measured the time it took to
+compute the total area for both of the methods.</p>
+<table><thead><tr><th>Optimizaion</th><th>Polymorphism</th><th>Tagged union</th></tr></thead><tbody>
+<tr><td><code>-O0</code></td><td>25.628 ms</td><td>15.758 ms</td></tr>
+<tr><td><code>-O3</code></td><td>6.908 ms</td><td>5.100 ms</td></tr>
+</tbody></table>
+<p>The tagged union method is 1.6 times faster without optimizations and 1.35
+times faster with <code>-O3</code> optimization. As you can see, the individual heap
+allocation and virtual method have a noticeable overhead. And this is just 4
+different variants and 1 virtual method. The overhead will add up even further.</p>
+<p>So, my take is that run-time polymorphism in C++ doesn’t actually prevent you
+from manually handling all cases at run-time, isn’t very flexible, you have to
+worry about memory safety, and the performance is worse. You can do the same
+thing with tagged union—it’s as easy to add more variants, and have higher
+performance. Because of this, I can’t see why I should use abstract classes and
+virtual methods in C++.</p>
 
   </article>
 
