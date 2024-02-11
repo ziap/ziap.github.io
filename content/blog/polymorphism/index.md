@@ -101,10 +101,12 @@ double total_area(Shape **shapes, size_t shapes_len) {
 }
 ```
 
-The `Shape` class is the same as the above, but notice that we need double
-pointer indirection, because every shape in the array is still a pointer to the
-actual non-abstract shape. This means that every single shape is allocated
-individually on the heap, which is pretty expensive, and you can mess up if
+The `Shape` class is the same as the above, but notice that we need to have
+double pointer indirection. Unlike the example above, the shapes don't actually
+exist until we read the file at run-time. Because the memory layout for every
+shape is different and unknown, we can't just store them in a contiguous region
+of memory. Which means that every element of the shapes array must be
+heap-allocated individually. That is pretty expensive, and you can mess up if
 you're not careful. So instead of using raw pointers, in the spirit of C++,
 here is a safer and potentially faster version of the previous function:
 
@@ -138,12 +140,12 @@ std::cout << total_area(shapes) << '\n'; // 46.566370614359172
 ```
 
 This is great! It automatically figures out how to compute the area for every
-shape that we throw at it. We don't need to manually handle every single case,
-and even though the shapes are heap allocated `std::unique_ptr`, makes working
-with them less painful. Also, notice how I didn't show a single line of code on
-how to compute the area, because with polymorphism, it actually doesn't matter.
-But currently we still hard-code the shapes, so this is possible even with
-compile-time polymorphism. So let's justify this by importing the shapes from
+shape that we throw at it. We don’t need to manually handle every single case,
+and even though the shapes are heap allocated, `std::unique_ptr` makes working
+with them less painful. Also, notice how I didn’t show a single line of code on
+how to compute the area, because with polymorphism, it actually doesn’t matter.
+But currently we are still hard-coding the shapes, so this is still possible
+even compile-time polymorphism. Let’s justify this by importing the shapes from
 the file.
 
 ```c++
@@ -202,7 +204,7 @@ std::vector<std::unique_ptr<Shape>> get_shapes(const char *file_path) {
 
 Okay, now it's no longer pretty. We tried so hard not to write the code that
 handles different shape types, but now, when reading the file, we can't avoid
-writing it. But if we don't import the shape from the files dynamically at
+it anymore. But if we don't import the shape from the files dynamically at
 run-time, then it's the same as compile-time polymorphism. Also, if we want to
 tweak the function, like, for example: "Get the total area of all circles and
 triangles", we need to update the abstract class to expose more information:
@@ -332,9 +334,10 @@ think that designated initializers are good enough. One of the downsides of
 this approach is reduced type safety. There's nothing preventing you from
 accessing the radius of a square. If you know your union, then it's fine. But
 mistakes can happen, and this is one place where you can mess up. Now `Shape`
-is an actual class, its instances *are* shapes and not pointers pointing to the
-actual shape. This effectively removes one level of indirection, so all shapes
-can be in the same contiguous memory region.
+is an actual class, with a well-defined, static memory layout. So its instances
+*are* shapes, and not pointers pointing to the actual shape. This effectively
+removes one level of indirection, and all shapes can be stored in the same
+contiguous memory region.
 
 ```c++
 double total_area(std::span<Shape> shapes) {
