@@ -3,7 +3,7 @@
 {% endmacro %}
 
 {% macro reading_time(word_count) %}
-  {% set wpm = 212 %}
+  {% set wpm = config.extra.reading_speed %}
   {% set time = word_count / wpm | round(method="ceil") %}
 
   {{ time }}

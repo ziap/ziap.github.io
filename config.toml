@@ -21,3 +21,4 @@ smart_punctuation = true
 
 [extra]
 # Put all your custom variables here
+reading_speed = 250
