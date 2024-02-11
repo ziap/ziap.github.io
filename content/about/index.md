@@ -18,7 +18,7 @@ interesting or had the most trouble articulating.
 
 <div class="about__info">
 
-## Looking for something?
+## Looking for something? {.about__info__title}
 
 - Read my [blog posts](/blog).
 - View my projects [here](/works) or on [my GitHub](//github.com/ziap).

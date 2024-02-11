@@ -15,8 +15,8 @@ polymorphism is, and why I still think that I don't need it.
 
 # A brief introduction to polymorphism in C++
 
-Polymorphism means "many-shape", and in programming, it means designing an API
-that works with multiple "shapes" of input, for example, a function that takes
+Polymorphism means "many-forms", and in programming, it means designing an API
+that works with multiple "forms" of input, for example, a function that takes
 multiple data-type. Consider the following function:
 
 ```c++
@@ -418,8 +418,8 @@ compute the total area for both of the methods.
 
 | Optimizaion | Polymorphism | Tagged union |
 | ----------- | ------------ | ------------ |
-| `-O0`       | 25628us      | 15758us      |
-| `-O3`       | 6908us       | 5100us       |
+| `-O0`       | 25.628 ms    | 15.758 ms    |
+| `-O3`       | 6.908 ms     | 5.100 ms     |
 
 The tagged union method is 1.6 times faster without optimizations and 1.35
 times faster with `-O3` optimization. As you can see, the individual heap

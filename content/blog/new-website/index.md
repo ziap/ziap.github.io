@@ -7,11 +7,14 @@ I already have a website hosted on GitHub pages. It was built around 2 years
 ago as a way to quickly browse and access my web projects. Basically, it was
 just a grid of project thumbnails, which is pretty boring. During the last 2
 years, I changed bits and pieces of it, but it's still the same boring layout
-with no information other than the list of projects, not even an about page.
+with only a list of projects and some basic information.
 
 <!-- more -->
 
-<!-- TODO: Add a picture of the old website -->
+<figure>
+    <img src="old-site.png" alt="My old website">
+    <figcaption>My old website, archived on July 1st, 2022</figcaption>
+</figure>
 
 So I decided to nuke the old website and build a new one entirely from scratch.
 I wanted to keep the old website's project showcasing ability, so I added [a
@@ -29,12 +32,19 @@ Well, it's kind of obvious, as you're reading one of the articles. After
 browsing the web and looking at amazing pages full of unique contents for a
 while, I wanted to have my own content. I wanted this website to reflect what I
 thought and what I learned over time, mostly for me to look back on, but I also
-wanted to share it with other people.
+wanted to share it with other people. Hopefully, people will encounter this
+website the same way I came across others. Maybe you're looking for something,
+and a search engine lookup leads you to one of my posts. But before
+speculating, maybe I should start to actually write some blog posts.
 
-Hopefully, people will encounter this website the same way I came across
-others. Maybe you're looking for something, and a search engine lookup leads
-you to one of my posts. But before speculating, maybe I should start to
-actually write some blog posts.
+Other than that, this website now feels more like an actual website. I learned
+quite a bit of CSS and web design in the last few years, and I'm really proud
+of the design of this new website. Even though the layout is nothing special
+and some pages look really bland, but in my opinion, it looks great on most
+screen sizes and everything feels very well put together. What is currently
+missing is a dark theme, which should be the first theme I design. However, I
+got lazy and designed the website with a light theme first. I still want a dark
+theme and will try to implement it soon.
 
 # How is this website made
 
@@ -50,26 +60,26 @@ or JavaScript, but HTML is a real problem for me:
    markup language that's better for writing.
 
 To solve those problems, I needed a templating engine to dynamically generate
-HTML and a Markdown compiler to convert Markdown files - which is much better
-for writing - to HTML files. A tool that uses those technologies and generates
-HTML is called a static site generator (SSG). It's very tempting to write my
-own SSG, but I wanted to focus more on blogging, so for the time being, I'm
-just going to use something pre-built. It's not going to be exactly what I
-want. However, it's also going to save me from building and maintaining an SSG
-along with my website.
+HTML and a Markdown compiler to convert Markdown files --- which is much better
+for writing --- to HTML files. A tool that uses those technologies and
+generates HTML is called a static site generator (SSG). It's very tempting to
+write my own SSG, but I wanted to focus more on blogging, so for the time
+being, I'm just going to use something pre-built. It's not going to be exactly
+what I want. However, it's also going to save me from building and maintaining
+an SSG along with my website.
 
 ## Choosing an SSG
 
-There are lots of SSGs out there, but I wanted to use the single-binary ones,
-which means that the entire SSG is a single, self-contained executable. There
-are some benefits to this approach, the most obvious of which is that
-installing, removing, and upgrading the SSG is much easier. You don't need to
-install a language runtime, like Ruby for Jekyll or Node.js for Astro or
-Eleventy. You also don't need to manage dependencies, as the maintainers of the
-SSG have already done that and packaged everything into a neat little
-executable for you. The downside is that it will be much less flexible than
-using something on top of a language runtime, but if I want flexibility, I'll
-just roll my own SSG.
+There are [lots of SSGs](https://jamstack.org/generators/) out there, but I
+wanted to use the single-binary ones, which means that the entire SSG is a
+single, self-contained executable. There are some benefits to this approach,
+the most obvious of which is that installing, removing, and upgrading the SSG
+is much easier. You don't need to install a language runtime, like Ruby for
+Jekyll or Node.js for Astro or Eleventy. You also don't need to manage
+dependencies, as the maintainers of the SSG have already done that and packaged
+everything into a neat little executable for you. The downside is that it will
+be much less flexible than using something on top of a language runtime, but if
+I want flexibility, I'll just roll my own SSG.
 
 This left me with two options that I know of: Hugo and Zola. Hugo is much more
 mature, has a bigger community, a more well-documented API, and tons of themes
