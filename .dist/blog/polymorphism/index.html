@@ -66,7 +66,7 @@
 </svg>
 
 
-          Sat, Feb 10 2024
+          Sun, Feb 11 2024
         </div>
 
         <div class="post-header__data">
@@ -128,18 +128,20 @@ Run-time polymorphism is a bit complicated:</p>
 </span></code></pre>
 <p>The <code>Shape</code> class is called an “abstract” class, which means that it can’t be
 allocated and can only serves as an interface for other classes to inherit
-from. Which means that the function <code>add_area</code> takes two pointers that point to
-two arbitrary objects that inherits from the <code>Shape</code> class. What makes this
-different from the previous example is that this is an actual function, not a
-template, and the objects that those pointers point to are determined at
+from. The function <code>add_area</code> takes two pointers that point to two arbitrary
+objects that inherits from the <code>Shape</code> class. It has to be a pointer because a
+pointer just points to a region of memory, which could represents any shapes,
+while a value is statically typed and can only be a single shape. What makes
+this different from the previous example is that this is an actual function,
+not a template, and the objects that those pointers point to are determined at
 run-time, not at compile-time.</p>
-<pre data-lang="c++" style="background-color:#282c34;color:#dcdfe4;" class="language-c++ "><code class="language-c++" data-lang="c++"><span>Shape </span><span style="color:#c678dd;">*</span><span>shape1 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">? new </span><span style="color:#e06c75;">Square</span><span>(</span><span style="color:#e5c07b;">4</span><span>) </span><span style="color:#c678dd;">: new </span><span style="color:#e06c75;">Circle</span><span>(</span><span style="color:#e5c07b;">2</span><span>);
-</span><span>Shape </span><span style="color:#c678dd;">*</span><span>shape2 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">? new </span><span style="color:#e06c75;">Square</span><span>(</span><span style="color:#e5c07b;">4</span><span>) </span><span style="color:#c678dd;">: new </span><span style="color:#e06c75;">Circle</span><span>(</span><span style="color:#e5c07b;">2</span><span>);
+<pre data-lang="c++" style="background-color:#282c34;color:#dcdfe4;" class="language-c++ "><code class="language-c++" data-lang="c++"><span>Square </span><span style="color:#61afef;">square</span><span>(</span><span style="color:#e5c07b;">4</span><span>);
+</span><span>Circle </span><span style="color:#61afef;">circle</span><span>(</span><span style="color:#e5c07b;">2</span><span>);
+</span><span>
+</span><span>Shape </span><span style="color:#c678dd;">*</span><span>shape1 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">?</span><span> square </span><span style="color:#c678dd;">:</span><span> circle;
+</span><span>Shape </span><span style="color:#c678dd;">*</span><span>shape2 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">?</span><span> square </span><span style="color:#c678dd;">:</span><span> circle;
 </span><span>
 </span><span>std::cout </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e06c75;">add_area</span><span>(shape1, shape2) </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#98c379;">&#39;</span><span style="color:#56b6c2;">\n</span><span style="color:#98c379;">&#39;</span><span>;
-</span><span>
-</span><span style="color:#c678dd;">delete</span><span> shape1;
-</span><span style="color:#c678dd;">delete</span><span> shape2;
 </span></code></pre>
 <h1 id="a-simple-example">A simple example</h1>
 <p>Run-time polymorphism is often used when the data-type is not known at compile
@@ -296,16 +298,16 @@ run-time polymorphism hides away the difficulty of maintaining multiple types
 of data in some places. It might be useful in certain circumstances, but the
 difficulty is still there.</p>
 <h1 id="the-alternative">The alternative</h1>
-<p>The most obvious solution is to just read the file, process it, and compute the
-total area immediately. But let’s pretend that we absolutely have to store the
-data into an array first, and perform the computation on the stored array.
-Maybe we want to do something else with the array other than doing the
-computation. So, how do we store multiple shapes in the same array without
-run-time polymorphism? The answer is to use a data structure known as a tagged
-union. There are <code>std::variant</code> in C++, but I think that it’s more convenient
-to just literally use a tag and a union. In fact, this structure is so simple
-that you don’t even need any of C++’s features and just write it in plain C.
-The only C++ feature I use right now (other than member functions) is <code>enum class</code> only because it is scoped and because I’m in C++ anyways.</p>
+<p>So, how do we store multiple shapes in the same array without run-time
+polymorphism? The answer is to use a data structure known as a tagged union.
+Instead of creating a function that accepts multiple types, one for each shape,
+we create a type that represents all the shapes, and just pass it to a regular
+function. To create a tagged union, there’s <code>std::variant</code> in C++, but I think
+that it’s more convenient to just literally use a tag and a union. In fact,
+this structure is so simple that you don’t even need any of C++’s features and
+just write it in plain C. The only C++ feature I use right now (other than
+member functions) is <code>enum class</code> only because it is scoped and because I’m in
+C++ anyways.</p>
 <pre data-lang="c++" style="background-color:#282c34;color:#dcdfe4;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#c678dd;">struct </span><span>Shape {
 </span><span>  </span><span style="color:#c678dd;">enum class </span><span>Types {
 </span><span>    SQUARE,
@@ -457,10 +459,10 @@ and sometimes adding features is easier because of it.</p>
 <p>If you are not interested, feel free to skip to the
 <a href="https://ziap.github.io/blog/polymorphism/#benchmark-and-conclusion">benchmark</a>.</p>
 <h2 id="polymorphism-using-trait">Polymorphism using Trait</h2>
-<p>So that’s about C++, but what about polymorphism in other languages? In Rust,
-methods and other shared behaviors are defined using Trait instead of
-inheritance. For example, instead of <code>Square</code> and <code>Circle</code> inheriting <code>Shape</code>,
-they instead have the trait <code>Area</code>.</p>
+<p>So that’s about C++, but what about polymorphism in another statically typed
+language? In Rust, methods and other shared behaviors are defined using Trait
+instead of inheritance. For example, instead of <code>Square</code> and <code>Circle</code>
+inheriting <code>Shape</code>, they instead have the trait <code>Area</code>.</p>
 <pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c678dd;">trait </span><span>Area {
 </span><span>  </span><span style="color:#c678dd;">fn </span><span style="color:#61afef;">area</span><span>(</span><span style="color:#c678dd;">&amp;</span><span style="color:#e06c75;">self</span><span>) -&gt; </span><span style="color:#c678dd;">f64</span><span>;
 </span><span>}

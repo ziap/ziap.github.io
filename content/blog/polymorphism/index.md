@@ -1,6 +1,6 @@
 +++
 title = "A faster, more flexible alternative to run-time polymorphism in C++ feat. Rust"
-date  = "2024-02-10"
+date  = "2024-02-11"
 +++
 
 When I first heard about run-time polymorphism in C++ using virtual methods, my
@@ -47,20 +47,22 @@ double add_area(Shape *shape1, Shape *shape2) {
 
 The `Shape` class is called an "abstract" class, which means that it can't be
 allocated and can only serves as an interface for other classes to inherit
-from. Which means that the function `add_area` takes two pointers that point to
-two arbitrary objects that inherits from the `Shape` class. What makes this
-different from the previous example is that this is an actual function, not a
-template, and the objects that those pointers point to are determined at
+from. The function `add_area` takes two pointers that point to two arbitrary
+objects that inherits from the `Shape` class. It has to be a pointer because a
+pointer just points to a region of memory, which could represents any shapes,
+while a value is statically typed and can only be a single shape. What makes
+this different from the previous example is that this is an actual function,
+not a template, and the objects that those pointers point to are determined at
 run-time, not at compile-time.
 
 ```c++
-Shape *shape1 = random_bool() ? new Square(4) : new Circle(2);
-Shape *shape2 = random_bool() ? new Square(4) : new Circle(2);
+Square square(4);
+Circle circle(2);
+
+Shape *shape1 = random_bool() ? square : circle;
+Shape *shape2 = random_bool() ? square : circle;
 
 std::cout << add_area(shape1, shape2) << '\n';
-
-delete shape1;
-delete shape2;
 ```
 
 # A simple example
@@ -237,17 +239,16 @@ difficulty is still there.
 
 # The alternative
 
-The most obvious solution is to just read the file, process it, and compute the
-total area immediately. But let's pretend that we absolutely have to store the
-data into an array first, and perform the computation on the stored array.
-Maybe we want to do something else with the array other than doing the
-computation. So, how do we store multiple shapes in the same array without
-run-time polymorphism? The answer is to use a data structure known as a tagged
-union. There are `std::variant` in C++, but I think that it's more convenient
-to just literally use a tag and a union. In fact, this structure is so simple
-that you don't even need any of C++'s features and just write it in plain C.
-The only C++ feature I use right now (other than member functions) is `enum
-class` only because it is scoped and because I'm in C++ anyways.
+So, how do we store multiple shapes in the same array without run-time
+polymorphism? The answer is to use a data structure known as a tagged union.
+Instead of creating a function that accepts multiple types, one for each shape,
+we create a type that represents all the shapes, and just pass it to a regular
+function. To create a tagged union, there's `std::variant` in C++, but I think
+that it's more convenient to just literally use a tag and a union. In fact,
+this structure is so simple that you don't even need any of C++'s features and
+just write it in plain C. The only C++ feature I use right now (other than
+member functions) is `enum class` only because it is scoped and because I'm in
+C++ anyways.
 
 ```c++
 struct Shape {
@@ -418,10 +419,10 @@ If you are not interested, feel free to skip to the
 
 ## Polymorphism using Trait
 
-So that's about C++, but what about polymorphism in other languages? In Rust,
-methods and other shared behaviors are defined using Trait instead of
-inheritance. For example, instead of `Square` and `Circle` inheriting `Shape`,
-they instead have the trait `Area`.
+So that's about C++, but what about polymorphism in another statically typed
+language? In Rust, methods and other shared behaviors are defined using Trait
+instead of inheritance. For example, instead of `Square` and `Circle`
+inheriting `Shape`, they instead have the trait `Area`.
 
 ```rust
 trait Area {
