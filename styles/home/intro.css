@@ -138,11 +138,15 @@
   text-decoration: none;
   font-weight: 600;
   border-radius: 10px;
+
+  border: solid 3px var(--accent-color);
+  &:hover {
+    border-color: var(--accent-hover-color);
+  }
 }
 
 .intro__cta1 {
   color: var(--accent-color);
-  border: solid 3px var(--accent-color);
   transition: color 300ms, border-color 300ms;
 
   &>svg {
@@ -152,7 +156,6 @@
 
   &:hover {
     color: var(--accent-hover-color);
-    border-color: var(--accent-hover-color);
 
     &>svg {
       fill: var(--accent-hover-color);
@@ -163,7 +166,7 @@
 .intro__cta2 {
   color: #fff;
   background: var(--accent-color);
-  transition: background 300ms;
+  transition: background 300ms, border-color 300ms;
 
   &>svg {
     fill: #fff;
