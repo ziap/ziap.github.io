@@ -228,11 +228,12 @@ double total_area_circles_and_triangles(std::span<std::unique_ptr<Shape>> shapes
 }
 ```
 
-Then we need to manually implement the new method for all shapes. So run-time
-polymorphism sounds great on paper, but in the end, we have to manually do lots
-of stuffs. I'm probably missing something, and I'm happy to have my mind
-changed. But as of right now, I think that run-time polymorphism falls apart
-when you really think about it.
+Then we need to manually implement the new method for all shapes. So while
+run-time polymorphism sounds great on paper, it falls apart when you actually
+write the entire system that operates at run-time. What really changed is that
+run-time polymorphism hides away the difficulty of maintaining multiple types
+of data in some places. It might be useful in certain circumstances, but the
+difficulty is still there.
 
 # The alternative
 
@@ -410,30 +411,10 @@ You don't need to edit all the shapes just to add that. So by not avoiding
 handling different shapes manually, we increased the flexibility of our code,
 and sometimes adding features is easier because of it.
 
-# Benchmark and conclusion
-
-So, let's finally get into the performance of these two methods. I generated a
-one million shapes of those four types, and measured the time it took to
-compute the total area for both of the methods.
-
-| Optimizaion | Polymorphism | Tagged union |
-| ----------- | ------------ | ------------ |
-| `-O0`       | 25.628 ms    | 15.758 ms    |
-| `-O3`       | 6.908 ms     | 5.100 ms     |
-
-The tagged union method is 1.6 times faster without optimizations and 1.35
-times faster with `-O3` optimization. As you can see, the individual heap
-allocation and virtual method have a noticeable overhead. And this is just 4
-different variants and 1 virtual method. The overhead will add up even further.
-
-So, my take is that run-time polymorphism in C++ doesn't actually prevent you
-from manually handling all cases at run-time, isn't very flexible, you have to
-worry about memory safety, and the performance is worse. You can do the same
-thing with tagged union---it's as easy to add more variants, and have higher
-performance. Because of this, I can't see why I should use abstract classes and
-virtual methods in C++.
-
 # Bonus content: Polymorphism and Tagged union in Rust
+
+If you are not interested, feel free to skip to the
+[benchmark](#benchmark-and-conclusion).
 
 ## Polymorphism using Trait
 
@@ -507,7 +488,7 @@ I really like Rust's trait; it makes compile-time and run-time polymorphism
 feels very similar. Because the methods are guaranteed to exist, you have
 better editor completion than in C++. The error messages are also nicer. You
 can add traits to existing types, or even primitive ones, so you can have
-`((2 - 5) as i32).abs()`.
+`(69 + 420).is_prime()`.
 
 ## Enum as tagged union
 
@@ -578,3 +559,26 @@ if (square.tag == Shape::Types::SQUARE) {
 I still prefer this over `std::variant`, and definitely over using run-time
 polymorphism, but I think that Rust enum is superior with its safety and
 convenience.
+
+# Benchmark and conclusion
+
+So, let's finally get into the performance of these two methods. I generated a
+one million shapes of those four types, and measured the time it took to
+compute the total area for both of the methods.
+
+| Optimizaion | Polymorphism | Tagged union |
+| ----------- | ------------ | ------------ |
+| `-O0`       | 25.628 ms    | 15.758 ms    |
+| `-O3`       | 6.908 ms     | 5.100 ms     |
+
+The tagged union method is 1.6 times faster without optimizations and 1.35
+times faster with `-O3` optimization. As you can see, the individual heap
+allocation and virtual method have a noticeable overhead. And this is just 4
+different variants and 1 virtual method. The overhead will add up even further.
+
+So, my take is that run-time polymorphism in C++ doesn't actually prevent you
+from manually handling all cases at run-time, isn't very flexible, you have to
+worry about memory safety, and the performance is worse. You can do the same
+thing with tagged union---it's as easy to add more variants, and have higher
+performance. Because of this, I can't see why I should use abstract classes and
+virtual methods in C++.
