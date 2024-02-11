@@ -5,11 +5,11 @@
   border-left: solid 0.5rem var(--accent-color);
   margin: 3rem 0rem;
 
-  &>* {
-    margin: 0 0 1rem 0;
+  &>.about__info__title {
+    margin: 0;
   }
 
-  &>:last-child {
-    margin: 0;
+  &>* {
+    margin: 1rem 0 0 0;
   }
 }
