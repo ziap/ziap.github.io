@@ -232,7 +232,7 @@ the file.</p>
 </span><span>  std::vector&lt;std::unique_ptr&lt;Shape&gt;&gt; result;
 </span><span>  std::ifstream </span><span style="color:#e06c75;">fin</span><span>(file_path);
 </span><span>
-</span><span>  </span><span style="color:#c678dd;">char</span><span> type_str[</span><span style="color:#e5c07b;">16</span><span>];
+</span><span>  std::string type_str;
 </span><span>
 </span><span>  </span><span style="color:#c678dd;">while </span><span>(fin </span><span style="color:#c678dd;">&gt;&gt;</span><span> type_str) {
 </span><span>    </span><span style="color:#c678dd;">switch </span><span>(shape_map.</span><span style="color:#e06c75;">find</span><span>(type_str)-&gt;</span><span style="color:#e06c75;">second</span><span>) {
@@ -307,6 +307,7 @@ we create a type that represents all the shapes, and just pass it to a regular
 function. To create a tagged union, there’s <code>std::variant</code> in C++, but I think
 that it’s more convenient to just literally use a tag and a union. In fact,
 this structure is so simple that you don’t even need any of C++’s features and
+std::string type_str;
 just write it in plain C. The only C++ feature I use right now (other than
 member functions) is <code>enum class</code> only because it is scoped and because I’m in
 C++ anyways.</p>
@@ -411,7 +412,7 @@ that, let’s see how do we import the shapes from the file.</p>
 </span><span>  {</span><span style="color:#98c379;">&quot;triangle&quot;</span><span>, Shape::Types::TRIANGLE}
 </span><span>};
 </span><span>
-</span><span>std::vector&lt;Shape&gt; </span><span style="color:#61afef;">read_file</span><span>(</span><span style="color:#c678dd;">const char *</span><span style="color:#e06c75;">file_path</span><span>) {
+</span><span>std::vector&lt;Shape&gt; </span><span style="color:#61afef;">get_shapes</span><span>(</span><span style="color:#c678dd;">const char *</span><span style="color:#e06c75;">file_path</span><span>) {
 </span><span>  std::vector&lt;Shape&gt; result;
 </span><span>  std::ifstream </span><span style="color:#e06c75;">fin</span><span>(file_path);
 </span><span>
@@ -419,7 +420,7 @@ that, let’s see how do we import the shapes from the file.</p>
 </span><span>
 </span><span>  </span><span style="color:#c678dd;">while </span><span>(std::</span><span style="color:#e06c75;">getline</span><span>(fin, line)) {
 </span><span>    std::stringstream </span><span style="color:#e06c75;">ss</span><span>(line);
-</span><span>    </span><span style="color:#c678dd;">char</span><span> type_str[</span><span style="color:#e5c07b;">16</span><span>];
+</span><span>    std::string type_str;
 </span><span>    ss </span><span style="color:#c678dd;">&gt;&gt;</span><span> type_str;
 </span><span>
 </span><span>    Shape shape;
