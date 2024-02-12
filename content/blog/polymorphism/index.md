@@ -167,7 +167,7 @@ std::vector<std::unique_ptr<Shape>> get_shapes(const char *file_path) {
   std::vector<std::unique_ptr<Shape>> result;
   std::ifstream fin(file_path);
 
-  char type_str[16];
+  std::string type_str;
 
   while (fin >> type_str) {
     switch (shape_map.find(type_str)->second) {
@@ -248,6 +248,7 @@ we create a type that represents all the shapes, and just pass it to a regular
 function. To create a tagged union, there's `std::variant` in C++, but I think
 that it's more convenient to just literally use a tag and a union. In fact,
 this structure is so simple that you don't even need any of C++'s features and
+  std::string type_str;
 just write it in plain C. The only C++ feature I use right now (other than
 member functions) is `enum class` only because it is scoped and because I'm in
 C++ anyways.
@@ -363,7 +364,7 @@ static const std::unordered_map<std::string_view, Shape::Types> shape_map = {
   {"triangle", Shape::Types::TRIANGLE}
 };
 
-std::vector<Shape> read_file(const char *file_path) {
+std::vector<Shape> get_shapes(const char *file_path) {
   std::vector<Shape> result;
   std::ifstream fin(file_path);
 
@@ -371,7 +372,7 @@ std::vector<Shape> read_file(const char *file_path) {
 
   while (std::getline(fin, line)) {
     std::stringstream ss(line);
-    char type_str[16];
+    std::string type_str;
     ss >> type_str;
 
     Shape shape;
