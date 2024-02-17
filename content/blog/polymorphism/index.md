@@ -22,7 +22,7 @@ multiple data-type. Consider the following function:
 ```c++
 template<class T1, T2>
 double add_area(T1 shape1, T2 shape2) {
-  return shape1.area() + shape2.area();
+    return shape1.area() + shape2.area();
 }
 ```
 
@@ -34,14 +34,14 @@ Run-time polymorphism is a bit complicated:
 ```c++
 class Shape {
 public:
-  Shape() {}
-  
-  virtual double area() const = 0;
-  virtual ~Shape() = default;
+    Shape() {}
+
+    virtual double area() const = 0;
+    virtual ~Shape() = default;
 };
 
 double add_area(Shape *shape1, Shape *shape2) {
-  return shape1->area() + shape2->area();
+    return shape1->area() + shape2->area();
 }
 ```
 
@@ -91,13 +91,13 @@ function:
 
 ```c++
 double total_area(Shape **shapes, size_t shapes_len) {
-  double result = 0;
+    double result = 0;
 
-  for (size_t i = 0; i < shapes_len; ++i) {
-    result += shapes[i]->area();
-  }
+    for (size_t i = 0; i < shapes_len; ++i) {
+        result += shapes[i]->area();
+    }
 
-  return result;
+    return result;
 }
 ```
 
@@ -112,13 +112,13 @@ here is a safer and potentially faster version of the previous function:
 
 ```c++
 double total_area(std::span<std::unique_ptr<Shape>> shapes) {
-  double result = 0;
+    double result = 0;
 
-  for (std::unique_ptr<Shape> &shape : shapes) {
-    result += shape->area();
-  }
+    for (std::unique_ptr<Shape> &shape : shapes) {
+        result += shape->area();
+    }
 
-  return result;
+    return result;
 }
 ```
 
@@ -150,55 +150,55 @@ the file.
 
 ```c++
 enum class ShapeTypes {
-  SQUARE,
-  RECTANGLE,
-  CIRCLE,
-  TRIANGLE
+    SQUARE,
+    RECTANGLE,
+    CIRCLE,
+    TRIANGLE
 };
 
 static const std::unordered_map<std::string_view, ShapeTypes> shape_map = {
-  {"square", ShapeTypes::SQUARE},
-  {"rectangle", ShapeTypes::RECTANGLE},
-  {"circle", ShapeTypes::CIRCLE},
-  {"triangle", ShapeTypes::TRIANGLE}
+    {"square", ShapeTypes::SQUARE},
+    {"rectangle", ShapeTypes::RECTANGLE},
+    {"circle", ShapeTypes::CIRCLE},
+    {"triangle", ShapeTypes::TRIANGLE}
 };
 
 std::vector<std::unique_ptr<Shape>> get_shapes(const char *file_path) {
-  std::vector<std::unique_ptr<Shape>> result;
-  std::ifstream fin(file_path);
+    std::vector<std::unique_ptr<Shape>> result;
+    std::ifstream fin(file_path);
 
-  std::string type_str;
+    std::string type_str;
 
-  while (fin >> type_str) {
-    switch (shape_map.find(type_str)->second) {
-      case ShapeTypes::SQUARE: {
-        double side;
-        fin >> side;
-        result.push_back(std::make_unique<Square>(side));
-        break;
-      }
-      case ShapeTypes::RECTANGLE: {
-        double width, height;
-        fin >> width >> height;
-        result.push_back(std::make_unique<Rectangle>(width, height));
-        break;
-      }
-      case ShapeTypes::CIRCLE: {
-        double radius;
-        fin >> radius;
-        result.push_back(std::make_unique<Circle>(radius));
-        break;
-      }
-      case ShapeTypes::TRIANGLE: {
-        double side1, side2, side3;
-        fin >> side1 >> side2 >> side3;
-        result.push_back(std::make_unique<Triangle>(side1, side2, side3));
-        break;
-      }
+    while (fin >> type_str) {
+        switch (shape_map.find(type_str)->second) {
+            case ShapeTypes::SQUARE: {
+                double side;
+                fin >> side;
+                result.push_back(std::make_unique<Square>(side));
+                break;
+            }
+            case ShapeTypes::RECTANGLE: {
+                double width, height;
+                fin >> width >> height;
+                result.push_back(std::make_unique<Rectangle>(width, height));
+                break;
+            }
+            case ShapeTypes::CIRCLE: {
+                double radius;
+                fin >> radius;
+                result.push_back(std::make_unique<Circle>(radius));
+                break;
+            }
+            case ShapeTypes::TRIANGLE: {
+                double side1, side2, side3;
+                fin >> side1 >> side2 >> side3;
+                result.push_back(std::make_unique<Triangle>(side1, side2, side3));
+                break;
+            }
+        }
     }
-  }
 
-  return result;
+    return result;
 }
 ```
 
@@ -212,23 +212,23 @@ triangles", we need to update the abstract class to expose more information:
 ```c++
 class Shape {
 public:
-  Shape() {}
-  
-  virtual double area() const = 0;
-  virtual double is_circle_or_triangle() const = 0;
-  virtual ~Shape() = default;
+    Shape() {}
+
+    virtual double area() const = 0;
+    virtual double is_circle_or_triangle() const = 0;
+    virtual ~Shape() = default;
 };
 
 double total_area_circles_and_triangles(std::span<std::unique_ptr<Shape>> shapes) {
-  double result = 0;
+    double result = 0;
 
-  for (std::unique_ptr<Shape> &shape : shapes) {
-    if (shape->is_circle_or_triangle()) {
-      result += shape->area();
+    for (std::unique_ptr<Shape> &shape : shapes) {
+        if (shape->is_circle_or_triangle()) {
+            result += shape->area();
+        }
     }
-  }
 
-  return result;
+    return result;
 }
 ```
 
@@ -248,57 +248,56 @@ we create a type that represents all the shapes, and just pass it to a regular
 function. To create a tagged union, there's `std::variant` in C++, but I think
 that it's more convenient to just literally use a tag and a union. In fact,
 this structure is so simple that you don't even need any of C++'s features and
-  std::string type_str;
 just write it in plain C. The only C++ feature I use right now (other than
 member functions) is `enum class` only because it is scoped and because I'm in
 C++ anyways.
 
 ```c++
 struct Shape {
-  enum class Types {
-    SQUARE,
-    RECTANGLE,
-    CIRCLE,
-    TRIANGLE
-  };
+    enum class Types {
+        SQUARE,
+        RECTANGLE,
+        CIRCLE,
+        TRIANGLE
+    };
 
-  Types tag;
+    Types tag;
 
-  union {
-    struct {
-      double side;
-    } square;
+    union {
+        struct {
+            double side;
+        } square;
 
-    struct {
-      double width, height;
-    } rectangle;
+        struct {
+            double width, height;
+        } rectangle;
 
-    struct {
-      double radius;
-    } circle;
+        struct {
+            double radius;
+        } circle;
 
-    struct {
-      double sides[3];
-    } triangle;
+        struct {
+            double sides[3];
+        } triangle;
 
-    double attrs[0];
-  };
+        double attrs[0];
+    };
 
-  double area() const {
-    switch (tag) {
-      case Types::SQUARE: return square.side * square.side;
-      case Types::RECTANGLE: return rectangle.width * rectangle.height;
-      case Types::CIRCLE: return circle.radius * circle.radius * M_PI;
-      case Types::TRIANGLE: {
-        const double *sides = triangle.sides;
-        const double s = (sides[0] + sides[1] + sides[2]) * 0.5;
+    double area() const {
+        switch (tag) {
+            case Types::SQUARE: return square.side * square.side;
+            case Types::RECTANGLE: return rectangle.width * rectangle.height;
+            case Types::CIRCLE: return circle.radius * circle.radius * M_PI;
+            case Types::TRIANGLE: {
+                const double *sides = triangle.sides;
+                const double s = (sides[0] + sides[1] + sides[2]) * 0.5;
 
-        return sqrt(s * (s - sides[0]) * (s - sides[1]) * (s - sides[2]));
-      }
+                return sqrt(s * (s - sides[0]) * (s - sides[1]) * (s - sides[2]));
+            }
+        }
+
+        __builtin_unreachable();
     }
-
-    __builtin_unreachable();
-  }
 };
 ```
 
@@ -316,17 +315,17 @@ with designated initializers.
 
 ```c++
 Shape square = {
-  .type = Shape::Types::SQUARE,
-  .square = {
-    .side = 4
-  }
+    .tag = Shape::Types::SQUARE,
+    .square = {
+        .side = 4
+    }
 };
 
 Shape triangle = {
-  .type = Shape::Types::TRIANGLE,
-  .triangle = {
-    .sides = {3, 4, 5}
-  }
+    .tag = Shape::Types::TRIANGLE,
+    .triangle = {
+        .sides = {3, 4, 5}
+    }
 };
 ```
 
@@ -342,13 +341,13 @@ contiguous memory region.
 
 ```c++
 double total_area(std::span<Shape> shapes) {
-  double result = 0;
-  
-  for (Shape &shape : shapes) {
-    result += shape.area();
-  }
+    double result = 0;
 
-  return result;
+    for (Shape &shape : shapes) {
+        result += shape.area();
+    }
+
+    return result;
 }
 ```
 
@@ -358,34 +357,34 @@ that, let's see how do we import the shapes from the file.
 
 ```c++
 static const std::unordered_map<std::string_view, Shape::Types> shape_map = {
-  {"square", Shape::Types::SQUARE},
-  {"rectangle", Shape::Types::RECTANGLE},
-  {"circle", Shape::Types::CIRCLE},
-  {"triangle", Shape::Types::TRIANGLE}
+    {"square", Shape::Types::SQUARE},
+    {"rectangle", Shape::Types::RECTANGLE},
+    {"circle", Shape::Types::CIRCLE},
+    {"triangle", Shape::Types::TRIANGLE}
 };
 
 std::vector<Shape> get_shapes(const char *file_path) {
-  std::vector<Shape> result;
-  std::ifstream fin(file_path);
+    std::vector<Shape> result;
+    std::ifstream fin(file_path);
 
-  std::string line;
+    std::string line;
 
-  while (std::getline(fin, line)) {
-    std::stringstream ss(line);
-    std::string type_str;
-    ss >> type_str;
+    while (std::getline(fin, line)) {
+        std::stringstream ss(line);
+        std::string type_str;
+        ss >> type_str;
 
-    Shape shape;
-    shape.tag = shape_map.find(type_str)->second;
-    
-    size_t attrs_len = 0;
-    double attr;
-    while (ss >> attr) shape.attrs[attrs_len++] = attr;
+        Shape shape;
+        shape.tag = shape_map.find(type_str)->second;
 
-    result.push_back(shape);
-  }
+        size_t attrs_len = 0;
+        double attr;
+        while (ss >> attr) shape.attrs[attrs_len++] = attr;
 
-  return result;
+        result.push_back(shape);
+    }
+
+    return result;
 }
 ```
 
@@ -400,15 +399,15 @@ only adding the area of circles and triangles? It's just a single if statement:
 
 ```c++
 double total_area_circles_and_triangles(std::span<Shape> shapes) {
-  double result = 0;
-  
-  for (Shape &shape : shapes) {
-    if (shape.tag == Shape::Types::CIRCLE || shape.tag == Shape::Types::TRIANGLE) {
-      result += shape.area();
-    }
-  }
+    double result = 0;
 
-  return result;
+    for (Shape &shape : shapes) {
+        if (shape.tag == Shape::Types::CIRCLE || shape.tag == Shape::Types::TRIANGLE) {
+            result += shape.area();
+        }
+    }
+
+    return result;
 }
 ```
 
@@ -430,17 +429,17 @@ inheriting `Shape`, they instead have the trait `Area`.
 
 ```rust
 trait Area {
-  fn area(&self) -> f64;
+    fn area(&self) -> f64;
 }
 
 struct Square {
-  side: f64
+    side: f64
 }
 
 impl Area for Square {
-  fn area(&self) -> f64 {
-    self.side * self.side
-  }
+    fn area(&self) -> f64 {
+        self.side * self.side
+    }
 }
 ```
 
@@ -451,7 +450,7 @@ methods:
 ```rust
 fn add_area<T1, T2>(shape1: T1, shape2: T2) -> f64
 where T1: Area, T2: Area {
-  shape1.area() + shape2.area()
+    shape1.area() + shape2.area()
 }
 ```
 
@@ -463,7 +462,7 @@ keyword.
 
 ```rust
 fn add_area(shape1: &dyn Area, shape2: &dyn Area) -> f64 {
-  shape1.area() + shape2.area()
+    shape1.area() + shape2.area()
 }
 ```
 
@@ -502,10 +501,10 @@ more pleasant to use than their C++ counterpart.
 
 ```rust
 enum Shapes {
-  Square(f64),
-  Rectangle(f64, f64),
-  Circle(f64),
-  Triangle(f64, f64, f64)
+    Square(f64),
+    Rectangle(f64, f64),
+    Circle(f64),
+    Triangle(f64, f64, f64)
 }
 ```
 
@@ -515,17 +514,17 @@ underlying data.
 
 ```rust
 impl Area for Shapes {
-  fn area(&self) -> f64 {
-    match self {
-      Shapes::Square(side) => side * side,
-      Shapes::Rectangle(width, height) => width * height,
-      Shapes::Circle(radius) => radius * radius * f64::consts::PI,
-      Shapes::Triangle(side1, side2, side3) => {
-        let s = 0.5 * (side1 + side2 + side3);
-        (s * (s - side1) * (s - side2) * (s - side3)).sqrt()
-      },
+    fn area(&self) -> f64 {
+        match self {
+            Shapes::Square(side) => side * side,
+            Shapes::Rectangle(width, height) => width * height,
+            Shapes::Circle(radius) => radius * radius * f64::consts::PI,
+            Shapes::Triangle(side1, side2, side3) => {
+                let s = 0.5 * (side1 + side2 + side3);
+                (s * (s - side1) * (s - side2) * (s - side3)).sqrt()
+            },
+        }
     }
-  }
 }
 ```
 
@@ -547,17 +546,17 @@ Compare this to the C++ version:
 ```c++
 // I can write and use a factory function but still I have to write more code
 Shape square = {
-  .tag = Shape::Types::SQUARE,
-  .square = {
-    .side = 4
-  }
+    .tag = Shape::Types::SQUARE,
+    .square = {
+        .side = 4
+    }
 };
 
 if (square.tag == Shape::Types::SQUARE) {
-  std::cout << square.square.side << '\n';
+    std::cout << square.square.side << '\n';
 
-  // Nothing prevents me from doing this
-  std::cout << square.rectangle.height << '\n';
+    // Nothing prevents me from doing this
+    std::cout << square.rectangle.height << '\n';
 }
 ```
 
@@ -571,10 +570,10 @@ So, let's finally get into the performance of these two methods. I generated a
 one million shapes of those four types, and measured the time it took to
 compute the total area for both of the methods.
 
-| Optimizaion | Polymorphism | Tagged union |
-| ----------- | ------------ | ------------ |
-| `-O0`       | 25.628 ms    | 15.758 ms    |
-| `-O3`       | 6.908 ms     | 5.100 ms     |
+| Optimization | Polymorphism | Tagged union |
+| ------------ | ------------ | ------------ |
+| `-O0`        | 25.628 ms    | 15.758 ms    |
+| `-O3`        | 6.908 ms     | 5.100 ms     |
 
 The tagged union method is 1.6 times faster without optimizations and 1.35
 times faster with `-O3` optimization. As you can see, the individual heap

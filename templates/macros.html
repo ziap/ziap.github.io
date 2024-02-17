@@ -6,13 +6,15 @@
   {% set wpm = config.extra.reading_speed %}
   {% set time = word_count / wpm | round(method="ceil") %}
 
-  {{ time }}
-  {% if time == 1 %}
-    minute
-  {% else %}
-    minutes
-  {% endif %}
-  read
+  <abbr title="{{word_count}} words">
+    {{ time }}
+    {% if time == 1 %}
+      minute
+    {% else %}
+      minutes
+    {% endif %}
+    read
+  </abbr>
 {% endmacro %}
 
 {% macro post_header(page, link=false) %}
