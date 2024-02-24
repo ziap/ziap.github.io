@@ -7,7 +7,22 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Sun, 11 Feb 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Sat, 24 Feb 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Easy, efficient, and practical queue implementation</title>
+          <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/queue/</link>
+          <guid>https://ziap.github.io/blog/queue/</guid>
+          <description xml:base="https://ziap.github.io/blog/queue/">&lt;p&gt;From breadth-first search to task scheduling, queues are extremely useful in
+computer programming. Although &lt;a href=&quot;&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Double-ended_queue#Operations&quot;&gt;many programming
+languages&lt;&#x2F;a&gt; support them,
+I think that it’s important to understand and know how to implement them. I
+like to implement data structures on-the-fly and customize them for the problem
+I’m trying to solve. A more practical reason to understand queues is that
+JavaScript doesn’t have an efficient queue implementation.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>A faster, more flexible alternative to run-time polymorphism in C++ feat. Rust</title>
           <pubDate>Sun, 11 Feb 2024 00:00:00 +0000</pubDate>
