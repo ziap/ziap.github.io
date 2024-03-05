@@ -7,7 +7,27 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Sat, 24 Feb 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Sun, 25 Feb 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>My small, memorable, random number generator</title>
+          <pubDate>Sun, 25 Feb 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/rng/</link>
+          <guid>https://ziap.github.io/blog/rng/</guid>
+          <description xml:base="https://ziap.github.io/blog/rng/">&lt;p&gt;I use (pseudo-)random number generators (RNGs) all the time. They’re an
+essential part of my code. Recently, I prefer using a custom generator instead
+of the default ones because:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;NumPy’s new &lt;a href=&quot;&#x2F;&#x2F;numpy.org&#x2F;doc&#x2F;stable&#x2F;reference&#x2F;random&#x2F;generator.html#numpy.random.Generator&quot;&gt;Generator
+API&lt;&#x2F;a&gt;
+feels so much better than the old global API.&lt;&#x2F;li&gt;
+&lt;li&gt;The default ones are often too big and slow, for example, C++’s
+&lt;a href=&quot;&#x2F;&#x2F;en.cppreference.com&#x2F;w&#x2F;cpp&#x2F;numeric&#x2F;random&#x2F;mersenne_twister_engine&quot;&gt;std::mt199937&lt;&#x2F;a&gt;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;There are plenty of custom generators to choose from, but I still designed one
+myself so that I can quickly code one from memory whenever I need to.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Easy, efficient, and practical queue implementation</title>
           <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>
