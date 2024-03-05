@@ -1,6 +1,6 @@
 +++
 title = "My small, memorable, random number generator"
-date  = "2024-02-25"
+date  = "2024-03-05"
 +++
 
 I use (pseudo-)random number generators (RNGs) all the time. They're an
