@@ -1,8 +1,8 @@
 .about__info {
   background: var(--bg-color1);
-  padding: 1rem;
-  border-radius: min(calc(100vw - var(--body-width)), 16px);
-  box-shadow: -8px 0 0 var(--accent-color);
+  padding: 2rem 1rem;
+  border-radius: 16px;
+  box-shadow: -1.5rem 0 0 var(--bg-color1), 1.5rem 0 0 var(--bg-color1);
   margin: 3rem -1rem;
 
   &>.about__info__title {
