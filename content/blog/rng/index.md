@@ -11,7 +11,7 @@ of the default ones because:
 API](//numpy.org/doc/stable/reference/random/generator.html#numpy.random.Generator)
 feels so much better than the old global API.
 - The default ones are often too big and slow, for example, C++'s
-[std::mt199937](//en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine).
+[std::mt19937](//en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine).
 
 There are plenty of custom generators to choose from, but I still designed one
 myself so that I can quickly code one from memory whenever I need to.
