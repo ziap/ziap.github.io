@@ -22,7 +22,7 @@ of the default ones because:&lt;&#x2F;p&gt;
 API&lt;&#x2F;a&gt;
 feels so much better than the old global API.&lt;&#x2F;li&gt;
 &lt;li&gt;The default ones are often too big and slow, for example, C++’s
-&lt;a href=&quot;&#x2F;&#x2F;en.cppreference.com&#x2F;w&#x2F;cpp&#x2F;numeric&#x2F;random&#x2F;mersenne_twister_engine&quot;&gt;std::mt199937&lt;&#x2F;a&gt;.&lt;&#x2F;li&gt;
+&lt;a href=&quot;&#x2F;&#x2F;en.cppreference.com&#x2F;w&#x2F;cpp&#x2F;numeric&#x2F;random&#x2F;mersenne_twister_engine&quot;&gt;std::mt19937&lt;&#x2F;a&gt;.&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;p&gt;There are plenty of custom generators to choose from, but I still designed one
 myself so that I can quickly code one from memory whenever I need to.&lt;&#x2F;p&gt;
