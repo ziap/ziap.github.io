@@ -1,5 +1,5 @@
 +++
-title = "My small, memorable, random number generator"
+title = "A random number generator that I can remember"
 date  = "2024-03-05"
 +++
 
@@ -38,7 +38,7 @@ It is an RNG based on the [PCG family](//www.pcg-random.org) of pseudo-random
 number generators by Dr. M.E. O'Neill. The generator can be split into two
 parts: the Linear Congruential Generator and the output mixing/permutation.
 
-## The Linear Congruential Generator
+## The LCG part
 
 The Linear Congruential Generator is defined by the following recurrence
 relation:
@@ -86,7 +86,15 @@ uint32_t output(uint64_t s) {
 }
 ```
 
-# Is it good?
+I chose this permutation function because I think that multiplication is a very
+good bit-mixing operation. However, because the LCG is already a multiplication
+and an addition, performing yet another multiplication is useless because the
+permutation will commute with the LCG. So I added a xorshift in between and
+also xor-ed the multiplier with the state. The last part is literally copied
+from `RXS-M-XS`.
+
+
+# How good is it?
 
 ## Speed and size
 
@@ -133,13 +141,13 @@ pcg_xsh_rr:                             # @pcg_xsh_rr
 ```
 
 As you can see, my output permutation has one less instruction than `RXS-M-XS`,
-but two more than `XSH-RR`. So in theory, it's slightly faster than `RSH-M-XS`
+but two more than `XSH-RR`. So in theory, it's slightly faster than `RXS-M-XS`
 but slightly slower than `XSH-RR`. Moreover, multiplication is expensive, and
 the `XSH-RR` version doesn't have one, so it might be even faster. I don't have
 a good way to actually measure the speed of these RNGs, so showing the
 generated assembly is the best that I can do.
 
-## Quality
+## Statistical quality
 
 My generator easily passes
 [BigCrush](//simul.iro.umontreal.ca/testu01/tu01.html). Passing statistical
