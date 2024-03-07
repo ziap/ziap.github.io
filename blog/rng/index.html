@@ -7,7 +7,7 @@
     <title>
       
         
-          My small, memorable, random number generator |
+          A random number generator that I can remember |
         
 
         Zap&#x27;s website
@@ -54,7 +54,7 @@
   
   <header class="post-header">
     
-    <h1 class="post-header__title title">My small, memorable, random number generator</h1>
+    <h1 class="post-header__title title">A random number generator that I can remember</h1>
     
     
       <div class="post-header__meta">
@@ -81,7 +81,7 @@
   
   
 
-  <abbr title="858 words">
+  <abbr title="927 words">
     4
     
       minutes
@@ -123,7 +123,7 @@ myself so that I can quickly code one from memory whenever I need to.</p>
 <p>It is an RNG based on the <a href="//www.pcg-random.org">PCG family</a> of pseudo-random
 number generators by Dr. M.E. O’Neill. The generator can be split into two
 parts: the Linear Congruential Generator and the output mixing/permutation.</p>
-<h2 id="the-linear-congruential-generator">The Linear Congruential Generator</h2>
+<h2 id="the-lcg-part">The LCG part</h2>
 <p>The Linear Congruential Generator is defined by the following recurrence
 relation:</p>
 <pre style="background-color:#282c34;color:#dcdfe4;"><code><span>x[n] = (x[n - 1] * MUL + INC) % MOD
@@ -158,7 +158,13 @@ statistical quality. It can be broken down into three steps:</p>
 </span><span>    </span><span style="color:#c678dd;">return </span><span>(w </span><span style="color:#c678dd;">^ </span><span>(w </span><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#e5c07b;">24</span><span>)) </span><span style="color:#c678dd;">&gt;&gt; </span><span style="color:#e5c07b;">32</span><span>;
 </span><span>}
 </span></code></pre>
-<h1 id="is-it-good">Is it good?</h1>
+<p>I chose this permutation function because I think that multiplication is a very
+good bit-mixing operation. However, because the LCG is already a multiplication
+and an addition, performing yet another multiplication is useless because the
+permutation will commute with the LCG. So I added a xorshift in between and
+also xor-ed the multiplier with the state. The last part is literally copied
+from <code>RXS-M-XS</code>.</p>
+<h1 id="how-good-is-it">How good is it?</h1>
 <h2 id="speed-and-size">Speed and size</h2>
 <p>Compiling down to x86 with clang17 and <code>-O3 -march=native</code>, this is the
 generated assembly of the output permutation of <code>RXS-M-XS</code>, <code>XSH-RR</code>, and my
@@ -200,12 +206,12 @@ custom RNG.</p>
 </span><span style="color:#61afef;">    </span><span style="color:#c678dd;">ret
 </span></code></pre>
 <p>As you can see, my output permutation has one less instruction than <code>RXS-M-XS</code>,
-but two more than <code>XSH-RR</code>. So in theory, it’s slightly faster than <code>RSH-M-XS</code>
+but two more than <code>XSH-RR</code>. So in theory, it’s slightly faster than <code>RXS-M-XS</code>
 but slightly slower than <code>XSH-RR</code>. Moreover, multiplication is expensive, and
 the <code>XSH-RR</code> version doesn’t have one, so it might be even faster. I don’t have
 a good way to actually measure the speed of these RNGs, so showing the
 generated assembly is the best that I can do.</p>
-<h2 id="quality">Quality</h2>
+<h2 id="statistical-quality">Statistical quality</h2>
 <p>My generator easily passes
 <a href="//simul.iro.umontreal.ca/testu01/tu01.html">BigCrush</a>. Passing statistical
 tests doesn’t mean that the generator has good quality, but failing them 
