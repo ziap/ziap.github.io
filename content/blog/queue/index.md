@@ -74,11 +74,9 @@ bool Stack_push(Stack *stack, Item item) {
     return true;
 }
 
-bool Stack_pop(Stack *stack, Item *out) {
-    if (stack->top == 0) return false; // underflow
-
-    *out = stack->data[--stack->top];
-    return true;
+Item *Stack_pop(Stack *stack) {
+    if (stack->top == 0) return NULL; // underflow
+    return stack->data + (--stack->top);
 }
 ```
 
@@ -121,11 +119,9 @@ void Stack_push(Stack *stack, Item item) {
     stack->data[stack->top++] = item;
 }
 
-bool Stack_pop(Stack *stack, Item *out) {
-    if (stack->top == 0) return false;
-
-    *out = stack->data[--stack->top];
-    return true;
+Item *Stack_pop(Stack *stack) {
+    if (stack->top == 0) return NULL;
+    return stack->data + (--stack->top);
 }
 ```
 
@@ -165,9 +161,10 @@ void Queue_push(Queue *queue, Item item) {
     queue->head = (queue->head + 1) % QUEUE_CAP;
 }
 
-void Queue_pop(Queue *queue, Item *item) {
-    *item = queue->data[queue->tail];
+Item *Queue_pop(Queue *queue) {
+    Item *item = queue->data + queue->tail;
     queue->tail = (queue->tail + 1) % QUEUE_CAP;
+    return item;
 }
 ```
 
@@ -197,13 +194,12 @@ typedef struct {
 +   return true;
 }
 
--void Queue_pop(Queue *queue, Item *item) {
-+bool Queue_pop(Queue *queue, Item *item) {
-+   if (queue->len == 0) return false;  // underflow
-    *item = queue->data[queue->tail];
+Item *Queue_pop(Queue *queue) {
++   if (queue->len == 0) return NULL; // underflow
+    Item *item = queue->data + queue->tail;
     queue->tail = (queue->tail + 1) % QUEUE_CAP;
 +   --queue->len;
-+   return true;
+    return item;
 }
 ```
 
@@ -293,12 +289,12 @@ void Queue_push(Queue *queue, Item item) {
     ++queue->len;
 }
 
-bool Queue_pop(Queue *queue, Item *item) {
-    if (queue->len == 0) return false;
-    *item = queue->data[queue->tail];
+Item *Queue_pop(Queue *queue) {
+    if (queue->len == 0) return NULL;
+    Item *item = queue->data + queue->tail;
     queue->tail = (queue->tail + 1) & (queue->cap - 1);
     --queue->len;
-    return true;
+    return item;
 }
 ```
 
