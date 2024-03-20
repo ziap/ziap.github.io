@@ -82,7 +82,7 @@
   
   
 
-  <abbr title="1857 words">
+  <abbr title="1842 words">
     8
     
       minutes
@@ -158,12 +158,10 @@ we need an array and a pointer or index pointing to the top of the stack.</p>
 </span></td></tr><tr><td>12</td><td><span>    </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">true</span><span>;
 </span></td></tr><tr><td>13</td><td><span>}
 </span></td></tr><tr><td>14</td><td><span>
-</span></td></tr><tr><td>15</td><td><span style="color:#c678dd;">bool </span><span style="color:#61afef;">Stack_pop</span><span>(Stack </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">stack</span><span>, Item </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">out</span><span>) {
-</span></td></tr><tr><td>16</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(stack-&gt;top </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">false</span><span>; </span><span style="color:#5c6370;">// underflow
-</span></td></tr><tr><td>17</td><td><span>
-</span></td></tr><tr><td>18</td><td><span>    </span><span style="color:#c678dd;">*</span><span>out </span><span style="color:#c678dd;">=</span><span> stack-&gt;data[</span><span style="color:#c678dd;">--</span><span>stack-&gt;top];
-</span></td></tr><tr><td>19</td><td><span>    </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">true</span><span>;
-</span></td></tr><tr><td>20</td><td><span>}
+</span></td></tr><tr><td>15</td><td><span>Item </span><span style="color:#c678dd;">*</span><span style="color:#61afef;">Stack_pop</span><span>(Stack </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">stack</span><span>) {
+</span></td></tr><tr><td>16</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(stack-&gt;top </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">NULL</span><span>;          </span><span style="color:#5c6370;">// underflow
+</span></td></tr><tr><td>17</td><td><span>    </span><span style="color:#c678dd;">return</span><span> stack-&gt;data </span><span style="color:#c678dd;">+ </span><span>(</span><span style="color:#c678dd;">--</span><span>stack-&gt;top);
+</span></td></tr><tr><td>18</td><td><span>}
 </span></td></tr></tbody></table></code></pre>
 <p>I use a 32-bit unsigned index instead of a pointer because on 64-bit machines I
 can save some memory. You can implement more features, but that’s the core of
@@ -200,12 +198,10 @@ add more by doubling the buffer using <code>realloc</code>.</p>
 </span></td></tr><tr><td>25</td><td><span>    stack-&gt;data[stack-&gt;top</span><span style="color:#c678dd;">++</span><span>] </span><span style="color:#c678dd;">=</span><span> item;
 </span></td></tr><tr><td>26</td><td><span>}
 </span></td></tr><tr><td>27</td><td><span>
-</span></td></tr><tr><td>28</td><td><span style="color:#c678dd;">bool </span><span style="color:#61afef;">Stack_pop</span><span>(Stack </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">stack</span><span>, Item </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">out</span><span>) {
-</span></td></tr><tr><td>29</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(stack-&gt;top </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">false</span><span>;
-</span></td></tr><tr><td>30</td><td><span>
-</span></td></tr><tr><td>31</td><td><span>    </span><span style="color:#c678dd;">*</span><span>out </span><span style="color:#c678dd;">=</span><span> stack-&gt;data[</span><span style="color:#c678dd;">--</span><span>stack-&gt;top];
-</span></td></tr><tr><td>32</td><td><span>    </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">true</span><span>;
-</span></td></tr><tr><td>33</td><td><span>}
+</span></td></tr><tr><td>28</td><td><span>Item </span><span style="color:#c678dd;">*</span><span style="color:#61afef;">Stack_pop</span><span>(Stack </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">stack</span><span>) {
+</span></td></tr><tr><td>29</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(stack-&gt;top </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">NULL</span><span>;
+</span></td></tr><tr><td>30</td><td><span>    </span><span style="color:#c678dd;">return</span><span> stack-&gt;data </span><span style="color:#c678dd;">+ </span><span>(</span><span style="color:#c678dd;">--</span><span>stack-&gt;top);
+</span></td></tr><tr><td>31</td><td><span>}
 </span></td></tr></tbody></table></code></pre>
 <p>There’s a bit more code required for dynamic resizing. But in general, I think
 that the implementation is still easy to understand. Small reallocation is
@@ -237,10 +233,11 @@ the pointers cycle back to the start of the array instead of overflowing.</p>
 </span></td></tr><tr><td>11</td><td><span>    queue-&gt;head </span><span style="color:#c678dd;">= </span><span>(queue-&gt;head </span><span style="color:#c678dd;">+ </span><span style="color:#e5c07b;">1</span><span>) </span><span style="color:#c678dd;">%</span><span> QUEUE_CAP;
 </span></td></tr><tr><td>12</td><td><span>}
 </span></td></tr><tr><td>13</td><td><span>
-</span></td></tr><tr><td>14</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Queue_pop</span><span>(Queue </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">queue</span><span>, Item </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">item</span><span>) {
-</span></td></tr><tr><td>15</td><td><span>    </span><span style="color:#c678dd;">*</span><span>item </span><span style="color:#c678dd;">=</span><span> queue-&gt;data[queue-&gt;tail];
+</span></td></tr><tr><td>14</td><td><span>Item </span><span style="color:#c678dd;">*</span><span style="color:#61afef;">Queue_pop</span><span>(Queue </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">queue</span><span>) {
+</span></td></tr><tr><td>15</td><td><span>    Item </span><span style="color:#c678dd;">*</span><span>item </span><span style="color:#c678dd;">=</span><span> queue-&gt;data </span><span style="color:#c678dd;">+</span><span> queue-&gt;tail;
 </span></td></tr><tr><td>16</td><td><span>    queue-&gt;tail </span><span style="color:#c678dd;">= </span><span>(queue-&gt;tail </span><span style="color:#c678dd;">+ </span><span style="color:#e5c07b;">1</span><span>) </span><span style="color:#c678dd;">%</span><span> QUEUE_CAP;
-</span></td></tr><tr><td>17</td><td><span>}
+</span></td></tr><tr><td>17</td><td><span>    </span><span style="color:#c678dd;">return</span><span> item;
+</span></td></tr><tr><td>18</td><td><span>}
 </span></td></tr></tbody></table></code></pre>
 <p>Because the pointers always point to valid memory, we don’t have to manually
 handle overflow and underflow. Currently, the queue will overwrite data when it
@@ -266,13 +263,12 @@ do this is to keep track of the size of the array.</p>
 </span><span style="color:#98c379;">+   return true;
 </span><span>}
 </span><span>
-</span><span style="color:#e06c75;">-void Queue_pop(Queue *queue, Item *item) {
-</span><span style="color:#98c379;">+bool Queue_pop(Queue *queue, Item *item) {
-</span><span style="color:#98c379;">+   if (queue-&gt;len == 0) return false;  // underflow
-</span><span>    *item = queue-&gt;data[queue-&gt;tail];
+</span><span>Item *Queue_pop(Queue *queue) {
+</span><span style="color:#98c379;">+   if (queue-&gt;len == 0) return NULL; // underflow
+</span><span>    Item *item = queue-&gt;data + queue-&gt;tail;
 </span><span>    queue-&gt;tail = (queue-&gt;tail + 1) % QUEUE_CAP;
 </span><span style="color:#98c379;">+   --queue-&gt;len;
-</span><span style="color:#98c379;">+   return true;
+</span><span>    return item;
 </span><span>}
 </span></code></pre>
 <p>So to turn a stack into a queue, we have to keep track of two more variables.
@@ -351,12 +347,12 @@ more memory so that the queue doesn’t overwrite itself.</p>
 </span></td></tr><tr><td>33</td><td><span>    </span><span style="color:#c678dd;">++</span><span>queue-&gt;len;
 </span></td></tr><tr><td>34</td><td><span>}
 </span></td></tr><tr><td>35</td><td><span>
-</span></td></tr><tr><td>36</td><td><span style="color:#c678dd;">bool </span><span style="color:#61afef;">Queue_pop</span><span>(Queue </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">queue</span><span>, Item </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">item</span><span>) {
-</span></td></tr><tr><td>37</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(queue-&gt;len </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">false</span><span>;
-</span></td></tr><tr><td>38</td><td><span>    </span><span style="color:#c678dd;">*</span><span>item </span><span style="color:#c678dd;">=</span><span> queue-&gt;data[queue-&gt;tail];
+</span></td></tr><tr><td>36</td><td><span>Item </span><span style="color:#c678dd;">*</span><span style="color:#61afef;">Queue_pop</span><span>(Queue </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">queue</span><span>) {
+</span></td></tr><tr><td>37</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(queue-&gt;len </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">NULL</span><span>;
+</span></td></tr><tr><td>38</td><td><span>    Item </span><span style="color:#c678dd;">*</span><span>item </span><span style="color:#c678dd;">=</span><span> queue-&gt;data </span><span style="color:#c678dd;">+</span><span> queue-&gt;tail;
 </span></td></tr><tr><td>39</td><td><span>    queue-&gt;tail </span><span style="color:#c678dd;">= </span><span>(queue-&gt;tail </span><span style="color:#c678dd;">+ </span><span style="color:#e5c07b;">1</span><span>) </span><span style="color:#c678dd;">&amp; </span><span>(queue-&gt;cap </span><span style="color:#c678dd;">- </span><span style="color:#e5c07b;">1</span><span>);
 </span></td></tr><tr><td>40</td><td><span>    </span><span style="color:#c678dd;">--</span><span>queue-&gt;len;
-</span></td></tr><tr><td>41</td><td><span>    </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">true</span><span>;
+</span></td></tr><tr><td>41</td><td><span>    </span><span style="color:#c678dd;">return</span><span> item;
 </span></td></tr><tr><td>42</td><td><span>}
 </span></td></tr></tbody></table></code></pre>
 <p>That’s the entire implementation of the queue. It looks quite long, but the
