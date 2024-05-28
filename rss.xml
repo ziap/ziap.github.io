@@ -7,7 +7,19 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Sat, 24 Feb 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Tue, 28 May 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>A game I made as a course project</title>
+          <pubDate>Tue, 28 May 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/programming-techniques-project/</link>
+          <guid>https://ziap.github.io/blog/programming-techniques-project/</guid>
+          <description xml:base="https://ziap.github.io/blog/programming-techniques-project/">&lt;p&gt;I recently programmed a large chunk of the game from scratch for a university
+course project. This is one of a few projects that I delivered with enough
+quality and presentability. So I wanted to document my process of making it,
+what I learned, and how I applied my knowledge from and outside the course.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Easy, efficient, and practical queue implementation</title>
           <pubDate>Sat, 24 Feb 2024 00:00:00 +0000</pubDate>

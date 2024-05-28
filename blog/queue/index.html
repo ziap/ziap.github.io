@@ -159,7 +159,7 @@ we need an array and a pointer or index pointing to the top of the stack.</p>
 </span></td></tr><tr><td>13</td><td><span>}
 </span></td></tr><tr><td>14</td><td><span>
 </span></td></tr><tr><td>15</td><td><span>Item </span><span style="color:#c678dd;">*</span><span style="color:#61afef;">Stack_pop</span><span>(Stack </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">stack</span><span>) {
-</span></td></tr><tr><td>16</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(stack-&gt;top </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">NULL</span><span>;          </span><span style="color:#5c6370;">// underflow
+</span></td></tr><tr><td>16</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(stack-&gt;top </span><span style="color:#c678dd;">== </span><span style="color:#e5c07b;">0</span><span>) </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">NULL</span><span>; </span><span style="color:#5c6370;">// underflow
 </span></td></tr><tr><td>17</td><td><span>    </span><span style="color:#c678dd;">return</span><span> stack-&gt;data </span><span style="color:#c678dd;">+ </span><span>(</span><span style="color:#c678dd;">--</span><span>stack-&gt;top);
 </span></td></tr><tr><td>18</td><td><span>}
 </span></td></tr></tbody></table></code></pre>
