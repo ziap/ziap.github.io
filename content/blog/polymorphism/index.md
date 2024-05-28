@@ -59,8 +59,8 @@ run-time, not at compile-time.
 Square square(4);
 Circle circle(2);
 
-Shape *shape1 = random_bool() ? square : circle;
-Shape *shape2 = random_bool() ? square : circle;
+Shape *shape1 = random_bool() ? (Shape*)&square : (Shape*)&circle;
+Shape *shape2 = random_bool() ? (Shape*)&square : (Shape*)&circle;
 
 std::cout << add_area(shape1, shape2) << '\n';
 ```
@@ -145,8 +145,8 @@ and even though the shapes are heap allocated, `std::unique_ptr` makes working
 with them less painful. Also, notice how I didn’t show a single line of code on
 how to compute the area, because with polymorphism, it actually doesn’t matter.
 But currently we are still hard-coding the shapes, so this is still possible
-even compile-time polymorphism. Let’s justify this by importing the shapes from
-the file.
+even with compile-time polymorphism. Let’s justify this by importing the shapes
+from the file.
 
 ```c++
 enum class ShapeTypes {
@@ -329,7 +329,7 @@ Shape triangle = {
 };
 ```
 
-You can even use a factory function to simplify the creation of shapes, but I
+You can even use factory methods to simplify the creation of shapes, but I
 think that designated initializers are good enough. One of the downsides of
 this approach is reduced type safety. There's nothing preventing you from
 accessing the radius of a square. If you know your union, then it's fine. But

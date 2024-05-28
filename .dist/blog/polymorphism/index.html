@@ -82,7 +82,7 @@
   
   
 
-  <abbr title="2785 words">
+  <abbr title="2789 words">
     12
     
       minutes
@@ -141,8 +141,8 @@ run-time, not at compile-time.</p>
 <pre data-lang="c++" style="background-color:#282c34;color:#dcdfe4;" class="language-c++ "><code class="language-c++" data-lang="c++"><span>Square </span><span style="color:#61afef;">square</span><span>(</span><span style="color:#e5c07b;">4</span><span>);
 </span><span>Circle </span><span style="color:#61afef;">circle</span><span>(</span><span style="color:#e5c07b;">2</span><span>);
 </span><span>
-</span><span>Shape </span><span style="color:#c678dd;">*</span><span>shape1 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">?</span><span> square </span><span style="color:#c678dd;">:</span><span> circle;
-</span><span>Shape </span><span style="color:#c678dd;">*</span><span>shape2 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">?</span><span> square </span><span style="color:#c678dd;">:</span><span> circle;
+</span><span>Shape </span><span style="color:#c678dd;">*</span><span>shape1 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">? </span><span>(Shape</span><span style="color:#c678dd;">*</span><span>)</span><span style="color:#c678dd;">&amp;</span><span>square </span><span style="color:#c678dd;">: </span><span>(Shape</span><span style="color:#c678dd;">*</span><span>)</span><span style="color:#c678dd;">&amp;</span><span>circle;
+</span><span>Shape </span><span style="color:#c678dd;">*</span><span>shape2 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">random_bool</span><span>() </span><span style="color:#c678dd;">? </span><span>(Shape</span><span style="color:#c678dd;">*</span><span>)</span><span style="color:#c678dd;">&amp;</span><span>square </span><span style="color:#c678dd;">: </span><span>(Shape</span><span style="color:#c678dd;">*</span><span>)</span><span style="color:#c678dd;">&amp;</span><span>circle;
 </span><span>
 </span><span>std::cout </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#e06c75;">add_area</span><span>(shape1, shape2) </span><span style="color:#c678dd;">&lt;&lt; </span><span style="color:#98c379;">&#39;</span><span style="color:#56b6c2;">\n</span><span style="color:#98c379;">&#39;</span><span>;
 </span></code></pre>
@@ -215,8 +215,8 @@ and even though the shapes are heap allocated, <code>std::unique_ptr</code> make
 with them less painful. Also, notice how I didn’t show a single line of code on
 how to compute the area, because with polymorphism, it actually doesn’t matter.
 But currently we are still hard-coding the shapes, so this is still possible
-even compile-time polymorphism. Let’s justify this by importing the shapes from
-the file.</p>
+even with compile-time polymorphism. Let’s justify this by importing the shapes
+from the file.</p>
 <pre data-lang="c++" style="background-color:#282c34;color:#dcdfe4;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#c678dd;">enum class </span><span>ShapeTypes {
 </span><span>    SQUARE,
 </span><span>    RECTANGLE,
@@ -385,7 +385,7 @@ with designated initializers.</p>
 </span><span>    }
 </span><span>};
 </span></code></pre>
-<p>You can even use a factory function to simplify the creation of shapes, but I
+<p>You can even use factory methods to simplify the creation of shapes, but I
 think that designated initializers are good enough. One of the downsides of
 this approach is reduced type safety. There’s nothing preventing you from
 accessing the radius of a square. If you know your union, then it’s fine. But
