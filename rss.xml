@@ -7,7 +7,22 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Tue, 28 May 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Thu, 20 Jun 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>My personal strategies for arena allocation</title>
+          <pubDate>Thu, 20 Jun 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/arena/</link>
+          <guid>https://ziap.github.io/blog/arena/</guid>
+          <description xml:base="https://ziap.github.io/blog/arena/">&lt;p&gt;A drawback that people often mention when programming in C is the lack of RAII.
+This is sometimes good as it causes me to avoid small, random allocations and
+incentivize grouping data into large, contiguous memory regions to make them
+faster and more manageable. However, small, random allocations are sometimes
+unavoidable, and there should still be a way to manage them. Instead of
+grouping data into arrays, we can instead group data by their &lt;em&gt;lifetime&lt;&#x2F;em&gt;, and
+this is where the “arena” allocator comes in.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>A game I made as a course project</title>
           <pubDate>Tue, 28 May 2024 00:00:00 +0000</pubDate>

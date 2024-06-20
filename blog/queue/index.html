@@ -82,7 +82,7 @@
   
   
 
-  <abbr title="1842 words">
+  <abbr title="1844 words">
     8
     
       minutes
@@ -178,7 +178,7 @@ add more by doubling the buffer using <code>realloc</code>.</p>
 </span></td></tr><tr><td>5</td><td><span>    uint32_t cap;
 </span></td></tr><tr><td>6</td><td><span>} Stack;
 </span></td></tr><tr><td>7</td><td><span>
-</span></td></tr><tr><td>8</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Stack_new</span><span>() {
+</span></td></tr><tr><td>8</td><td><span>Stack </span><span style="color:#61afef;">Stack_new</span><span>(</span><span style="color:#c678dd;">void</span><span>) {
 </span></td></tr><tr><td>9</td><td><span>    </span><span style="color:#c678dd;">return </span><span>(Stack) {
 </span></td></tr><tr><td>10</td><td><span>        .</span><span style="color:#e06c75;">data </span><span style="color:#c678dd;">= </span><span style="color:#61afef;">malloc</span><span>(</span><span style="color:#c678dd;">sizeof</span><span>(Item)),
 </span></td></tr><tr><td>11</td><td><span>        .</span><span style="color:#e06c75;">top </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0</span><span>,
@@ -186,13 +186,13 @@ add more by doubling the buffer using <code>realloc</code>.</p>
 </span></td></tr><tr><td>13</td><td><span>    };
 </span></td></tr><tr><td>14</td><td><span>}
 </span></td></tr><tr><td>15</td><td><span>
-</span></td></tr><tr><td>16</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Stack_deinit</span><span>(Stack </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">stack</span><span>) {
-</span></td></tr><tr><td>17</td><td><span>    </span><span style="color:#61afef;">free</span><span>(stack-&gt;data);
+</span></td></tr><tr><td>16</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Stack_destroy</span><span>(Stack </span><span style="color:#e06c75;">stack</span><span>) {
+</span></td></tr><tr><td>17</td><td><span>    </span><span style="color:#61afef;">free</span><span>(stack.</span><span style="color:#e06c75;">data</span><span>);
 </span></td></tr><tr><td>18</td><td><span>}
 </span></td></tr><tr><td>19</td><td><span>
 </span></td></tr><tr><td>20</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Stack_push</span><span>(Stack </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">stack</span><span>, Item </span><span style="color:#e06c75;">item</span><span>) {
 </span></td></tr><tr><td>21</td><td><span>    </span><span style="color:#c678dd;">if </span><span>(stack-&gt;top </span><span style="color:#c678dd;">==</span><span> stack-&gt;cap) {
-</span></td></tr><tr><td>22</td><td><span>        </span><span style="color:#61afef;">realloc</span><span>(stack-&gt;data, </span><span style="color:#c678dd;">sizeof</span><span>(Item) </span><span style="color:#c678dd;">* </span><span>(stack-&gt;cap </span><span style="color:#c678dd;">*= </span><span style="color:#e5c07b;">2</span><span>));
+</span></td></tr><tr><td>22</td><td><span>        stack-&gt;data </span><span style="color:#c678dd;">= </span><span style="color:#61afef;">realloc</span><span>(stack-&gt;data, (stack-&gt;cap </span><span style="color:#c678dd;">*= </span><span style="color:#e5c07b;">2</span><span>) </span><span style="color:#c678dd;">* sizeof</span><span>(Item));
 </span></td></tr><tr><td>23</td><td><span>    }
 </span></td></tr><tr><td>24</td><td><span>
 </span></td></tr><tr><td>25</td><td><span>    stack-&gt;data[stack-&gt;top</span><span style="color:#c678dd;">++</span><span>] </span><span style="color:#c678dd;">=</span><span> item;
@@ -321,7 +321,7 @@ more memory so that the queue doesn’t overwrite itself.</p>
 </span></td></tr><tr><td>7</td><td><span>    uint32_t cap;
 </span></td></tr><tr><td>8</td><td><span>} Queue;
 </span></td></tr><tr><td>9</td><td><span>
-</span></td></tr><tr><td>10</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Queue_new</span><span>() {
+</span></td></tr><tr><td>10</td><td><span>Queue </span><span style="color:#61afef;">Queue_new</span><span>(</span><span style="color:#c678dd;">void</span><span>) {
 </span></td></tr><tr><td>11</td><td><span>    </span><span style="color:#c678dd;">return </span><span>(Queue) {
 </span></td></tr><tr><td>12</td><td><span>        .</span><span style="color:#e06c75;">data </span><span style="color:#c678dd;">= </span><span style="color:#61afef;">malloc</span><span>(</span><span style="color:#c678dd;">sizeof</span><span>(Item)),
 </span></td></tr><tr><td>13</td><td><span>        .</span><span style="color:#e06c75;">head </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0</span><span>,
@@ -332,8 +332,8 @@ more memory so that the queue doesn’t overwrite itself.</p>
 </span></td></tr><tr><td>18</td><td><span>    };
 </span></td></tr><tr><td>19</td><td><span>}
 </span></td></tr><tr><td>20</td><td><span>
-</span></td></tr><tr><td>21</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Queue_deinit</span><span>(Queue </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">queue</span><span>) {
-</span></td></tr><tr><td>22</td><td><span>    </span><span style="color:#61afef;">free</span><span>(queue-&gt;data);
+</span></td></tr><tr><td>21</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Queue_destroy</span><span>(Queue </span><span style="color:#e06c75;">queue</span><span>) {
+</span></td></tr><tr><td>22</td><td><span>    </span><span style="color:#61afef;">free</span><span>(queue.</span><span style="color:#e06c75;">data</span><span>);
 </span></td></tr><tr><td>23</td><td><span>}
 </span></td></tr><tr><td>24</td><td><span>
 </span></td></tr><tr><td>25</td><td><span style="color:#c678dd;">void </span><span style="color:#61afef;">Queue_push</span><span>(Queue </span><span style="color:#c678dd;">*</span><span style="color:#e06c75;">queue</span><span>, Item </span><span style="color:#e06c75;">item</span><span>) {
