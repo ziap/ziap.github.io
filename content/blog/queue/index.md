@@ -99,7 +99,7 @@ typedef struct {
     uint32_t cap;
 } Stack;
 
-void Stack_new() {
+Stack Stack_new(void) {
     return (Stack) {
         .data = malloc(sizeof(Item)),
         .top = 0,
@@ -107,13 +107,13 @@ void Stack_new() {
     };
 }
 
-void Stack_deinit(Stack *stack) {
-    free(stack->data);
+void Stack_destroy(Stack stack) {
+    free(stack.data);
 }
 
 void Stack_push(Stack *stack, Item item) {
     if (stack->top == stack->cap) {
-        realloc(stack->data, sizeof(Item) * (stack->cap *= 2));
+        stack->data = realloc(stack->data, (stack->cap *= 2) * sizeof(Item));
     }
 
     stack->data[stack->top++] = item;
@@ -263,7 +263,7 @@ typedef struct {
     uint32_t cap;
 } Queue;
 
-void Queue_new() {
+Queue Queue_new(void) {
     return (Queue) {
         .data = malloc(sizeof(Item)),
         .head = 0,
@@ -274,8 +274,8 @@ void Queue_new() {
     };
 }
 
-void Queue_deinit(Queue *queue) {
-    free(queue->data);
+void Queue_destroy(Queue queue) {
+    free(queue.data);
 }
 
 void Queue_push(Queue *queue, Item item) {
