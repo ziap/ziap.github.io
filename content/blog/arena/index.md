@@ -227,3 +227,6 @@ Personally, I don't like this allocator too much. It's complex and depends on
 another allocator. But it's extremely generic and has many features that I find
 useful. I'm still experimenting with this method to see if it's stable and
 actually reduces the complexity of memory management.
+
+**Edit:** The allocator's implementation is available
+[here](//github.com/ziap/arena).
