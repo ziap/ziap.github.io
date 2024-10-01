@@ -7,7 +7,21 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Thu, 20 Jun 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Tue, 01 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>I switched to Fish as my interactive shell</title>
+          <pubDate>Tue, 01 Oct 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/fish-shell/</link>
+          <guid>https://ziap.github.io/blog/fish-shell/</guid>
+          <description xml:base="https://ziap.github.io/blog/fish-shell/">&lt;p&gt;ZSH has been my shell of choice since I started my command-line-centric
+workflow. It’s a popular shell with a &lt;a href=&quot;&#x2F;&#x2F;github.com&#x2F;zsh-users&quot;&gt;large&lt;&#x2F;a&gt;
+&lt;a href=&quot;&#x2F;&#x2F;ohmyz.sh&#x2F;&quot;&gt;community&lt;&#x2F;a&gt; and an unprecedented level of customizability. ZSH is
+also POSIX-compliant, which was very important to me for some reason. However,
+after some reconsideration, I decided to port my config to the Fish shell, and
+this is why.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>My personal strategies for arena allocation</title>
           <pubDate>Thu, 20 Jun 2024 00:00:00 +0000</pubDate>
