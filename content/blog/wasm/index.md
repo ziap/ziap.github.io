@@ -524,7 +524,7 @@ into these calls. So it's better to just declare and use them. Because we can't
 We also have to enable the bulk memory WASM feature extension, which is [widely
 supported](//caniuse.com/wasm-bulk-memory).
 
-```
+```sh
 CFLAGS="--target=wasm32 -nostdlib -fvisibility=hidden -O3 -flto -mbulk-memory"
 ```
 
