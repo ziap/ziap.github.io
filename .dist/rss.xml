@@ -7,7 +7,21 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Tue, 01 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Mon, 21 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Introduction to freestanding WebAssembly</title>
+          <pubDate>Mon, 21 Oct 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/wasm/</link>
+          <guid>https://ziap.github.io/blog/wasm/</guid>
+          <description xml:base="https://ziap.github.io/blog/wasm/">&lt;p&gt;I’ve been using WebAssembly (WASM) for quite a while, and the learning
+resources are sparse and incomplete. This is especially true for freestanding
+WASM, or using WASM directly without using tools that make interacting with the
+web easier. This is an attempt for me to reflect on what I discovered and
+hopefully introduce more people to this weird intersection of system
+programming and web development.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>I switched to Fish as my interactive shell</title>
           <pubDate>Tue, 01 Oct 2024 00:00:00 +0000</pubDate>

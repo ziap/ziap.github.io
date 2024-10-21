@@ -28,11 +28,12 @@ Here is the result:
 </figure>
 
 I'm surprised that Fish is almost 4 times faster than ZSH, and can start up
-(and exit) in less than 1/60 of a second. This is a great result, while
-start-up time doesn't accurately reflect the shell's responsiveness during
-interactive usage, it is usually a good enough indicator. There have been many
-reasons for me to switch to Fish, which I will discuss below, but the
-performance benefit is the final nail in the ZSH coffin.
+(and exit) in less than 1/60 of a second, which is faster than the refresh rate
+of my monitor. This is a great result, while start-up time doesn't accurately
+reflect the shell's responsiveness during interactive usage, it is usually a
+good enough indicator. There have been many reasons for me to switch to Fish,
+which I will discuss below, but the performance benefit is the final nail in
+the ZSH coffin.
 
 # Fish features
 
