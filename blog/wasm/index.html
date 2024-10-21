@@ -82,7 +82,7 @@
   
   
 
-  <abbr title="2793 words">
+  <abbr title="2794 words">
     12
     
       minutes
@@ -530,7 +530,7 @@ into these calls. So itâ€™s better to just declare and use them. Because we canâ
 </span></code></pre>
 <p>We also have to enable the bulk memory WASM feature extension, which is <a href="//caniuse.com/wasm-bulk-memory">widely
 supported</a>.</p>
-<pre style="background-color:#282c34;color:#dcdfe4;"><code><span>CFLAGS=&quot;--target=wasm32 -nostdlib -fvisibility=hidden -O3 -flto -mbulk-memory&quot;
+<pre data-lang="sh" style="background-color:#282c34;color:#dcdfe4;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#e06c75;">CFLAGS</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;--target=wasm32 -nostdlib -fvisibility=hidden -O3 -flto -mbulk-memory&quot;
 </span></code></pre>
 <h3 id="enable-vectorization">Enable vectorization</h3>
 <p>To further enhance compiler optimization, you can enable <a href="//v8.dev/features/simd">WASM
