@@ -328,6 +328,35 @@ As you can see, the function removed the for loop and used the summation
 formula with some additional bookkeeping to improve the time complexity and,
 more importantly, the execution speed of the algorithm.
 
+### Extra tips
+
+**Enable `memset`, `memmove`, `memcpy`**
+
+Even if you don't declare these functions, the compiler will sometimes optimize
+into these calls. So it's better to just declare and use them. Because we can't
+`#include <string.h>`, we have to declare them ourselves:
+
+```c
+void *memset(void *s, int c, size_t n);
+void *memcpy(void *restrict dest, const void *restrict src, size_t n);
+void *memmove(void *dest, const void *src, size_t n);
+```
+
+We also have to enable the bulk memory WASM feature extension, which is [widely
+supported](//caniuse.com/wasm-bulk-memory).
+
+```sh
+CFLAGS="--target=wasm32 -nostdlib -fvisibility=hidden -O3 -flto -mbulk-memory"
+```
+
+**Enable vectorization**
+
+To further enhance compiler optimization, you can enable [WASM
+SIMD](//v8.dev/features/simd), which allows the compiler to use SIMD operations
+to optimize your code. For finer grained control, you can hand-write SIMD by
+importing the [wasm_simd128.h header
+file](//github.com/llvm/llvm-project/blob/main/clang/lib/Headers/wasm_simd128.h).
+
 ## Actual "Hello, world!"
 
 Optimized calculation is cool and all, but your code is useless if it can't
@@ -506,35 +535,6 @@ using functions and pointers. We also parsed a simple C data structure (a
 null-terminated string) in JavaScript. Extending this, you can do quite a lot
 until dynamic memory allocation is required, which is the topic for another
 article.
-
-## Extra tips
-
-### Enable `memset`, `memmove`, `memcpy`
-
-Even if you don't declare these functions, the compiler will sometimes optimize
-into these calls. So it's better to just declare and use them. Because we can't
-`#include <string.h>`, we have to use inline functions:
-
-```c
-#define memset(dest, c, size) __builtin_memset(dest, c, size)
-#define memcpy(dest, src, size) __builtin_memcpy(dest, src, size)
-#define memmove(dest, src, size) __builtin_memmove(dest, src, size)
-```
-
-We also have to enable the bulk memory WASM feature extension, which is [widely
-supported](//caniuse.com/wasm-bulk-memory).
-
-```sh
-CFLAGS="--target=wasm32 -nostdlib -fvisibility=hidden -O3 -flto -mbulk-memory"
-```
-
-### Enable vectorization
-
-To further enhance compiler optimization, you can enable [WASM
-SIMD](//v8.dev/features/simd), which allows the compiler to use SIMD operations
-to optimize your code. For finer grained control, you can hand-write SIMD by
-importing the [wasm_simd128.h header
-file](//github.com/llvm/llvm-project/blob/main/clang/lib/Headers/wasm_simd128.h).
 
 # Conclusion
 
