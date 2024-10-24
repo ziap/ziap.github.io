@@ -82,7 +82,7 @@
   
   
 
-  <abbr title="2794 words">
+  <abbr title="2795 words">
     12
     
       minutes
@@ -375,6 +375,25 @@ it to run better.</p>
 <p>As you can see, the function removed the for loop and used the summation
 formula with some additional bookkeeping to improve the time complexity and,
 more importantly, the execution speed of the algorithm.</p>
+<h3 id="extra-tips">Extra tips</h3>
+<p><strong>Enable <code>memset</code>, <code>memmove</code>, <code>memcpy</code></strong></p>
+<p>Even if you don’t declare these functions, the compiler will sometimes optimize
+into these calls. So it’s better to just declare and use them. Because we can’t
+<code>#include &lt;string.h&gt;</code>, we have to declare them ourselves:</p>
+<pre data-lang="c" style="background-color:#282c34;color:#dcdfe4;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#c678dd;">void *</span><span style="color:#61afef;">memset</span><span>(</span><span style="color:#c678dd;">void *</span><span style="color:#e06c75;">s</span><span>, </span><span style="color:#c678dd;">int </span><span style="color:#e06c75;">c</span><span>, size_t </span><span style="color:#e06c75;">n</span><span>);
+</span><span style="color:#c678dd;">void *</span><span style="color:#61afef;">memcpy</span><span>(</span><span style="color:#c678dd;">void *restrict </span><span style="color:#e06c75;">dest</span><span>, </span><span style="color:#c678dd;">const void *restrict </span><span style="color:#e06c75;">src</span><span>, size_t </span><span style="color:#e06c75;">n</span><span>);
+</span><span style="color:#c678dd;">void *</span><span style="color:#61afef;">memmove</span><span>(</span><span style="color:#c678dd;">void *</span><span style="color:#e06c75;">dest</span><span>, </span><span style="color:#c678dd;">const void *</span><span style="color:#e06c75;">src</span><span>, size_t </span><span style="color:#e06c75;">n</span><span>);
+</span></code></pre>
+<p>We also have to enable the bulk memory WASM feature extension, which is <a href="//caniuse.com/wasm-bulk-memory">widely
+supported</a>.</p>
+<pre data-lang="sh" style="background-color:#282c34;color:#dcdfe4;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#e06c75;">CFLAGS</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;--target=wasm32 -nostdlib -fvisibility=hidden -O3 -flto -mbulk-memory&quot;
+</span></code></pre>
+<p><strong>Enable vectorization</strong></p>
+<p>To further enhance compiler optimization, you can enable <a href="//v8.dev/features/simd">WASM
+SIMD</a>, which allows the compiler to use SIMD operations
+to optimize your code. For finer grained control, you can hand-write SIMD by
+importing the <a href="//github.com/llvm/llvm-project/blob/main/clang/lib/Headers/wasm_simd128.h">wasm_simd128.h header
+file</a>.</p>
 <h2 id="actual-hello-world">Actual “Hello, world!”</h2>
 <p>Optimized calculation is cool and all, but your code is useless if it can’t
 interact with the platform it’s running on, which in this case is your
@@ -519,25 +538,6 @@ using functions and pointers. We also parsed a simple C data structure (a
 null-terminated string) in JavaScript. Extending this, you can do quite a lot
 until dynamic memory allocation is required, which is the topic for another
 article.</p>
-<h2 id="extra-tips">Extra tips</h2>
-<h3 id="enable-memset-memmove-memcpy">Enable <code>memset</code>, <code>memmove</code>, <code>memcpy</code></h3>
-<p>Even if you don’t declare these functions, the compiler will sometimes optimize
-into these calls. So it’s better to just declare and use them. Because we can’t
-<code>#include &lt;string.h&gt;</code>, we have to use inline functions:</p>
-<pre data-lang="c" style="background-color:#282c34;color:#dcdfe4;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#c678dd;">#define </span><span style="color:#61afef;">memset</span><span>(</span><span style="color:#e06c75;">dest</span><span>, </span><span style="color:#e06c75;">c</span><span>, </span><span style="color:#e06c75;">size</span><span>) </span><span style="color:#e06c75;">__builtin_memset</span><span>(dest, c, size)
-</span><span style="color:#c678dd;">#define </span><span style="color:#61afef;">memcpy</span><span>(</span><span style="color:#e06c75;">dest</span><span>, </span><span style="color:#e06c75;">src</span><span>, </span><span style="color:#e06c75;">size</span><span>) </span><span style="color:#e06c75;">__builtin_memcpy</span><span>(dest, src, size)
-</span><span style="color:#c678dd;">#define </span><span style="color:#61afef;">memmove</span><span>(</span><span style="color:#e06c75;">dest</span><span>, </span><span style="color:#e06c75;">src</span><span>, </span><span style="color:#e06c75;">size</span><span>) </span><span style="color:#e06c75;">__builtin_memmove</span><span>(dest, src, size)
-</span></code></pre>
-<p>We also have to enable the bulk memory WASM feature extension, which is <a href="//caniuse.com/wasm-bulk-memory">widely
-supported</a>.</p>
-<pre data-lang="sh" style="background-color:#282c34;color:#dcdfe4;" class="language-sh "><code class="language-sh" data-lang="sh"><span style="color:#e06c75;">CFLAGS</span><span style="color:#c678dd;">=</span><span style="color:#98c379;">&quot;--target=wasm32 -nostdlib -fvisibility=hidden -O3 -flto -mbulk-memory&quot;
-</span></code></pre>
-<h3 id="enable-vectorization">Enable vectorization</h3>
-<p>To further enhance compiler optimization, you can enable <a href="//v8.dev/features/simd">WASM
-SIMD</a>, which allows the compiler to use SIMD operations
-to optimize your code. For finer grained control, you can hand-write SIMD by
-importing the <a href="//github.com/llvm/llvm-project/blob/main/clang/lib/Headers/wasm_simd128.h">wasm_simd128.h header
-file</a>.</p>
 <h1 id="conclusion">Conclusion</h1>
 <p>Building a basic “Hello, world!”, we managed to:</p>
 <ul>
