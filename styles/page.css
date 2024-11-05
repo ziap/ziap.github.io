@@ -147,7 +147,7 @@
     }
   }
 
-  img {
+  img, video {
     display: block;
     border-radius: 12px;
     max-width: 100%;
