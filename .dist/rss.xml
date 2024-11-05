@@ -7,7 +7,20 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Mon, 21 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Wed, 30 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Approximating sin(2πx)</title>
+          <pubDate>Wed, 30 Oct 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/sin-approx/</link>
+          <guid>https://ziap.github.io/blog/sin-approx/</guid>
+          <description xml:base="https://ziap.github.io/blog/sin-approx/">&lt;p&gt;I use trigonometric function extremely often ever since I started doing
+programming. They show up everywhere, especially in graphics, and while they’re
+not the most efficient operation, they are widely available in programming
+languages. This is not the case if you’re programming in embedded systems or
+&lt;a href=&quot;&#x2F;blog&#x2F;wasm&quot;&gt;WebAssembly&lt;&#x2F;a&gt;, so I tried to compute them myself.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Introduction to freestanding WebAssembly</title>
           <pubDate>Mon, 21 Oct 2024 00:00:00 +0000</pubDate>
