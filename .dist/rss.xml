@@ -7,10 +7,10 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Wed, 30 Oct 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Tue, 05 Nov 2024 00:00:00 +0000</lastBuildDate>
       <item>
           <title>Approximating sin(2πx)</title>
-          <pubDate>Wed, 30 Oct 2024 00:00:00 +0000</pubDate>
+          <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
           <author>Zap</author>
           <link>https://ziap.github.io/blog/sin-approx/</link>
           <guid>https://ziap.github.io/blog/sin-approx/</guid>

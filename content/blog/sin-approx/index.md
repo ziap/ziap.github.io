@@ -1,6 +1,6 @@
 +++
 title = "Approximating sin(2πx)"
-date  = "2024-10-30"
+date  = "2024-11-05"
 +++
 
 I use trigonometric function extremely often ever since I started doing
