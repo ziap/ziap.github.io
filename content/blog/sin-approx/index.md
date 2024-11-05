@@ -3,7 +3,7 @@ title = "Approximating sin(2πx)"
 date  = "2024-11-05"
 +++
 
-I use trigonometric function extremely often ever since I started doing
+I use trigonometric functions extremely often, ever since I started doing
 programming. They show up everywhere, especially in graphics, and while they're
 not the most efficient operation, they are widely available in programming
 languages. This is not the case if you're programming in embedded systems or
@@ -12,29 +12,29 @@ languages. This is not the case if you're programming in embedded systems or
 <!-- more -->
 
 Trigonometric functions are actually quite similar in both their properties and
-their computataion. So I'll just write about how I computed sine and the rest
-are similar. I actually prefer cosine, but I have chosen sine for this article
-because of the iconic sinusoidal wave visualization.
+their computation. So I'll just write about how I computed sine, and the rest
+are similar. I actually prefer cosine, but I have chosen the sine function for
+this article because of the iconic sinusoidal wave visualization.
 
 # Why sin(2πx) and not sin(x)
 
 A big problem with general trigonometric functions is that they use radians as
-input (and as output for inverse trigonometric function). Radians are
-exceptionally great for calculus but fall shorts when implemented in a
+input (and as output for inverse trigonometric functions). Radians are
+exceptionally great for calculus but fall short when implemented on a
 computer. They make it so that common angles are expressed as multiples of pi,
 which don't have perfectly accurate floating point representation. They also
-make computataion much, much more complicated and less accurate.
+make computation much, much more complicated and less accurate.
 
-So what is the alternative? First of all, the concept of angle should be
-thought of as an abstract data type. The internal representation shouldn't mean
-anything and what gives them meaning are their operations. I can represent with
-a 32-bit unsigned integer where 0 is 0 degree and 2^32 (which is equal to 0) is
+So what is the alternative? Firstly, the concept of angle should be thought of
+as an abstract data type. The internal representation shouldn't mean anything,
+and what gives them meaning are their operations. I can represent them with
+32-bit unsigned integers where 0 is 0 degree and 2^32 (which is equal to 0) is
 360 degree (which is also equal to 0 degree), and everything in between is
 interpolated. This method has a name, called BAM (Binary angular measurement),
 and was used in [Doom](//doomwiki.org/wiki/Angle) back when floating-point
 arithmetic was too expensive.
 
-While BAM is great and I'm sure to investigate more into them, I'm not willing
+While BAM is great, and I'm sure to investigate more into them, I'm not willing
 to implement some of the algorithm below in fixed-point or integer arithmetic.
 So a floating-point representation might be better. Degree is actually a pretty
 good contestant with its ability to represent many angles as integers, but it
@@ -44,68 +44,68 @@ trigonometric functions.
 ## The problem with degrees and radians
 
 To understand the problem, let's try to compute sine. Firstly, it's very hard
-to design an approximation that works well in the entire range of input, so
-what commonly done is called argument reduction, where you exploit properties
+to design an approximation that works well in the entire range of input. What
+is commonly done is called argument reduction, where you exploit the properties
 of the function to transform the range of the input into something more
-managable. For sine it's its periodicity, or put in more rigorous terms:
+manageable. For sine, it's its periodicity, or, in more rigorous terms:
 
 ```
 sin(radians) = sin(radians ± 2π)
 sin(degrees) = sin(degrees ± 360)
 ```
 
-This means that for example, to compute sine in radians we just need to compute
-sin in the range \[0, 2π\] and map the input to this range. This can be done by
-taking the remainder of x and 2π, which to perform efficiently and precisely is
-[extremely
-complicated](//github.com/ziglang/zig/blob/master/lib/libc/musl/src/math/__rem_pio2.c#L49).
-Recall in radians, common angles are represented as multiples of pi, which
-means that to compute sine of common angles, you have to first multiply by pi
-and then divide, also by pi. This is a wasted operation but the error still
-accumulates.
+This means that, for example, to compute sine in radians, we just need to
+compute sin in the range \[0, 2π\] and map the input to this range. This can be
+done by taking the remainder of x and 2π, which is [extremely
+complicated](//github.com/ziglang/zig/blob/master/lib/libc/musl/src/math/__rem_pio2.c#L49)
+to perform efficiently and precisely. Recall that in radians, common angles are
+represented as multiples of pi, which means that to compute the sine of common
+angles, you have to first multiply by pi and then divide, wait for it, by pi.
+Although these two operations cancel each other, their errors still accumulate.
 
-In the degrees world, this problem is slightly mitigated as 360 is an integer,
-not a transcendental number which helps a lot with precision and implementation
-complexity but it's not ideal. What if we have a representation that can
-perform argument reduction simply and effectively?
+In the degree world, this problem is slightly mitigated as 360 is an integer,
+not a transcendental number, which helps a lot with precision and
+implementation complexity, but it's not ideal. What if we have a representation
+that can perform argument reduction simply and effectively?
 
 ## Enter turn (the measurement)
 
-If I pick an unusual angle measurement, say 225 degree, how do you make sense
-or quantify it? If you're like me, you'd interpret it as it is about 60% of a
-full angle. In CSS, a unit form angle measurement that uses multiples of a full
-angle is called [turn](//developer.mozilla.org/en-US/docs/Web/CSS/angle#turn).
-For example, 720 degree is 2 turns and pi/4 is one eight of a turn. In my
-opinion, this thinking in terms of a full angle is more intuitive for both
-human and computer. 0.75 turns is more comprehensible than 270 degree, and to a
-certain extent, common angles can be represented exactly in binary
-floating-point. But what about argument reduction, here it is:
+If I pick an unusual angle measurement, say 225 degrees, how do you make sense
+or quantify it? If you're like me, you'd interpret it as being about 60% of a
+full angle. In CSS, a unit of angle measurement that uses multiples of a full
+angle is called a
+[turn](//developer.mozilla.org/en-US/docs/Web/CSS/angle#turn). For example, 720
+degree is 2 turns and pi/4 is one eight of a turn. In my opinion, this thinking
+in terms of a full angle is more intuitive for both human and computer. 0.75
+turns is more comprehensible than 270 degree, and to a certain extent, common
+angles can be represented exactly in binary floating-point. But what about
+argument reduction, here it is:
 
 ```c
 float reduced = x - (int)x + (x < 0);
 ```
 
 The `(int)x + (x < 0)` part can be simplified into a `floor(x)`, but casting
-the input to integer will be handy in the future and we don't have to use
-`floor` from the math library. With degrees or radians, flooring is not
-suffice, and you have to use something like `fmod`, or optimize it with complex
+the input to an integer will be handy in the future, and we don't have to use
+`floor` from the math library. With degrees or radians, flooring does not
+suffice, and you have to use something like `fmod` or optimize it with complex
 bit manipulations like what most optimized implementations do. This is why I
 tried to compute `sin(2πx)`. `2πx` converts radians to turns, so `sin(2πx)` is
 simply `sin(x)`, but parameterized with turns instead of radians.
 
-# Different ways I tried to copmute sine
+# Different ways I tried to compute sine
 
 With all the rationale behind turn out of the way, here's my many attempts at
-computing sine. Unfortunately, this is where my expertise ended and I was
-wandering in unknown territories. Just a disclamer, I'm not formally educated
+computing sine. Unfortunately, this is where my expertise ended, and I was
+wandering in unknown territories. Just a disclaimer, I'm not formally educated
 in approximation and numerical algorithms, and I'm not the brightest at math,
 so the sections below will contain lots of hand-waving and little rigor.
 
 ## Lookup table approach
 
 The easiest way to do something efficiently is to do it inefficiently once and
-store the results to look them up later. This is an approach I used many times
-in the past and regularly reach for when solving a new problem.
+store the results to look them up later. This is an approach I have used many
+times in the past and regularly reach for when solving a new problem.
 
 <figure>
     <video autoplay muted loop>
@@ -176,10 +176,11 @@ float sin_lookup_reduced(float x, size_t reduced_range) {
 
 Using lookup tables is very accurate, but other than being horrendously slow to
 compute, it also generates a `64mb` binary. And while looking up the table is
-cheap, the large table size can cause cache miss which is bad for performance
-when used in a computational pipeline. However, the lookup table gives me a
-good reference implementation for me to test other algorithms. Before that, I
-tested the correlation between table size and precision of this method.
+cheap, the large table size can cause cache misses, which is bad for
+performance when used in a computational pipeline. However, the lookup table
+gives me a good reference implementation for me to test other algorithms.
+Before that, I tested the correlation between table size and precision for this
+method.
 
 ## Testing framework
 
@@ -188,8 +189,8 @@ representation of the input range. Because we reduced the input to \[0, 1\], we
 need to test all floating-point representation of numbers between 0 and 1,
 which has `2^30` unique values. This is too big for me, so I'll just use the
 `2^23` values in the \[1, 2\] range, which is uniformly distributed and matches
-the range of the lookup table. For completeness I'll also subtract the range by
-1 to get a subset of the \[0, 1\] range and test those too.
+the range of the lookup table. For completeness, I'll also subtract the range
+by 1 to get a subset of the \[0, 1\] range and test those too.
 
 ```c
 float compute_error(float sin_impl(float)) {
@@ -227,12 +228,12 @@ float compute_error(float sin_impl(float)) {
 }
 ```
 
-The final line `return max_error / FLT_EPSILON` convert the maximum error into
+The final line `return max_error / FLT_EPSILON` converts the maximum error into
 a unit called [ULP](//en.wikipedia.org/wiki/Unit_in_the_last_place). The reason
-is because 5 ULP and 10 ULP are easier to display than 5.960464477539062e-07
-and 1.1920928955078125e-06. Also ULP takes into account of the data type, so
-while 5.960464477539062e-07 is 5 ULP in 32-bit float which is great, but it is
-a whopping 2684354560 ULP in 64-bit float which is absolutely horrible.
+is that 5 ULP and 10 ULP are easier to display than 5.960464477539062e-07 and
+1.1920928955078125e-06. Also, ULP takes into account of the data type, so while
+5.960464477539062e-07 is 5 ULP in 32-bit float which is great, but it is a
+whopping 2684354560 ULP in 64-bit float which is absolutely horrible.
 
 ### Testing smaller lookup tables
 
@@ -244,10 +245,11 @@ a whopping 2684354560 ULP in 64-bit float which is absolutely horrible.
 From the figure above, we can see that the error is inversely proportional to
 the table size, which is quite predictable. The noise in the graph is due to
 the error when interpolating the smaller table when the size is not a power of
-two. Although the method converges quite quickly, to reach high enough accuracy
-you need very big lookup tables. For example, to reach sub 20 ULP, you need a
-lookup table of size 2^21 or about 2 millions elements. And the method
-definitely won't scale well when applied to double-precision floats.
+two. Although the method converges quite quickly, to reach high enough
+accuracy, you need very large lookup tables. For example, to reach sub-20 ULP,
+the lookup table needs to have the size of 2^21 or about 2 millions elements.
+And the method definitely won't scale well when applied to double-precision
+floats.
 
 ### Testing standard library sine
 
@@ -261,11 +263,11 @@ the lookup table as our target output.
 </figure>
 
 As you can see, the error of the standard implementation increases as we go
-further away 0. This confirms the accumulating error of multiplying by 2πx then
-taking the remainder. You might be skeptical as I'm using the lookup table as
-reference, so here's the result of `sin(2πx)` in ULP for x in \[0, 1000\]. Of
-course, the correct results are zeros, but let's see what the standard library
-gives.
+further away from 0. This confirms the accumulating error of multiplying by 2πx
+and then taking the remainder. You might be skeptical as I'm using the lookup
+table as a reference, so here's the result of `sin(2πx)` in ULP for x in \[0,
+1000\]. Of course, the correct results are zeros, but let's see what the
+standard library gives.
 
 <figure>
     <img src="std-error.svg" alt="STD implementation error">
@@ -308,25 +310,25 @@ float sin_lookup(float x) {
 
 If you use half-turn instead of turn, you have effectively reduced an
 instruction from the algorithm, but multiplying by two is essentially adding
-with itself, and I feel like the input are more naturally in \[0, 1\) and you
-have to multiplying by 2 anyways. This effectively reduced the memory usage by
-half, for the same precision, as shown in the figure above.
+with itself, and I feel like the inputs are more likely to be in the range in
+\[0, 1\) so you have to multiply by 2 anyway. This effectively reduced the
+memory usage by half for the same precision, as shown in the figure below.
 
 <figure>
     <img src="lookup-result1.svg" alt="Lookup tables optimized result">
     <figcaption>Optimized lookup table compared to the original</figcaption>
 </figure>
 
-Or you can look at it in another way: By exploiting the symmetry of sine we
+Or you can look at it in another way: By exploiting the symmetry of sine, we
 doubled the precision of the same algorithm, for free. There are ways to
-exploit even more symmetry, but we'll look at other method of implementing sine
-first.
+exploit even more symmetry, but we'll look at other methods of implementing
+sine first.
 
 ## Taylor polynomials
 
-Computer don't understand sine and cosine, but they understand polynomials, so
-we can use polynomials to approximate sine. The most basic way of doing this is
---- which you might learned from your college calculus course --- is to use a
+Computers don't understand sine and cosine, but they understand polynomials, so
+we can use polynomials to approximate sine. The most basic way of doing this
+---which you might have learned from your college calculus course---is to use a
 truncated Taylor series. At this point, there will be a lot of math, so I'll
 switch to exclusively using radians to explain what I did.
 
@@ -339,7 +341,7 @@ switch to exclusively using radians to explain what I did.
 
 Since we're computing sin(πx) in the range \[0, 1\], it's a good idea to
 compute the Taylor series around 0.5. A benefit of using Taylor series is that
-the highest error typically resides at the boundary, i.e 0 and 1, so we can
+the highest error typically resides at the boundary, i.e., 0 and 1, so we can
 compute the error at those points and compare them to the error observed in the
 benchmark. Mpmath already has support for Taylor series, but the function is
 simple enough for me to calculate myself.
@@ -350,7 +352,7 @@ simple enough for me to calculate myself.
 </figure>
 
 If the origin is at x = 0.5, sin(πx) becomes an even function, so its power
-series consists only of even degree monomials. Translating this to code is very
+series consists only of even-degree monomials. Translating this to code is very
 straightforward:
 
 ```python
@@ -403,7 +405,7 @@ float sin_taylor(float x, int n) {
 
 In production code, it's better to inline the polynomial evaluation instead of
 using for loop. But with this code, I could test the error of each truncation
-point for the series. Because the power series consists of only even degree
+point for the series. Because the power series consists of only even-degree
 monomials, every step of Horner's method the result is multiplied by x^2
 instead of x. This means that I essentially got double the polynomial degree
 for free, which is another aspect of exploiting the symmetry of the sine
@@ -436,21 +438,20 @@ This is good, but I wanted to reach the saturation point faster.
 ## Padé approximation
 
 A simple way to improve the Taylor approximation is to convert the truncated
-power series into a rational polynomial. This is known as Padé approximant.
-This method simply solves a systems of equations to obtain a rational
-polynomial that agrees with the original function. It feels magical and
-cheating to get better approximation with the same function by transforming it,
-but a rational polynomial can model better the asymptotic behaviour of some
-functions.
+power series into a rational polynomial. This is known as the Padé approximant.
+This method simply solves a system of equations to obtain a rational polynomial
+that agrees with the original function. It feels magical and cheating to get a
+better approximation with the same function by transforming it, but a rational
+polynomial can better model the asymptotic behaviour of some functions.
 
 Like for the taylor series, mpmath has support for generating Padé
-approximation, and I didn't myself this time unlike the Taylor approximation
-because the procedure is different for each order of the approximation. After
-getting the coefficients I used some metaprogramming to generate inlined
-polynomial evaluation. Since the original series has only even degree
-monomials, its rational approximations also have even degree numerators and
-denominators. So I just skipped every other coefficients for both and performed
-Horner's method on strings to generate the polynomial.
+approximations, and I didn't do it myself this time, unlike the Taylor
+approximation, because the procedure is different for each order of the
+polynomial. After getting the coefficients, I used some metaprogramming to
+generate inlined polynomial evaluations. Since the original series has only
+even-degree monomials, its rational approximations also have even-degree
+numerators and denominators. So I just skipped every other coefficient for both
+and performed Horner's method on strings to generate the polynomial.
 
 ```python
 import mpmath
@@ -487,9 +488,9 @@ for i in range(1, 11):
     print(f"q = {q}")
 ```
 
-Here's an example of order \[6/6\] Padé approximation in C. It agrees to the
-Taylor series of order 12, but in terms of computation it's more expensive and
-less precise because of the extra division.
+Here's an example of the order \[6/6\] Padé approximation in C. It agrees with
+the Taylor series of order 12, but in terms of computation, it's more expensive
+and less precise because of the extra division.
 
 ```c
 float sin_pade_6_6(float x) {
@@ -579,11 +580,11 @@ function around a point, not across a range.
     <figcaption>An illustration of Chebyshev approximation with different polynomial degrees</figcaption>
 </figure>
 
-One method of finding a approximating polynomial across a range is called
+One method of finding approximating polynomials across a range is called
 Chebyshev approximation. I couldn't wrap my head around the theory behind it,
-so I just let mpmath do the heavy lifting. Unlike Taylor series where you can
+so I just let mpmath do the heavy lifting. Unlike Taylor series, where you can
 just truncate the polynomial to get a lower degree approximation, with
-Chebyshev polynomials you have to make one for every degree.
+Chebyshev polynomials, you have to make one for every degree.
 
 ```python
 import mpmath
@@ -619,31 +620,31 @@ From the graph above, there are two things that needs attention:
 1. Chebyshev approximation is better, I indeed managed to reach the saturation
    point faster, at the cost of the quality of the saturation point.
 
-2. The zig-zag shape of the graph indicates that significant drop of error
+2. The zigzag shape of the graph indicates that significant drops in error
    occurs when a new even-degree polynomial is reached.
 
 Remember that I'm optimizing for maximum error, not average error, so an
-approximation technique that distribute the error more evenly is advantagous.
-However, both problem above are the result of the unexploited symmetry of sine.
-An n-degree Chebyshev polynomial requires n - 1 Horner's iteration, while for
-the truncated Taylor series it's n / 2 - 1. Less arithmetic operations means
-less accumulating error, which explains why the saturated error of the
-Chebyshev approximation is so bad. Similarly, odd-degree polynomials doesn't
-add much because the extra term that makes the function odd can't capture the
-even features of the function in the input range.
+approximation technique that distributes the error more evenly is advantageous.
+However, both problems above are the result of the unexploited symmetry of
+sine. An n-degree Chebyshev polynomial requires n - 1 Horner's iteration, while
+for the truncated Taylor series, it's n / 2 - 1. Less arithmetic operations
+mean less accumulating error, which explains why the saturated error of the
+Chebyshev approximation is so bad. Similarly, odd-degree polynomials don't add
+much because the extra term that makes the function odd can't capture the even
+features of the function in the input range.
 
 ### Optimizing Chebyshev approximation
 
-So in order to optimize the Chebyshev polynomials I had to make them either
+So in order to optimize the Chebyshev polynomials, I had to make them either
 even or odd. If you have a general polynomial P(x), you can turn it into an
 even function by evaluating it at x^2 instead of x, giving P(x^2). So I
-generated Chebyshev approximations for sin(π√x) and evaluate it like the Taylor
-series.
+generated Chebyshev approximations for sin(π√x) and evaluated it like the
+Taylor series.
 
 But there's a problem, sin(πx) is not even around 0, so the Chebyshev
 polynomials struggles to fit the function. To remedy this I had to shift the
-function by 0.5 similarly to the Taylor polynomials, so this is essentially
-truncated Taylor series with a different set of coefficients. Shifting the
+function by 0.5 similarly to the Taylor polynomials, so this is essentially a
+truncated Taylor series with a different set of coefficients. By shifting the
 function, we get the equality:
 
 ```
@@ -669,14 +670,14 @@ looks promising, let's see how well it actually does:
     <figcaption>Comparison of Taylor and improved Chebyshev approximation</figcaption>
 </figure>
 
-I finally made something better than truncated Taylor series. The imrpoved
+I finally made something better than the truncated Taylor series. The improved
 version reached the same saturation point as the Taylor polynomials, but it
 converged slightly faster. But something didn't feel right. I computed sine by
 indirectly computing cosine. While there's nothing wrong with that, it's better
 if I can compute sine directly.
 
 I had to convert to cosine because I need to transform sine into an even
-function, but there's another sine related even function: the sinc function or
+function, but there's another sine-related even function: the sinc function or
 `sin(x)/x`.
 
 ```
@@ -685,13 +686,12 @@ P(x) = sin(π√x)/√x
 sin(πx) = P(x^2) * x
 ```
 
-Multiplying x to an even function creates an odd function, which is exactly
-what sine is. This feels more natural than the approach above, also this
-guarantees that sin(0) --- and by extension, sine of integers --- zero.
-Previously we can't be sure that the subtraction by 0.5 doesn't introduce
-error. The problem with this method is that unlike the other method, there's no
-way to compute the error in mpmath. Because of that I only compared the
-benchmark results of the two methods.
+Multiplying x by an even function creates an odd function, which is exactly
+what sine is. This feels more natural than the approach above and it also
+guarantees that sin(0)---and, by extension, sine of integers---zero. The
+problem with this method is that unlike the other method, there's no way to
+compute the error in mpmath. As a result, I only compared the benchmark results
+of the two methods.
 
 <figure>
     <img src="cheby-result-even-odd.svg" alt="Chebyshev approximation comparison">
@@ -699,30 +699,30 @@ benchmark results of the two methods.
 </figure>
 
 The odd-degree sinc transformation does slightly worse than the even-degree cos
-transformation. For the worse saturation point it's probably due to the extra
-multiplication similar to the Padé approximation method. For the worse
+transformation. For the worse saturation point, it's probably due to the extra
+multiplication, similar to the Padé approximation method. For the worse
 non-saturated error, however, I can hypothesize that it's due to the additional
 complexity of approximating `sin(π√x)/√x` instead of `cos(π√x)`.
 
-Nontheless, I prefer the odd-degree version, because it felt more like directly
-computing sine and no matter how bad the approximation is, sine of full turns
-are always zero.
+Nontheless, I prefer the odd-degree version because it felt more like directly
+computing sine and no matter how bad the approximation is, the sine of full
+turns is always zero.
 
 # Conclusion
 
 This post summarized the techniques I tried to compute sine, including lookup
 tables, truncated Taylor series, Padé approximant, and Chebyshev polynomials.
 These methods are nothing new, in fact, mpmath has implemented all these
-methods already, and all I did was calling functions and evaluating the
-results. It was still pretty fun balancing between precision, speed, and memory
-usage. I still want to learn more about Chebyshev polynomials and try the
-Remez's algorithm which is pretty interesting as it uses Newton's method,
+methods already, and all I did was call functions and evaluate the
+results. It was still pretty fun balancing precision, speed, and memory
+usage. I still want to learn more about Chebyshev polynomials and try
+Remez's algorithm, which is pretty interesting as it uses Newton's method,
 another approximation technique.
 
 For the time being, this is what I use for computing sine in turns for
-single-precision floating-point numbers. It's the the odd-degree Chebyshev
-method with internal double conversion to bypass the saturation point. This has
-the precision of 0.5 ULP.
+single-precision floating-point numbers. It's the odd-degree Chebyshev method
+with internal double conversion to bypass the saturation point. This has the
+maximum error of 0.5 ULP.
 
 ```c
 float sin_turn_32(float fx) {
@@ -740,10 +740,10 @@ float sin_turn_32(float fx) {
 }
 ```
 
-For double-precision, more terms are needed to converge, and unfortunately
+For double-precision, more terms are needed to converge, and unfortunately,
 80-bit and 128-bit floating-point numbers are too slow to do the previous
 optimization. I'm sure there are other clever ways of achieving this, but
-currently the precision reached the saturation point at 2 ULP.
+currently the precision has reached the saturation point at 2 ULP.
 
 ```c
 double sin_turn_64(double x) {
@@ -765,9 +765,9 @@ double sin_turn_64(double x) {
 ```
 
 It's interesting to benchmark and compare these with the standard library
-implementation, but I don't expect it to do better. The benefit from creating
-my own sine function is that I now have full control over it and can change it
-however I want. If one day I decide that half-turns or degrees are better then
+implementation, but I don't expect it to do better. The benefit of creating my
+own sine function is that I now have full control over it and can change it
+however I want. If one day I decide that half-turns or degrees are better, then
 I can easily switch to those. I can also use a lower-degree polynomial to
-increase execution speed at the cost of precision. It's always nice have the
+increase execution speed at the cost of precision. It's always nice to have the
 ability to customize a tool for your needs and preferences.

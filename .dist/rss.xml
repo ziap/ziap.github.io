@@ -14,7 +14,7 @@
           <author>Zap</author>
           <link>https://ziap.github.io/blog/sin-approx/</link>
           <guid>https://ziap.github.io/blog/sin-approx/</guid>
-          <description xml:base="https://ziap.github.io/blog/sin-approx/">&lt;p&gt;I use trigonometric function extremely often ever since I started doing
+          <description xml:base="https://ziap.github.io/blog/sin-approx/">&lt;p&gt;I use trigonometric functions extremely often, ever since I started doing
 programming. They show up everywhere, especially in graphics, and while they’re
 not the most efficient operation, they are widely available in programming
 languages. This is not the case if you’re programming in embedded systems or
