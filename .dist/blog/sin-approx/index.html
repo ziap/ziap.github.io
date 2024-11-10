@@ -82,8 +82,8 @@
   
   
 
-  <abbr title="4756 words">
-    20
+  <abbr title="5393 words">
+    22
     
       minutes
     
@@ -746,6 +746,101 @@ however I want. If one day I decide that half-turns or degrees are better, then
 I can easily switch to those. I can also use a lower-degree polynomial to
 increase execution speed at the cost of precision. It’s always nice to have the
 ability to customize a tool for your needs and preferences.</p>
+<h1 id="uupdate-benchmark-against-the-standard-library-implementation">Uupdate: Benchmark against the standard library implementation</h1>
+<p>I couldn’t help myself but to conduct some benchmarks to compare my custom sine
+implementation with the implementation from the standard library. I’ll test
+both computing a single value and batch processing an entire array of values.
+To generate inputs, I used the <a href="//prng.di.unimi.it/">Xoshiro256++</a> random
+number generators to generate 64-bit values in these value ranges: [-0.25,
+0.25) and [-1, 1) I also tested a SIMD optimized implementation of <a href="//en.wikipedia.org/wiki/Estrin&#x27;s_scheme">Estrin’s
+scheme</a>.</p>
+<pre data-lang="c" style="background-color:#282c34;color:#dcdfe4;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#c678dd;">double </span><span style="color:#61afef;">sin_turn_simd</span><span>(</span><span style="color:#c678dd;">double </span><span style="color:#e06c75;">x</span><span>) {
+</span><span>    x </span><span style="color:#c678dd;">*= </span><span style="color:#e5c07b;">2</span><span>;
+</span><span>    int64_t ix </span><span style="color:#c678dd;">= </span><span>(int64_t)(x </span><span style="color:#c678dd;">+ </span><span style="color:#e5c07b;">0.5</span><span>) </span><span style="color:#c678dd;">- </span><span>(x </span><span style="color:#c678dd;">&lt; -</span><span style="color:#e5c07b;">0.5</span><span>);
+</span><span>    x </span><span style="color:#c678dd;">-=</span><span> ix;
+</span><span>    </span><span style="color:#c678dd;">double</span><span> x2 </span><span style="color:#c678dd;">=</span><span> x </span><span style="color:#c678dd;">*</span><span> x;
+</span><span>    </span><span style="color:#c678dd;">double</span><span> x4 </span><span style="color:#c678dd;">=</span><span> x2 </span><span style="color:#c678dd;">*</span><span> x2;
+</span><span>    </span><span style="color:#c678dd;">double</span><span> x8 </span><span style="color:#c678dd;">=</span><span> x4 </span><span style="color:#c678dd;">*</span><span> x4;
+</span><span>
+</span><span>    __m256d c0 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">_mm256_set_pd</span><span>(
+</span><span>        </span><span style="color:#c678dd;">-</span><span style="color:#e5c07b;">5.167712780049785822740496262</span><span>,
+</span><span>        </span><span style="color:#c678dd;">-</span><span style="color:#e5c07b;">0.0073703643265304156755464627222</span><span>,
+</span><span>        </span><span style="color:#c678dd;">-</span><span style="color:#e5c07b;">0.59926452882522400507990958357</span><span>,
+</span><span>        </span><span style="color:#c678dd;">-</span><span style="color:#e5c07b;">0.000021133627352052970404406818407
+</span><span>    )
+</span><span>
+</span><span>    __m256d c1 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">_mm256_set_pd</span><span>(
+</span><span>        </span><span style="color:#e5c07b;">3.1415926535897928787046988706</span><span>,
+</span><span>        </span><span style="color:#e5c07b;">0.082145878816310426916561014931</span><span>,
+</span><span>        </span><span style="color:#e5c07b;">2.5501640398618676296938350463</span><span>,
+</span><span>        </span><span style="color:#e5c07b;">0.00046598701580433779333641383896
+</span><span>    )
+</span><span>
+</span><span>    __m256d p0 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">_mm256_fmadd_pd</span><span>(c0, x2, c1);
+</span><span>    __m128d p1 </span><span style="color:#c678dd;">= </span><span style="color:#e06c75;">_mm_fmadd_pd</span><span>(</span><span style="color:#e06c75;">_mm256_extractf128_pd</span><span>(p0, </span><span style="color:#e5c07b;">0</span><span>), </span><span style="color:#e06c75;">_mm_set1_pd</span><span>(x4), </span><span style="color:#e06c75;">_mm256_extractf128_pd</span><span>(p0, </span><span style="color:#e5c07b;">1</span><span>));
+</span><span>    </span><span style="color:#c678dd;">double</span><span> p2[</span><span style="color:#e5c07b;">2</span><span>];
+</span><span>    </span><span style="color:#e06c75;">_mm_store_pd</span><span>(p2, p1);
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">double</span><span> y </span><span style="color:#c678dd;">=</span><span> p2[</span><span style="color:#e5c07b;">0</span><span>] </span><span style="color:#c678dd;">*</span><span> x8 </span><span style="color:#c678dd;">+</span><span> p2[</span><span style="color:#e5c07b;">1</span><span>];
+</span><span>    </span><span style="color:#c678dd;">if </span><span>(ix </span><span style="color:#c678dd;">&amp; </span><span style="color:#e5c07b;">1</span><span>) y </span><span style="color:#c678dd;">= -</span><span>y;
+</span><span>    </span><span style="color:#c678dd;">return</span><span> y </span><span style="color:#c678dd;">*</span><span> x;
+</span><span>}
+</span></code></pre>
+<p>To evaluate the speed of these algorithms, I measured the time it took to
+compute 100 million sines. The error is measured against a degree-41 Chebyshev
+polynomial operating in 80-bit floating-point.</p>
+<h2 id="single-processing-results">Single processing results</h2>
+<p>Input range [-0.25, 0.25):</p>
+<table><thead><tr><th></th><th>GCC <code>-O3</code></th><th>GCC <code>-Ofast</code></th><th>Clang <code>-O3</code></th><th>Clang <code>-Ofast</code></th><th>Error</th></tr></thead><tbody>
+<tr><td>Horner</td><td>596 ms</td><td>616 ms</td><td>593 ms</td><td>539 ms</td><td>2 ULP</td></tr>
+<tr><td>SIMD</td><td><strong>587 ms</strong></td><td>616 ms</td><td><strong>584 ms</strong></td><td><strong>535 ms</strong></td><td>2.5 ULP</td></tr>
+<tr><td>Glibc</td><td>1382 ms</td><td>1394 ms</td><td>1366 ms</td><td>1247 ms</td><td><strong>0.5 ULP</strong></td></tr>
+</tbody></table>
+<p>Input range [-1, 1):</p>
+<table><thead><tr><th></th><th>GCC <code>-O3</code></th><th>GCC <code>-Ofast</code></th><th>Clang <code>-O3</code></th><th>Clang <code>-Ofast</code></th><th>Error</th></tr></thead><tbody>
+<tr><td>Horner</td><td>1131 ms</td><td>1090 ms</td><td>1213 ms</td><td>1108 ms</td><td><strong>2 ULP</strong></td></tr>
+<tr><td>SIMD</td><td><strong>1102 ms</strong></td><td><strong>1086 ms</strong></td><td><strong>1205 ms</strong></td><td><strong>1101 ms</strong></td><td>2.5 ULP</td></tr>
+<tr><td>Glibc</td><td>1936 ms</td><td>1937 ms</td><td>1920 ms</td><td>1819 ms</td><td>3.125 ULP</td></tr>
+</tbody></table>
+<h2 id="batch-processing-results">Batch processing results</h2>
+<p>Input range [-0.25, 0.25):</p>
+<table><thead><tr><th></th><th>GCC <code>-O3</code></th><th>GCC <code>-Ofast</code></th><th>Clang <code>-O3</code></th><th>Clang <code>-Ofast</code></th><th>Error</th></tr></thead><tbody>
+<tr><td>Horner</td><td><strong>488 ms</strong></td><td>492 ms</td><td><strong>461 ms</strong></td><td><strong>458 ms</strong></td><td>2 ULP</td></tr>
+<tr><td>SIMD</td><td>503 ms</td><td>503 ms</td><td>505 ms</td><td>504 ms</td><td>2.5 ULP</td></tr>
+<tr><td>Glibc</td><td>1172 ms</td><td><strong>388 ms</strong> (1.5 ULP)</td><td>1137 ms</td><td>1247 ms</td><td><strong>0.5 ULP</strong></td></tr>
+</tbody></table>
+<p>Input range [-1, 1):</p>
+<table><thead><tr><th></th><th>GCC <code>-O3</code></th><th>GCC <code>-Ofast</code></th><th>Clang <code>-O3</code></th><th>Clang <code>-Ofast</code></th><th>Error</th></tr></thead><tbody>
+<tr><td>Horner</td><td><strong>930 ms</strong></td><td>919 ms</td><td><strong>469 ms</strong></td><td><strong>458 ms</strong></td><td><strong>2 ULP</strong></td></tr>
+<tr><td>SIMD</td><td>942 ms</td><td>913 ms</td><td>944 ms</td><td>898 ms</td><td>2.5 ULP</td></tr>
+<tr><td>Glibc</td><td>1753 ms</td><td><strong>395 ms</strong> (3.25 ULP)</td><td>1743 ms</td><td>1718 ms</td><td>3.125 ULP</td></tr>
+</tbody></table>
+<h2 id="analysis">Analysis</h2>
+<p>Although performance wasn’t my primary goal when creating a sine approximation,
+it’s pleasant to see that my custom implementation is faster than the glibc
+implementation. There are many reasons why this is the case:</p>
+<ul>
+<li>The glibc implementation has proper infinity and NaN handling.</li>
+<li>The glibc implementation used some interesting techniques to get past the
+precision saturation point, although it’s less accurate when computing sine in
+turns.</li>
+<li>My implementation has a simpler and faster argument reduction procedure.</li>
+<li>My implementation is smaller, possibly making it easier to inline and optimize.</li>
+</ul>
+<p>For single processing speed, the SIMD version consistently outperforms the
+Horner’s method implementation, but only in an insignificant amount. For the
+batch processing, however, the SIMD version performs worse due to the fact that
+both versions are vectorized anyway and the SIMD version has some extra
+overheads. The biggest drawback of the SIMD version is that Estrin’s scheme
+isn’t optimal in terms of the number of operations, so it has more error
+accumulation. While the idea is cool and was also pretty fun to implement, the
+SIMD version isn’t worth it.</p>
+<p>My implementations only perform worse than the GCC <code>-Ofast</code> optimized glibc
+sine in bulk processing. A quick look at the generated assembly revealed that
+it directly calls <code>_ZGVdN4v_sin</code>, which is a carefully optimized SIMD
+implementation of sine in <a href="//sourceware.org/glibc/wiki/libmvec">libmvec</a>.
+Overall, I was pleasantly surprised that my implementation is faster, and it
+made me even happier with what I managed to come up with.</p>
 
   </article>
 

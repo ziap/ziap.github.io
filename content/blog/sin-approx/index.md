@@ -771,3 +771,116 @@ however I want. If one day I decide that half-turns or degrees are better, then
 I can easily switch to those. I can also use a lower-degree polynomial to
 increase execution speed at the cost of precision. It's always nice to have the
 ability to customize a tool for your needs and preferences.
+
+# Uupdate: Benchmark against the standard library implementation
+
+I couldn't help myself but to conduct some benchmarks to compare my custom sine
+implementation with the implementation from the standard library. I'll test
+both computing a single value and batch processing an entire array of values.
+To generate inputs, I used the [Xoshiro256++](//prng.di.unimi.it/) random
+number generators to generate 64-bit values in these value ranges: \[-0.25,
+0.25\) and \[-1, 1\) I also tested a SIMD optimized implementation of [Estrin's
+scheme](//en.wikipedia.org/wiki/Estrin's_scheme).
+
+```c
+double sin_turn_simd(double x) {
+    x *= 2;
+    int64_t ix = (int64_t)(x + 0.5) - (x < -0.5);
+    x -= ix;
+    double x2 = x * x;
+    double x4 = x2 * x2;
+    double x8 = x4 * x4;
+
+    __m256d c0 = _mm256_set_pd(
+        -5.167712780049785822740496262,
+        -0.0073703643265304156755464627222,
+        -0.59926452882522400507990958357,
+        -0.000021133627352052970404406818407
+    )
+
+    __m256d c1 = _mm256_set_pd(
+        3.1415926535897928787046988706,
+        0.082145878816310426916561014931,
+        2.5501640398618676296938350463,
+        0.00046598701580433779333641383896
+    )
+
+    __m256d p0 = _mm256_fmadd_pd(c0, x2, c1);
+    __m128d p1 = _mm_fmadd_pd(_mm256_extractf128_pd(p0, 0), _mm_set1_pd(x4), _mm256_extractf128_pd(p0, 1));
+    double p2[2];
+    _mm_store_pd(p2, p1);
+
+    double y = p2[0] * x8 + p2[1];
+    if (ix & 1) y = -y;
+    return y * x;
+}
+```
+
+To evaluate the speed of these algorithms, I measured the time it took to
+compute 100 million sines. The error is measured against a degree-41 Chebyshev
+polynomial operating in 80-bit floating-point.
+
+## Single processing results
+
+Input range \[-0.25, 0.25\):
+
+|        | GCC `-O3`  | GCC `-Ofast` | Clang `-O3` | Clang `-Ofast` | Error       |
+| ------ | ---------- | ------------ | ----------- | -------------- | ----------- |
+| Horner | 596 ms     | 616 ms       | 593 ms      | 539 ms         | 2 ULP       |
+| SIMD   | **587 ms** | 616 ms       | **584 ms**  | **535 ms**     | 2.5 ULP     |
+| Glibc  | 1382 ms    | 1394 ms      | 1366 ms     | 1247 ms        | **0.5 ULP** |
+
+Input range \[-1, 1\):
+
+|        | GCC `-O3`   | GCC `-Ofast` | Clang `-O3` | Clang `-Ofast` | Error     |
+| ------ | ----------- | ------------ | ----------- | -------------- | --------- |
+| Horner | 1131 ms     | 1090 ms      | 1213 ms     | 1108 ms        | **2 ULP** |
+| SIMD   | **1102 ms** | **1086 ms**  | **1205 ms** | **1101 ms**    | 2.5 ULP   |
+| Glibc  | 1936 ms     | 1937 ms      | 1920 ms     | 1819 ms        | 3.125 ULP |
+
+## Batch processing results
+
+Input range \[-0.25, 0.25\):
+
+|        | GCC `-O3`  | GCC `-Ofast`         | Clang `-O3` | Clang `-Ofast` | Error       |
+| ------ | ---------- | -------------------- | ----------- | -------------- | ----------- |
+| Horner | **488 ms** | 492 ms               | **461 ms**  | **458 ms**     | 2 ULP       |
+| SIMD   | 503 ms     | 503 ms               | 505 ms      | 504 ms         | 2.5 ULP     |
+| Glibc  | 1172 ms    | **388 ms** (1.5 ULP) | 1137 ms     | 1247 ms        | **0.5 ULP** |
+
+Input range \[-1, 1\):
+
+|        | GCC `-O3`  | GCC `-Ofast`          | Clang `-O3` | Clang `-Ofast` | Error     |
+| ------ | ---------- | --------------------- | ----------- | -------------- | --------- |
+| Horner | **930 ms** | 919 ms                | **469 ms**  | **458 ms**     | **2 ULP** |
+| SIMD   | 942 ms     | 913 ms                | 944 ms      | 898 ms         | 2.5 ULP   |
+| Glibc  | 1753 ms    | **395 ms** (3.25 ULP) | 1743 ms     | 1718 ms        | 3.125 ULP |
+
+## Analysis
+
+Although performance wasn't my primary goal when creating a sine approximation,
+it's pleasant to see that my custom implementation is faster than the glibc
+implementation. There are many reasons why this is the case:
+
+- The glibc implementation has proper infinity and NaN handling.
+- The glibc implementation used some interesting techniques to get past the
+precision saturation point, although it's less accurate when computing sine in
+turns.
+- My implementation has a simpler and faster argument reduction procedure.
+- My implementation is smaller, possibly making it easier to inline and optimize.
+
+For single processing speed, the SIMD version consistently outperforms the
+Horner's method implementation, but only in an insignificant amount. For the
+batch processing, however, the SIMD version performs worse due to the fact that
+both versions are vectorized anyway and the SIMD version has some extra
+overheads. The biggest drawback of the SIMD version is that Estrin's scheme
+isn't optimal in terms of the number of operations, so it has more error
+accumulation. While the idea is cool and was also pretty fun to implement, the
+SIMD version isn't worth it.
+
+My implementations only perform worse than the GCC `-Ofast` optimized glibc
+sine in bulk processing. A quick look at the generated assembly revealed that
+it directly calls `_ZGVdN4v_sin`, which is a carefully optimized SIMD
+implementation of sine in [libmvec](//sourceware.org/glibc/wiki/libmvec).
+Overall, I was pleasantly surprised that my implementation is faster, and it
+made me even happier with what I managed to come up with.
