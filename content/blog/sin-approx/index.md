@@ -882,5 +882,5 @@ My implementations only perform worse than the GCC `-Ofast` optimized glibc
 sine in bulk processing. A quick look at the generated assembly revealed that
 it directly calls `_ZGVdN4v_sin`, which is a carefully optimized SIMD
 implementation of sine in [libmvec](//sourceware.org/glibc/wiki/libmvec).
-Overall, I was pleasantly surprised that my implementation is faster, and it
-made me even happier with what I managed to come up with.
+Overall, I was pleasantly surprised that my implementation is quite efficient
+and accurate, and it made me even happier with what I managed to come up with.
