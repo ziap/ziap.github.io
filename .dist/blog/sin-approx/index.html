@@ -82,7 +82,7 @@
   
   
 
-  <abbr title="5396 words">
+  <abbr title="5390 words">
     22
     
       minutes
@@ -821,9 +821,8 @@ it’s pleasant to see that my custom implementation is faster than the glibc
 implementation. There are many reasons why this is the case:</p>
 <ul>
 <li>The glibc implementation has proper infinity and NaN handling.</li>
-<li>The glibc implementation used some interesting techniques to get past the
-precision saturation point, although it’s less accurate when computing sine in
-turns.</li>
+<li>The glibc implementation performs more aggressive argument reduction and
+exploits even more symmetry (hence the 0.5 ULP).</li>
 <li>My implementation has a simpler and faster argument reduction procedure.</li>
 <li>My implementation is smaller, possibly making it easier to inline and optimize.</li>
 </ul>
