@@ -7,7 +7,22 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Tue, 05 Nov 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Fri, 29 Nov 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>String matching with compile time hash tables</title>
+          <pubDate>Fri, 29 Nov 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/string-matching/</link>
+          <guid>https://ziap.github.io/blog/string-matching/</guid>
+          <description xml:base="https://ziap.github.io/blog/string-matching/">&lt;p&gt;I use switch statements a lot in C and even C++. The syntax sucks, but the
+alternatives are either too verbose (table of function pointers) or don’t
+express the intention well (if-else chain). It was sad, but I accepted long ago
+that switch statements only work on numeric types and usually use the
+alternatives on strings and arrays. But switching on a string has become a
+common operation for me, and I recently ended up with a reasonably good
+solution for it.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Approximating sin(2πx)</title>
           <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
