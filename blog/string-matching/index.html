@@ -372,7 +372,7 @@ I decided to go with the FNV-1A hash function, which has decent performance and
 quality. But most importantly, it’s extremely simple and <code>constexpr</code>
 compatible.</p>
 <pre data-lang="cpp" style="background-color:#282c34;color:#dcdfe4;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#c678dd;">template</span><span>&lt;</span><span style="color:#c678dd;">typename</span><span> T, </span><span style="color:#c678dd;">const</span><span> T PRIME, </span><span style="color:#c678dd;">const</span><span> T BASIS&gt;
-</span><span style="color:#c678dd;">constexpr </span><span>uint32_t </span><span style="color:#61afef;">fnv_1a</span><span>(</span><span style="color:#c678dd;">const char *</span><span style="color:#e06c75;">str</span><span>, uint32_t </span><span style="color:#e06c75;">len</span><span>) {
+</span><span style="color:#c678dd;">constexpr</span><span> T </span><span style="color:#61afef;">fnv_1a</span><span>(</span><span style="color:#c678dd;">const char *</span><span style="color:#e06c75;">str</span><span>, uint32_t </span><span style="color:#e06c75;">len</span><span>) {
 </span><span>    T h </span><span style="color:#c678dd;">=</span><span> BASIS;
 </span><span>
 </span><span>    </span><span style="color:#c678dd;">for </span><span>(uint32_t i </span><span style="color:#c678dd;">= </span><span style="color:#e5c07b;">0</span><span>; i </span><span style="color:#c678dd;">&lt;</span><span> len; </span><span style="color:#c678dd;">++</span><span>i) h </span><span style="color:#c678dd;">= </span><span>(h </span><span style="color:#c678dd;">^ </span><span>(uint8_t)str[i]) </span><span style="color:#c678dd;">*</span><span> PRIME;
@@ -471,7 +471,7 @@ quite convenient, but also unclear.</p>
 </span><span>  </span><span style="color:#98c379;">&quot;case 3&quot;</span><span>,
 </span><span>};
 </span><span>
-</span><span style="color:#c678dd;">static constexpr</span><span> IndexMap&lt;WEEKDAY_COUNT&gt; map {</span><span style="color:#c678dd;">&amp;</span><span>Weekday_str};
+</span><span style="color:#c678dd;">static constexpr</span><span> IndexMap map {</span><span style="color:#c678dd;">&amp;</span><span>Weekday_str};
 </span><span>
 </span><span>std::string input </span><span style="color:#c678dd;">= </span><span style="color:#98c379;">&quot;case 2&quot;</span><span>;
 </span><span>
@@ -514,7 +514,7 @@ forgot to).</p>
 </span><span>    WEEKDAY_COUNT,
 </span><span>};
 </span><span>
-</span><span style="color:#c678dd;">static constexpr</span><span> IndexMap map {</span><span style="color:#c678dd;">&amp;</span><span>Weekday_str};
+</span><span style="color:#c678dd;">static constexpr</span><span> IndexMap&lt;WEEKDAY_COUNT&gt; map {</span><span style="color:#c678dd;">&amp;</span><span>Weekday_str};
 </span><span>
 </span><span style="color:#c678dd;">switch </span><span>(map[current_weekday]) {
 </span><span>    </span><span style="color:#c678dd;">case</span><span> WEEKDAY_MONDAY: {
