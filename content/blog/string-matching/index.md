@@ -398,10 +398,12 @@ private:
 The hash table is rather simple. FNV-1A has higher-quality high bits, so I
 shifted the initial hash value. The table size is a power of two with values
 ranging between 2N + 2 and 4N - 4, so the load factor is between 50% and 25%.
-That might be a bit too low for a hash table, but I'm not going to match
-against a lot of strings, so that might not be too much of an issue. Also, the
-reduced load factor means that linear probing is going to be efficient due to
-the shorter probe sequence length.
+To make up for its low load factor, the hash table only references the strings,
+so it can't live longer than the original array. So the extra memory usage is
+`4 * sizeof(uint32_t)` --- or 16 --- bytes per string, which is the same as an
+unoptimized binary search tree (left and right pointers). So the hash table is
+actually quite memory-efficient, and the reduced load factor means that probing
+performance is also great.
 
 The stored indices are incremented by one, so that invalid keys are mapped to
 zero, and subtracting them by one gives -1, which will be our special invalid
