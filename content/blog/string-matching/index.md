@@ -316,7 +316,7 @@ compatible.
 
 ```cpp
 template<typename T, const T PRIME, const T BASIS>
-constexpr uint32_t fnv_1a(const char *str, uint32_t len) {
+constexpr T fnv_1a(const char *str, uint32_t len) {
     T h = BASIS;
 
     for (uint32_t i = 0; i < len; ++i) h = (h ^ (uint8_t)str[i]) * PRIME;
@@ -426,7 +426,7 @@ static constexpr std::string_view Weekday_str[] = {
   "case 3",
 };
 
-static constexpr IndexMap<WEEKDAY_COUNT> map {&Weekday_str};
+static constexpr IndexMap map {&Weekday_str};
 
 std::string input = "case 2";
 
@@ -474,7 +474,7 @@ enum Weekday {
     WEEKDAY_COUNT,
 };
 
-static constexpr IndexMap map {&Weekday_str};
+static constexpr IndexMap<WEEKDAY_COUNT> map {&Weekday_str};
 
 switch (map[current_weekday]) {
     case WEEKDAY_MONDAY: {
