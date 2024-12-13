@@ -9,8 +9,8 @@ output_dir = ".dist"
 compile_sass = false
 build_search_index = false
 
-generate_feed = true
-feed_filename = "rss.xml"
+generate_feeds = true
+feed_filenames = ["rss.xml"]
 
 [markdown]
 # Whether to do syntax highlighting
