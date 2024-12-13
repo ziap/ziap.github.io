@@ -82,8 +82,8 @@
   
   
 
-  <abbr title="2795 words">
-    12
+  <abbr title="2222 words">
+    9
     
       minutes
     
@@ -197,7 +197,7 @@ export everything by default. We still want to expose symbols during
 compilation so that different modules of your code can interact with each
 other. But for the final WASM binary, we want to control which symbol are
 exported. To do that, we mark every functions that we want to export with the
-<code>visibility(&quot;default&quot;)</code> attribute.</p>
+<code>visibility("default")</code> attribute.</p>
 <p>If you are using C++, then you also want this:</p>
 <pre data-lang="c++" style="background-color:#282c34;color:#dcdfe4;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#c678dd;">#define </span><span>export </span><span style="color:#c678dd;">extern </span><span style="color:#98c379;">&quot;C&quot; </span><span style="color:#c678dd;">__attribute__</span><span>((visibility(</span><span style="color:#98c379;">&quot;default&quot;</span><span>)))
 </span></code></pre>
