@@ -7,7 +7,21 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Fri, 29 Nov 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Fri, 13 Dec 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>My desktop customization journey</title>
+          <pubDate>Fri, 13 Dec 2024 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/customization/</link>
+          <guid>https://ziap.github.io/blog/customization/</guid>
+          <description xml:base="https://ziap.github.io/blog/customization/">&lt;p&gt;I’m a massive tinkerer, I love breaking things to see why it broke and how to
+fix them. I prefer breaking software because if it goes too far, I can just
+reinstall everything. It was a great learning experience, and I’m glad that I
+had the time and opportunity to do it. As I grow up, messing with software is
+no longer just for fun and learning, it’s had become a way for me to optimize
+my workflow, to be more in tune with technology.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>String matching with compile time hash tables</title>
           <pubDate>Fri, 29 Nov 2024 00:00:00 +0000</pubDate>
