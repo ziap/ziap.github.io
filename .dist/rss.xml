@@ -7,7 +7,19 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Fri, 13 Dec 2024 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Sun, 12 Jan 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>What I learned in 2024</title>
+          <pubDate>Sun, 12 Jan 2025 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/2024-wrap-up/</link>
+          <guid>https://ziap.github.io/blog/2024-wrap-up/</guid>
+          <description xml:base="https://ziap.github.io/blog/2024-wrap-up/">&lt;p&gt;Usually, people write this kind of post somewhere at the end of the year. But I
+had another deadline and haven’t collected my thoughts yet, so this post came
+quite late. Nonetheless, I really wanted to look back at 2024 because it’s been
+quite an interesting year for me.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>My desktop customization journey</title>
           <pubDate>Fri, 13 Dec 2024 00:00:00 +0000</pubDate>
