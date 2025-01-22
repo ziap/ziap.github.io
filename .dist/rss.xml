@@ -7,7 +7,26 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Sun, 12 Jan 2025 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Tue, 21 Jan 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Setting up a reproducible cross-compiling environment in NixOS</title>
+          <pubDate>Tue, 21 Jan 2025 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/nixos-cross-compilation/</link>
+          <guid>https://ziap.github.io/blog/nixos-cross-compilation/</guid>
+          <description xml:base="https://ziap.github.io/blog/nixos-cross-compilation/">&lt;p&gt;NixOS makes it very hard to run dynamically linked application, to the point
+where packaging is the path of least resistance. I don’t consider this a
+problem of NixOS, but rather a problem of dynamic linking. This is why when I
+distribute a compiled application to a NixOS system, I usually do one of the
+following:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create a statically linked Linux executable and use it directly.&lt;&#x2F;li&gt;
+&lt;li&gt;Cross-compile the application to Windows and run the .exe file with Wine.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;To do either of these, a cross-compiling NixOS environment is required, so this
+article documents my process of setting that up for Rust, Zig, C, and C++.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>What I learned in 2024</title>
           <pubDate>Sun, 12 Jan 2025 00:00:00 +0000</pubDate>

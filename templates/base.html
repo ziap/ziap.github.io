@@ -8,14 +8,33 @@
     <title>
       {% block title %}
         {% if page.title %}
-          {{ page.title }} |
+          {{ page.title }} | {{ config.title }}
         {% elif section.title %}
-          {{ section.title }} |
+          {{ section.title }} | {{ config.title }}
+        {% else %}
+          {{ config.title }}
         {% endif %}
-
-        {{ config.title }}
       {% endblock %}
     </title>
+    <link href="/styles/fonts.css" rel="stylesheet">
+
+    <style>
+      {% set scale = config.extra.font_scale %}
+      {% set font_size_h4 = 1 %}
+      {% set font_size_h3 = font_size_h4 * scale %}
+      {% set font_size_h2 = font_size_h3 * scale %}
+      {% set font_size_h1 = font_size_h2 * scale %}
+      {% set font_size_h5 = font_size_h4 / scale %}
+      {% set font_size_h6 = font_size_h5 / scale %}
+
+      h1 { font-size: {{ font_size_h1 | round(precision=3) }}rem; }
+      h2 { font-size: {{ font_size_h2 | round(precision=3) }}rem; }
+      h3 { font-size: {{ font_size_h3 | round(precision=3) }}rem; }
+      h4 { font-size: {{ font_size_h4 | round(precision=3) }}rem; }
+      h5 { font-size: {{ font_size_h5 | round(precision=3) }}rem; }
+      h6 { font-size: {{ font_size_h6 | round(precision=3) }}rem; }
+    </style>
+
     <link rel="stylesheet" href="/styles/base.css">
     <link rel="stylesheet" href="/styles/nav.css">
     <link rel="stylesheet" href="/styles/footer.css">

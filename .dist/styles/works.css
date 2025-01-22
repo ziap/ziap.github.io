@@ -1,8 +1,8 @@
 .projects {
-  margin: 3rem 0;
+  margin-bottom: 3rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
-  gap: 2.5rem;
+  gap: 1rem 3rem;
 }
 
 .project {
@@ -28,7 +28,7 @@
   font-size: 0.8rem;
   padding: 0.5em 1em;
   border-radius: 8px;
-  font-weight: bold;
+  font-weight: 600;
   text-decoration: none;
   background: var(--accent-color);
   transition: background 300ms;
