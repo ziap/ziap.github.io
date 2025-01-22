@@ -16,7 +16,8 @@
         {% endif %}
       {% endblock %}
     </title>
-    <link href="/styles/fonts.css" rel="stylesheet">
+    <link rel="preload" href="/styles/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="/styles/fonts.css" rel="stylesheet"></noscript>
 
     <style>
       {% set scale = config.extra.font_scale %}
