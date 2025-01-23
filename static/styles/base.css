@@ -15,19 +15,38 @@
 html {
   scroll-behavior: smooth;
   font-size: clamp(1rem, 0.8rem + 1vw, 1.5rem);
-  font-family: "Open Sans", sans-serif;
   color: var(--text-color);
   line-height: 1.5;
 }
 
-pre code {
-  font-family: "Fira Code", monospace;
+body {
+  font-family: "Open Sans Initial", sans-serif;
+}
+
+pre, code {
+  font-family: "Fira Code Initial", monospace;
   font-weight: 500;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
-  font-family: "Merriweather Sans", sans-serif;
+  font-family: "Merriweather Sans Initial", sans-serif;
+}
+
+.font-loaded {
+  font-family: "Open Sans", sans-serif;
+
+  pre, code {
+    font-family: "Fira Code", monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Merriweather Sans", sans-serif;
+  }
+}
+
+strong, b {
+  font-weight: 700;
 }
 
 @media print {

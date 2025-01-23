@@ -16,7 +16,8 @@
         {% endif %}
       {% endblock %}
     </title>
-    <link rel="preload" href="/styles/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link href="/styles/fonts-critical.css" rel="stylesheet">
+    <link rel="preload" href="/styles/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet';document.body.classList.add('font-loaded')">
     <noscript><link href="/styles/fonts.css" rel="stylesheet"></noscript>
 
     <style>
