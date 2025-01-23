@@ -17,8 +17,7 @@
       {% endblock %}
     </title>
     <link href="/styles/fonts-critical.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/fonts.css" media="none" onload="this.media='all'">
-    <noscript><link href="/styles/fonts.css" rel="stylesheet"></noscript>
+    <link href="/styles/fonts.css" rel="stylesheet">
 
     <style>
       {% set scale = config.extra.font_scale %}
@@ -43,7 +42,7 @@
     <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="RSS">
     {% block head %}{% endblock %}
   </head>
-  <body class="font-loaded">
+  <body>
     {% block navigation %}
       <div class="nav__bg">
         <div class="nav__container">
