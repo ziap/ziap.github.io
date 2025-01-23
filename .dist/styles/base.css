@@ -19,30 +19,25 @@ html {
   line-height: 1.5;
 }
 
+/*
+  Fallback system font stack selected from 
+  - <https://tailwindcss.com/docs/font-family>
+  - <https://modernfontstacks.com>
+*/
+
 body {
-  font-family: "Open Sans Initial", sans-serif;
+  font-family: "Open Sans Initial", ui-sans-serif, system-ui, Inter, Roboto, "Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;
+  font-weight: 400;
 }
 
 pre, code {
-  font-family: "Fira Code Initial", monospace;
+  font-family: "Fira Code Initial", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-weight: 500;
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: "Merriweather Sans Initial", Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", source-sans-pro, sans-serif; 
   font-weight: 700;
-  font-family: "Merriweather Sans Initial", sans-serif;
-}
-
-.font-loaded {
-  font-family: "Open Sans", sans-serif;
-
-  pre, code {
-    font-family: "Fira Code", monospace;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: "Merriweather Sans", sans-serif;
-  }
 }
 
 strong, b {

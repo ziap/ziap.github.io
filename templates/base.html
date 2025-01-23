@@ -17,7 +17,7 @@
       {% endblock %}
     </title>
     <link href="/styles/fonts-critical.css" rel="stylesheet">
-    <link rel="preload" href="/styles/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet';document.body.classList.add('font-loaded')">
+    <link rel="stylesheet" href="/styles/fonts.css" media="none" onload="this.media='all'">
     <noscript><link href="/styles/fonts.css" rel="stylesheet"></noscript>
 
     <style>
@@ -43,7 +43,7 @@
     <link rel="alternate" href="/rss.xml" type="application/rss+xml" title="RSS">
     {% block head %}{% endblock %}
   </head>
-  <body>
+  <body class="font-loaded">
     {% block navigation %}
       <div class="nav__bg">
         <div class="nav__container">
