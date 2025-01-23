@@ -1,4 +1,4 @@
-.posts {
+#posts {
   max-width: var(--body-width);
   margin: 0 auto;
   padding: 5rem 1rem;

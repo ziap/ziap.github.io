@@ -26,8 +26,8 @@
           <p>This website is where I share things that I'm interested in, mostly but not exclusively, about the topics above.</p>
 
           <div class="intro__cta__container">
-            <a class="intro__cta intro__cta2" href="/blog">My blog {{ macros::icon(name="pen") }}</a>
-            <a class="intro__cta intro__cta1" href="/works">My projects {{ macros::icon(name="tools") }}</a>
+            <a class="intro__cta intro__cta2" href="#posts">My blog {{ macros::icon(name="pen") }}</a>
+            <a class="intro__cta intro__cta1" href="#works">My projects {{ macros::icon(name="tools") }}</a>
           </div>
         </div>
 
@@ -47,7 +47,7 @@
 
   {{ load_data(path="assets/home/split1.svg") | safe }}
   <div class="works__bg">
-    <section class="works">
+    <section id="works">
       <header class="works__header">
         <h2 class="works__title">Recent works</h2>
         <a href="/works" class="works__link">All works {{ macros::icon(name="arrow") }}</a>
@@ -78,7 +78,7 @@
 
   <div class="posts__bg">
     {# Add tags #}
-    <section class="posts">
+    <section id="posts">
       <h2 class="posts__title">Latest posts</h2>
         
       {% set section = get_section(path="blog/_index.md") %}
