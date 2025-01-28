@@ -26,17 +26,17 @@ html {
 */
 
 body {
-  font-family: "Open Sans", "Open Sans Initial", ui-sans-serif, system-ui, Inter, Roboto, "Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;
+  font-family: "Open Sans", ui-sans-serif, system-ui, Inter, Roboto, "Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;
   font-weight: 400;
 }
 
 pre, code {
-  font-family: "Fira Code", "Fira Code Initial", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: "Fira Code",ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-weight: 500;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Merriweather Sans", "Merriweather Sans Initial", Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", source-sans-pro, sans-serif; 
+  font-family: "Merriweather Sans", Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans", source-sans-pro, sans-serif; 
   font-weight: 700;
 }
 
@@ -67,7 +67,6 @@ ul, ol {
 }
 
 .container {
-  flex: 1;
   display: flex;
   flex-direction: column;
 }
