@@ -36,6 +36,6 @@ can work with a wide range of languages and tools.
 
 For personal projects, I prefer making things from scratch for educational
 purposes. But for work, I used many frameworks, and my personal favorites are
-[Svelte](//svelte.dev/) for front-ends and [Starlette](//www.starlette.io/) for
-back-ends. This website is built with [Zola](//www.getzola.org) because of its
-ease of setting up, incredible speed, and flexible template engine.
+[Svelte](//svelte.dev/) for front-ends and [Axum](//github.com/tokio-rs/axum)
+for back-ends. This website is built with [Zola](//www.getzola.org) because of
+its ease of setting up, incredible speed, and flexible template engine.
