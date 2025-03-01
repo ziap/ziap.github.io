@@ -7,7 +7,25 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Tue, 21 Jan 2025 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Sat, 01 Mar 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Writing a 15-puzzle solver</title>
+          <pubDate>Sat, 01 Mar 2025 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/sliding-puzzle/</link>
+          <guid>https://ziap.github.io/blog/sliding-puzzle/</guid>
+          <description xml:base="https://ziap.github.io/blog/sliding-puzzle/">&lt;p&gt;In computer science, the problems that captivate me the most are the ones that
+are just a bit more difficult to optimally solve with current hardware
+limitations. They often require careful engineering and strategic trade-off
+considerations to come up with suboptimal, but good-enough solutions.&lt;&#x2F;p&gt;
+&lt;p&gt;One such problem is finding the shortest solution to the
+&lt;a href=&quot;&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;15_puzzle&quot;&gt;15-puzzle&lt;&#x2F;a&gt;. With the state space size of
+10^13, average branching factor of 2, and longest solution length of 80, it’s
+impossible to find the shortest solution using conventional search algorithms.
+However, I implemented an algorithm that can optimally solve a vast majority of
+random instances pretty quickly.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Setting up a reproducible cross-compiling environment in NixOS</title>
           <pubDate>Tue, 21 Jan 2025 00:00:00 +0000</pubDate>
