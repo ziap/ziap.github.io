@@ -7,7 +7,19 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Sat, 01 Mar 2025 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Sat, 22 Mar 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Implementing a 64-bit Pseudo-random number generator</title>
+          <pubDate>Sat, 22 Mar 2025 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/prng/</link>
+          <guid>https://ziap.github.io/blog/prng/</guid>
+          <description xml:base="https://ziap.github.io/blog/prng/">&lt;p&gt;Let’s face it, determinism is boring. I’ve been using Pseudo-random number
+generators (PRNGs) for as long as I can remember. My usual PRNG is PCG-32 with
+a fixed increment, but it’s time for me to pick a larger PRNG for 64-bit output
+and multithreaded generation.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Writing a 15-puzzle solver</title>
           <pubDate>Sat, 01 Mar 2025 00:00:00 +0000</pubDate>
