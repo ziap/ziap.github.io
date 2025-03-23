@@ -24,7 +24,7 @@ algorithm.
 - Statistical quality: Some default PRNG, such as `rand()` in C, or even the
 aforementioned MT19937, failed to pass statistical tests. Passing doesn't mean
 that the PRNG is good, but failing means that it generates biased output, and
-may tamer with the behavior of the algorithm using it.
+may tamper with the behavior of the algorithm using it.
 
 - Reproducibility: I want to be able to control and reproduce the output of
 algorithms using PRNG. This means controlling both the PRNG implementation and
@@ -218,8 +218,9 @@ testing, I'm going to perform what called small-scale testing. The idea
 originates from the [PCG paper](//www.pcg-random.org/pdf/hmc-cs-2014-0905.pdf),
 which argues that passing statistical tests is not enough, you need to test
 scaled down versions of your generator and make sure that they also pass.
-Luckily, it's very easy to scale down LCGs, and MWC generators in general.
-Here's a variant with 40-bit of state and 8-bit of output, in LCG format.
+Luckily, it's very easy to scale down MWC-256, and LCG based generators in
+general. Here's a variant with 40-bit of state and 8-bit of output, in LCG
+format.
 
 ```c
 uint8_t mwc_next(uint64_t *state) {
