@@ -203,7 +203,7 @@ a 128-bit addition, and storage-bit truncation. This particular form of the
 multiplier, along with its statistical implications, will be explored later.
 But first, here are some properties of the MWC-256 generator:
 
-The modulus `M` is actually `MOD * 2^192 - 1`, and is a prime number. LCGs with
+The modulus `M` is actually `MUL * 2^192 - 1`, and is a prime number. LCGs with
 power-of-2 modulus, such as Lehmer64 and PCG generators, have the problem of
 low bits have a shorter period than the high bits, which isn't a problem with
 prime modulus LCGs. The generator has 2 cycles, each with a period of `M / 2`,
@@ -499,7 +499,8 @@ can be useful, like when searching for MWC multipliers.
 **Wyrand:** It also generates 64-bit numbers from 64 bits of state, but unlike
 SplitMix, it omits some numbers from its output. It's not possible to scale the
 generator to 128-bit because the output function is not a bijection, so even
-with 128 bits of state the output's period is less than 2^64.
+with 128 bits of state the output's period is less than 2^64. Also, it was
+[shown to fail PractRand](//github.com/wangyi-fudan/wyhash/issues/135).
 
 I’m not saying by any means that the FMC-256 is perfect, but it strikes a good
 balance for what I want need from a PRNG. The full source code is available
