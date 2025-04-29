@@ -16,6 +16,13 @@ their computation. So I'll just write about how I computed sine, and the rest
 are similar. I actually prefer cosine, but I have chosen the sine function for
 this article because of the iconic sinusoidal wave visualization.
 
+**Update April 2025:** This is my biggest article so far, and there are some
+errors in it. For example, my explanation of ULP is wrong, and I used an
+absolute error scaled by 1 ULP and not relative error. As of today, I still use
+turns as a unit for trigonometric functions, but now I use least squares
+polynomial regression at Chebyshev nodes using [QR
+decomposition](https://en.wikipedia.org/wiki/QR_decomposition).
+
 # Why sin(2πx) and not sin(x)
 
 A big problem with general trigonometric functions is that they use radians as

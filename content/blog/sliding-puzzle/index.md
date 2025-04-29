@@ -104,7 +104,7 @@ Note that I used a `u32` instead of a pointer because both the open set and
 closed set can use array-based data structures. Depending on the `is_open`
 field, we can index the correct array to retrieve the node. Note that a boolean
 only represent 1 bit of information, but because the alignment is 4 bytes, this
-representation actually costs us 31-bit per entry. However, for batter
+representation actually costs us 31-bit per entry. However, for better
 performance, the hash table isn't dense, so we're actually wasting `31 + 64 *
 (1 / LF - 1)` bits per entry, where `LF` is the load-factor of the hash table.
 I usually use a very low load factor like 50%, so we're wasting `95` bits per
