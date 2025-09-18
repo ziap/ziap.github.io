@@ -7,7 +7,24 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Sat, 22 Mar 2025 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Wed, 17 Sep 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Struct of Arrays (SoA) in TypeScript with metaprogramming</title>
+          <pubDate>Wed, 17 Sep 2025 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/parallel-array/</link>
+          <guid>https://ziap.github.io/blog/parallel-array/</guid>
+          <description xml:base="https://ziap.github.io/blog/parallel-array/">&lt;p&gt;Struct of Arrays (SoA) is the bread and butter and textbook example of
+&lt;a href=&quot;&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Data-oriented_design&quot;&gt;Data-oriented design&lt;&#x2F;a&gt;. It’s
+mostly popular in &lt;a href=&quot;&#x2F;&#x2F;unity.com&#x2F;dots&quot;&gt;game development&lt;&#x2F;a&gt; due to enhanced
+performance in many gamedev specific operations. You might also encounter SoAs
+in analytic and processing heavy databases such as
+&lt;a href=&quot;&#x2F;&#x2F;pandas.pydata.org&#x2F;&quot;&gt;Pandas&lt;&#x2F;a&gt; or &lt;a href=&quot;&#x2F;&#x2F;duckdb.org&#x2F;&quot;&gt;DuckDB&lt;&#x2F;a&gt;. Of course, in the
+web development space nobody cares about data layout and optimization. Despite
+that, I wrote a SoA library in TypeScript, not for the performance gain, but
+for trying out TypeScript’s type-level metaprogramming.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Implementing a 64-bit Pseudo-random number generator</title>
           <pubDate>Sat, 22 Mar 2025 00:00:00 +0000</pubDate>
