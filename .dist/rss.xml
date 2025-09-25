@@ -7,7 +7,390 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Wed, 17 Sep 2025 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Wed, 24 Sep 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Fast BPE tokenizer - Overview and arena allocated decoding</title>
+          <pubDate>Wed, 24 Sep 2025 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/bpe-1/</link>
+          <guid>https://ziap.github.io/blog/bpe-1/</guid>
+          <description xml:base="https://ziap.github.io/blog/bpe-1/">&lt;p&gt;This is the first entry of a series of article about designing a efficient byte
+pair encoder (BPE) tokenizer. The tokenized text are then used to train an
+n-gram model for the task of synthesizing placeholder text. These articles are
+for sharing the design decisions and optimization techniques I applied. For the
+first entry I wanted to talk about an overview of the algorithm and an
+efficient decoder implementation.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;overview-of-the-bpe-algorithm&quot;&gt;Overview of the BPE Algorithm&lt;&#x2F;h1&gt;
+&lt;p&gt;BPE originally started as a text compression algorithm. But in order to
+losslessly compress any data, you need to “learn” and exploit redundancies in
+the dataset. It turns out that this particular compression technique learns
+patterns and grammars so well that running machine learning model on the
+compressed text helps with convergence and accuracy. This is why BPE
+tokenization is a crucial component of modern LLMs.&lt;&#x2F;p&gt;
+&lt;p&gt;For my implementation, this algorithm is separated into two parts:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Encoder:&lt;&#x2F;strong&gt; trains on the input text and output a list of tokens and their
+corresponding pairs.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Decoder:&lt;&#x2F;strong&gt; convert tokens back into text.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;bpe-decoding&quot;&gt;BPE Decoding&lt;&#x2F;h2&gt;
+&lt;p&gt;Just like most compression algorithm, decoding is relatively simpler and
+faster. In fact, unlike the encoder, this article will fully cover process of
+implementing an optimized BPE decoder. I’ll also start explaining the decoder
+first. For the example, we will use the first two sentences from the “Lorem
+Ipsum” placeholder text.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua.&lt;&#x2F;p&gt;
+&lt;p&gt;Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Assuming that after encoding, we have the following table:&lt;&#x2F;p&gt;
+&lt;div style=&quot;display:flex; gap: 1rem; justify-content: space-between;&quot;&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Token&lt;&#x2F;th&gt;&lt;th&gt;Left&lt;&#x2F;th&gt;&lt;th&gt;Right&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;256&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;101&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;257&lt;&#x2F;td&gt;&lt;td&gt;111&lt;&#x2F;td&gt;&lt;td&gt;114&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;258&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;97&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;259&lt;&#x2F;td&gt;&lt;td&gt;110&lt;&#x2F;td&gt;&lt;td&gt;105&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;260&lt;&#x2F;td&gt;&lt;td&gt;113&lt;&#x2F;td&gt;&lt;td&gt;117&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;261&lt;&#x2F;td&gt;&lt;td&gt;99&lt;&#x2F;td&gt;&lt;td&gt;111&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;262&lt;&#x2F;td&gt;&lt;td&gt;100&lt;&#x2F;td&gt;&lt;td&gt;111&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;263&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;262&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;264&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;261&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;265&lt;&#x2F;td&gt;&lt;td&gt;257&lt;&#x2F;td&gt;&lt;td&gt;101&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;266&lt;&#x2F;td&gt;&lt;td&gt;108&lt;&#x2F;td&gt;&lt;td&gt;97&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;267&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;117&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Token&lt;&#x2F;th&gt;&lt;th&gt;Left&lt;&#x2F;th&gt;&lt;th&gt;Right&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;268&lt;&#x2F;td&gt;&lt;td&gt;108&lt;&#x2F;td&gt;&lt;td&gt;105&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;269&lt;&#x2F;td&gt;&lt;td&gt;99&lt;&#x2F;td&gt;&lt;td&gt;105&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;270&lt;&#x2F;td&gt;&lt;td&gt;105&lt;&#x2F;td&gt;&lt;td&gt;115&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;271&lt;&#x2F;td&gt;&lt;td&gt;115&lt;&#x2F;td&gt;&lt;td&gt;101&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;272&lt;&#x2F;td&gt;&lt;td&gt;105&lt;&#x2F;td&gt;&lt;td&gt;112&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;273&lt;&#x2F;td&gt;&lt;td&gt;110&lt;&#x2F;td&gt;&lt;td&gt;271&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;274&lt;&#x2F;td&gt;&lt;td&gt;264&lt;&#x2F;td&gt;&lt;td&gt;273&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;275&lt;&#x2F;td&gt;&lt;td&gt;270&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;276&lt;&#x2F;td&gt;&lt;td&gt;268&lt;&#x2F;td&gt;&lt;td&gt;260&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;277&lt;&#x2F;td&gt;&lt;td&gt;258&lt;&#x2F;td&gt;&lt;td&gt;276&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;278&lt;&#x2F;td&gt;&lt;td&gt;267&lt;&#x2F;td&gt;&lt;td&gt;116&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;279&lt;&#x2F;td&gt;&lt;td&gt;266&lt;&#x2F;td&gt;&lt;td&gt;98&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Token&lt;&#x2F;th&gt;&lt;th&gt;Left&lt;&#x2F;th&gt;&lt;th&gt;Right&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;280&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;279&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;281&lt;&#x2F;td&gt;&lt;td&gt;263&lt;&#x2F;td&gt;&lt;td&gt;108&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;282&lt;&#x2F;td&gt;&lt;td&gt;259&lt;&#x2F;td&gt;&lt;td&gt;109&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;283&lt;&#x2F;td&gt;&lt;td&gt;258&lt;&#x2F;td&gt;&lt;td&gt;100&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;284&lt;&#x2F;td&gt;&lt;td&gt;257&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;285&lt;&#x2F;td&gt;&lt;td&gt;256&lt;&#x2F;td&gt;&lt;td&gt;120&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;286&lt;&#x2F;td&gt;&lt;td&gt;97&lt;&#x2F;td&gt;&lt;td&gt;116&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;287&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;109&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;288&lt;&#x2F;td&gt;&lt;td&gt;109&lt;&#x2F;td&gt;&lt;td&gt;111&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;289&lt;&#x2F;td&gt;&lt;td&gt;116&lt;&#x2F;td&gt;&lt;td&gt;101&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;290&lt;&#x2F;td&gt;&lt;td&gt;44&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;291&lt;&#x2F;td&gt;&lt;td&gt;115&lt;&#x2F;td&gt;&lt;td&gt;105&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;&#x2F;div&gt;
+&lt;p&gt;Note that the tokens start at &lt;code&gt;256&lt;&#x2F;code&gt; since &lt;code&gt;0&lt;&#x2F;code&gt; to &lt;code&gt;255&lt;&#x2F;code&gt; are reserved for
+single-byte characters. So, how do you decode the token &lt;code&gt;274&lt;&#x2F;code&gt;. Looking up the
+table, the token &lt;code&gt;274&lt;&#x2F;code&gt; consists of the token &lt;code&gt;264&lt;&#x2F;code&gt; on the left and the token
+&lt;code&gt;273&lt;&#x2F;code&gt; on the right. So we expand into them. We do this recursively until each
+token are single-byte or less than &lt;code&gt;256&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;274 =&amp;gt; (&amp;gt;264, 273&amp;lt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    =&amp;gt; (&amp;gt;32, 261&amp;lt;, &amp;gt;110, 271&amp;lt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    =&amp;gt; (32, &amp;gt;99, 111&amp;lt;, 110, &amp;gt;115, 101&amp;lt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    =&amp;gt; &amp;quot; conse&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Note that this parttern appears twice in the input text (&lt;code&gt;amet,| conse|ctetur&lt;&#x2F;code&gt;
+and &lt;code&gt;commodo| conse|quat&lt;&#x2F;code&gt;). This example is only for demonstrating BPE
+decoding. A larger example is required to comment on the behavior of the
+algorithm and the characteristics of the generated tokens.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;bpe-encoding&quot;&gt;BPE Encoding&lt;&#x2F;h2&gt;
+&lt;p&gt;The algorithm for generating tokens from an input text proceeds as follow:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;While not enough tokens generated:
+&lt;ul&gt;
+&lt;li&gt;Select the pair that occurs the most in the input text&lt;&#x2F;li&gt;
+&lt;li&gt;If that pairs occurs only once, stop&lt;&#x2F;li&gt;
+&lt;li&gt;Create and store a new token from the pair&lt;&#x2F;li&gt;
+&lt;li&gt;Replace all instances of that pair with the newly created token&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Because the algorithm is a bit more complicated, we’ll use a smaller example
+from the &lt;a href=&quot;&#x2F;&#x2F;huggingface.co&#x2F;learn&#x2F;llm-course&#x2F;chapter6&#x2F;5&quot;&gt;huggingface LLM
+course&lt;&#x2F;a&gt;, just &lt;code&gt;hug pug pun bun hugs&lt;&#x2F;code&gt;. This examples uses lowercase characters as singe-byte characters, and
+upper case characters as the generated tokens.&lt;&#x2F;p&gt;
+&lt;p&gt;First, enumerate over all pairs in the text:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;hu ug g_ _p pu ug g_ _p pu un n_ _b bu un n_ _h hu ug gs
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then, collects unique pairs and count their occurences:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;hu =&amp;gt; 2
+&lt;&#x2F;span&gt;&lt;span&gt;ug =&amp;gt; 3
+&lt;&#x2F;span&gt;&lt;span&gt;g_ =&amp;gt; 2
+&lt;&#x2F;span&gt;&lt;span&gt;_p =&amp;gt; 2
+&lt;&#x2F;span&gt;&lt;span&gt;pu =&amp;gt; 2
+&lt;&#x2F;span&gt;&lt;span&gt;un =&amp;gt; 2
+&lt;&#x2F;span&gt;&lt;span&gt;n_ =&amp;gt; 2
+&lt;&#x2F;span&gt;&lt;span&gt;_b =&amp;gt; 1
+&lt;&#x2F;span&gt;&lt;span&gt;bu =&amp;gt; 1
+&lt;&#x2F;span&gt;&lt;span&gt;_h =&amp;gt; 1
+&lt;&#x2F;span&gt;&lt;span&gt;gs =&amp;gt; 1
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The pair that occurs the most is &lt;code&gt;ug&lt;&#x2F;code&gt;, so we’ll create a new token &lt;code&gt;A = (u, g)&lt;&#x2F;code&gt;
+and substitutes all instances of &lt;code&gt;ug&lt;&#x2F;code&gt; with &lt;code&gt;A&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;A = (u, g)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;hA pA pun bun hAs
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Repeat this until we generated enough tokens or all pairs in the final text is unique.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;text: &amp;quot;hug pug pun bun hugs&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;iteration: 1
+&lt;&#x2F;span&gt;&lt;span&gt;new_token: A =&amp;gt; (u, g)
+&lt;&#x2F;span&gt;&lt;span&gt;text: &amp;quot;hA pA pun bun hAs&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;iteration: 2
+&lt;&#x2F;span&gt;&lt;span&gt;new_token: B =&amp;gt; (h, A)
+&lt;&#x2F;span&gt;&lt;span&gt;text: &amp;quot;B pA pun bun Bs&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;iteration: 3
+&lt;&#x2F;span&gt;&lt;span&gt;new_token: C =&amp;gt; (_, p)
+&lt;&#x2F;span&gt;&lt;span&gt;text: &amp;quot;BCACun bun Bs&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;iteration: 4
+&lt;&#x2F;span&gt;&lt;span&gt;new_token: D =&amp;gt; (u, n)
+&lt;&#x2F;span&gt;&lt;span&gt;text: &amp;quot;BCACD bD Bs&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;iteration: 5
+&lt;&#x2F;span&gt;&lt;span&gt;new_token: E =&amp;gt; (D, _)
+&lt;&#x2F;span&gt;&lt;span&gt;text: &amp;quot;BCACEbEBs&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;final_tokens:
+&lt;&#x2F;span&gt;&lt;span&gt;A =&amp;gt; (u, g)
+&lt;&#x2F;span&gt;&lt;span&gt;B =&amp;gt; (h, A)
+&lt;&#x2F;span&gt;&lt;span&gt;C =&amp;gt; (_, p)
+&lt;&#x2F;span&gt;&lt;span&gt;D =&amp;gt; (u, n)
+&lt;&#x2F;span&gt;&lt;span&gt;E =&amp;gt; (D, _)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;tokenized_text: &amp;quot;BCACEbEBs&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;These tokens can then be decoded using the process above, and if you decode the
+tokenized text sequence, you get back the original text. Therefore, we can say
+that this encoding is lossless.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;implementation&quot;&gt;Implementation&lt;&#x2F;h1&gt;
+&lt;p&gt;I implemented the algorithm in Rust, because the algorithm is quite complex and
+I want the extra bits of correctness aid that Rust provides. I was also not
+trying to squeeze every bit of performance. Nor will I try to compete with
+production-ready solutions such as &lt;a href=&quot;&#x2F;&#x2F;github.com&#x2F;openai&#x2F;tiktoken&quot;&gt;tiktoken&lt;&#x2F;a&gt;, or
+&lt;a href=&quot;&#x2F;&#x2F;github.com&#x2F;huggingface&#x2F;tokenizers&quot;&gt;the huggingface tokenizer&lt;&#x2F;a&gt;. As such, the
+implementation will not be optimized with SIMD, multi-threading, and aggressive
+bound check removal. Here are the goals of the implementation:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Correctness:&lt;&#x2F;strong&gt; Obviously, this also means minimizing &lt;code&gt;unsafe&lt;&#x2F;code&gt; code.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Optimal time complexity:&lt;&#x2F;strong&gt; This means implementing complex, finicky data
+structures to achieve &lt;code&gt;O(n)&lt;&#x2F;code&gt; training, where &lt;code&gt;n&lt;&#x2F;code&gt; is the input length.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Reasonable data layout:&lt;&#x2F;strong&gt; Applies principles of data-oriented design,
+structuring data based on how they are accessed and manipulated. Avoid small,
+decentralized allocations and strive for compact, fast (de)serialization.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;I also hardcoded the target tokens to &lt;code&gt;65536 - 256 = 65280&lt;&#x2F;code&gt; tokens, such that
+we can represent them as 16-bit unsigned integers. The encoder will run until
+all token pairs in the tokenized text are unique, or we exhausted 16-bits of
+tokens. GPT2 has &lt;a href=&quot;&#x2F;&#x2F;huggingface.co&#x2F;docs&#x2F;transformers&#x2F;model_doc&#x2F;gpt2&quot;&gt;50257&lt;&#x2F;a&gt;
+tokens, so there’s enough wiggle room for even an early LLM model.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;decoding-and-token-representation&quot;&gt;Decoding and Token Representation&lt;&#x2F;h2&gt;
+&lt;p&gt;Let’s start with the decoder, we only have to think about how to decode as
+single token, as the most efficient way to decode a sequence of token is to
+sequentially decode each individual token. I also defined the input of the
+decoder to be a simple list of pairs, and the index into the list denodes the
+associated token. For example, the token table from above:&lt;&#x2F;p&gt;
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Token&lt;&#x2F;th&gt;&lt;th&gt;Left&lt;&#x2F;th&gt;&lt;th&gt;Right&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;256&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;101&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;257&lt;&#x2F;td&gt;&lt;td&gt;111&lt;&#x2F;td&gt;&lt;td&gt;114&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;258&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;97&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;259&lt;&#x2F;td&gt;&lt;td&gt;110&lt;&#x2F;td&gt;&lt;td&gt;105&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;260&lt;&#x2F;td&gt;&lt;td&gt;113&lt;&#x2F;td&gt;&lt;td&gt;117&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;261&lt;&#x2F;td&gt;&lt;td&gt;99&lt;&#x2F;td&gt;&lt;td&gt;111&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;262&lt;&#x2F;td&gt;&lt;td&gt;100&lt;&#x2F;td&gt;&lt;td&gt;111&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;263&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;262&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;264&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;261&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;265&lt;&#x2F;td&gt;&lt;td&gt;257&lt;&#x2F;td&gt;&lt;td&gt;101&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;266&lt;&#x2F;td&gt;&lt;td&gt;108&lt;&#x2F;td&gt;&lt;td&gt;97&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;tr&gt;&lt;td&gt;267&lt;&#x2F;td&gt;&lt;td&gt;32&lt;&#x2F;td&gt;&lt;td&gt;117&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;
+&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+&lt;p&gt;Are represented as:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rs&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rs &quot;&gt;&lt;code class=&quot;language-rs&quot; data-lang=&quot;rs&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; pairs: [(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;)] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[
+&lt;&#x2F;span&gt;&lt;span&gt;  (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;101&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;111&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;114&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;97&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;110&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;105&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;113&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;117&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;99&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;111&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;  (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;111&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;262&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;261&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;257&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;101&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;108&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;97&lt;&#x2F;span&gt;&lt;span&gt;), (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;32&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;117&lt;&#x2F;span&gt;&lt;span&gt;),
+&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;To get, for example, token &lt;code&gt;262&lt;&#x2F;code&gt;, we first subtract by the smallest non
+singe-byte token, which is &lt;code&gt;256&lt;&#x2F;code&gt;, and index the array, or &lt;code&gt;pairs[262 - 256]&lt;&#x2F;code&gt;.
+The optimal time complexity decoding algorithm can be implemented recursively
+as described above:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rs&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rs &quot;&gt;&lt;code class=&quot;language-rs&quot; data-lang=&quot;rs&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;pairs&lt;&#x2F;span&gt;&lt;span&gt;: Box&amp;lt;[(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;)]&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;impl &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;token&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;out&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;mut&lt;&#x2F;span&gt;&lt;span&gt; impl Write) -&amp;gt; std::io::Result&amp;lt;()&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt; token &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;256 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;      out.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;write&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[token &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as u8&lt;&#x2F;span&gt;&lt;span&gt;])&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;?&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span&gt;(left, right) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.pairs[token &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize - &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;256&lt;&#x2F;span&gt;&lt;span&gt;];
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode&lt;&#x2F;span&gt;&lt;span&gt;(left, out)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;?&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode&lt;&#x2F;span&gt;&lt;span&gt;(right, out)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;?&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    Ok(())
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This function takes a writer as its output, so you can output to a &lt;code&gt;Vec&amp;lt;u8&amp;gt;&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rs&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rs &quot;&gt;&lt;code class=&quot;language-rs&quot; data-lang=&quot;rs&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode_all&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;decoder&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;Decoder, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;tokens&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;]) -&amp;gt; Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; buf: Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;Vec::new();
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; token &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in&lt;&#x2F;span&gt;&lt;span&gt; tokens {
+&lt;&#x2F;span&gt;&lt;span&gt;    decoder.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode&lt;&#x2F;span&gt;&lt;span&gt;(token, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;mut&lt;&#x2F;span&gt;&lt;span&gt; buf).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;unwrap&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  buf
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Or directly into a stream such as &lt;code&gt;stdout&lt;&#x2F;code&gt;. But there are two main problems:
+It’s a recursive function and the memory access pattern is horrible. Let’s use
+the example from above.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;274 =&amp;gt; (&amp;gt;264, 273&amp;lt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    =&amp;gt; (&amp;gt;32, 261&amp;lt;, &amp;gt;110, 271&amp;lt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    =&amp;gt; (32, &amp;gt;99, 111&amp;lt;, 110, &amp;gt;115, 101&amp;lt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    =&amp;gt; &amp;quot; conse&amp;quot;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Running the recursive algorithm will result in an access pattern as follow:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#282c34;color:#dcdfe4;&quot;&gt;&lt;code&gt;&lt;span&gt;18 -&amp;gt; 8 -&amp;gt; 5 -&amp;gt; 17 -&amp;gt; 15
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The pattern is random, and has no spatial locality. This is not very
+cache-friendly, especially when we scale up the input data size and number of
+tokens. What if, instead, we eagerly precompute the decoded value of all
+tokens, and decoding a token is just a simple table lookup?&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rs&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rs &quot;&gt;&lt;code class=&quot;language-rs&quot; data-lang=&quot;rs&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;: Box&amp;lt;[Box&amp;lt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;]&amp;gt;]&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;impl &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;new&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;pairs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;)]) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;Self &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    unimplemented!();
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;token&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;] {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.data[token &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;It’s just a simple array lookup, branchless (except for the bound check), and
+gives you more flexibility. Previously you need to provide a sink to write the
+data to, now you have direct access to the slice and can do whatever you want
+with it. The caveat is that we now use more memory, but that was a trade-off
+that I was willing to accept.&lt;&#x2F;p&gt;
+&lt;p&gt;Now the problem becomes how to fill up the &lt;code&gt;data&lt;&#x2F;code&gt; array, again, the optimal
+algorithm in terms of time complexity is to iterate over all tokens and call
+the recursive algorithm since we have to construct byte by byte anyways.
+However, if you need to compute many values of a recursive sequence, &lt;a href=&quot;&#x2F;&#x2F;cp-algorithms.com&#x2F;dynamic_programming&#x2F;intro-to-dp.html&quot;&gt;dynamic
+programming&lt;&#x2F;a&gt; comes
+into mind.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rs&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rs &quot;&gt;&lt;code class=&quot;language-rs&quot; data-lang=&quot;rs&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;: Box&amp;lt;[Box&amp;lt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;]&amp;gt;]&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;impl &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;new&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;pairs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;)]) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;Self &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; dp: Vec&amp;lt;Box&amp;lt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;]&amp;gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;Vec::with_capacity(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;256 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+&lt;&#x2F;span&gt;&lt;span&gt; pairs.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; i &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;..=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;255 &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;      dp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;([i].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;into&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;(left, right) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in&lt;&#x2F;span&gt;&lt;span&gt; pairs {
+&lt;&#x2F;span&gt;&lt;span&gt;      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; buf: Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;Vec::new();
+&lt;&#x2F;span&gt;&lt;span&gt;      buf.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;extend_from_slice&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;*&lt;&#x2F;span&gt;&lt;span&gt;dp[left &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize&lt;&#x2F;span&gt;&lt;span&gt;]);
+&lt;&#x2F;span&gt;&lt;span&gt;      buf.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;extend_from_slice&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;*&lt;&#x2F;span&gt;&lt;span&gt;dp[right &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize&lt;&#x2F;span&gt;&lt;span&gt;]);
+&lt;&#x2F;span&gt;&lt;span&gt;      dp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(buf.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;into&lt;&#x2F;span&gt;&lt;span&gt;());
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;Self &lt;&#x2F;span&gt;&lt;span&gt;{ data: dp.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;into&lt;&#x2F;span&gt;&lt;span&gt;() }
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;token&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;] {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.data[token &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This is much better already as it effectively eliminated the recursion.
+However, we used a &lt;a href=&quot;&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Jagged_array&quot;&gt;jagged array&lt;&#x2F;a&gt; which
+is usually not good. Each token is potentially small (about 5 characters), so
+this creates a lot of small, fragmented heap allocations. As usual, this is
+also bad for cache locality and put extra work on the memory allocator. We can
+fix this using one of my favorite technique: &lt;a href=&quot;&#x2F;blog&#x2F;arena&quot;&gt;arena allocation&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;In this approach, all of the data is stored in a contiguous buffer (or arena),
+and the lookup table can be implemented as an array of slices into the buffer.
+Each element is now a numeric offset and the length can be infered from the
+next offset.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rs&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rs &quot;&gt;&lt;code class=&quot;language-rs&quot; data-lang=&quot;rs&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;offsets&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;], &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;idx&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; std::ops::Range&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;usize&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; idx &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; idx &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; l &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; offsets[idx &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span&gt; r &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; offsets[idx &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as usize&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;  l&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;..&lt;&#x2F;span&gt;&lt;span&gt;r
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;buffer&lt;&#x2F;span&gt;&lt;span&gt;: Box&amp;lt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;]&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;offsets&lt;&#x2F;span&gt;&lt;span&gt;: Box&amp;lt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;]&amp;gt;,
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;impl &lt;&#x2F;span&gt;&lt;span&gt;Decoder {
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;new&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;pairs&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;)]) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;Self &lt;&#x2F;span&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; buffer: Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;..=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;255&lt;&#x2F;span&gt;&lt;span&gt;).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;collect&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; offsets: Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;..=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;255&lt;&#x2F;span&gt;&lt;span&gt;).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;collect&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;    offsets.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;reserve&lt;&#x2F;span&gt;&lt;span&gt;(pairs.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;+ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for &amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;(left, right) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in&lt;&#x2F;span&gt;&lt;span&gt; pairs {
+&lt;&#x2F;span&gt;&lt;span&gt;      offsets.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as u32&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;      buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;extend_from_within&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;offsets, left));
+&lt;&#x2F;span&gt;&lt;span&gt;      buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;extend_from_within&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;offsets, right));
+&lt;&#x2F;span&gt;&lt;span&gt;    }
+&lt;&#x2F;span&gt;&lt;span&gt;    offsets.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;as u32&lt;&#x2F;span&gt;&lt;span&gt;);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;Self &lt;&#x2F;span&gt;&lt;span&gt;{ buffer: buffer.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;into&lt;&#x2F;span&gt;&lt;span&gt;(), offsets: offsets.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;into&lt;&#x2F;span&gt;&lt;span&gt;() }
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;decode&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;token&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u16&lt;&#x2F;span&gt;&lt;span&gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;u8&lt;&#x2F;span&gt;&lt;span&gt;] {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.buffer[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;.offsets, token)]
+&lt;&#x2F;span&gt;&lt;span&gt;  }
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I mean, just look at the layout of this thing, like it’s begging to be
+serialized. Usually the decoder is an auxiliary data structure and are
+instantiated on-the-fly instead of being serialized. But you can easily add
+serialization if you wanted to, just directly copy the buffers instead of
+traversing an array of arrays and collecting elements. I’m still deciding
+between serializing the entire &lt;code&gt;Decoder&lt;&#x2F;code&gt; or only the &lt;code&gt;pairs&lt;&#x2F;code&gt; and reconstructing
+the &lt;code&gt;Decoder&lt;&#x2F;code&gt; on-the-fly.&lt;&#x2F;p&gt;
+&lt;p&gt;This streamlined the memory usage by reducing allocation overhead of small
+decoded token strings, each lookup entry is now a single &lt;code&gt;u32&lt;&#x2F;code&gt; which is 4
+bytes, instead of a &lt;code&gt;Box&amp;lt;[u8]&amp;gt;&lt;&#x2F;code&gt; which is a pointer and a &lt;code&gt;usize&lt;&#x2F;code&gt;, so 16 bytes
+on 64-bit architectures. Using a single buffer also helps with cache locality
+so decoding speed is likely to be improved.&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;&#x2F;h1&gt;
+&lt;p&gt;So that’s it for the decoding process. I think that it fits really well with
+the criterias that we established earlier. Decoding is relatively simple, and
+even the naive implementation is optimal in term of time complexity. But even
+then we can still optimize for the memory access pattern, data layout, and
+allocation overhead.&lt;&#x2F;p&gt;
+&lt;p&gt;The data layout of the decoder is also what I used to represent the bigram
+model for text generation, which is then cleverly constructed in linear time
+using a modified version of counting sort. But that and the whole text
+generation thing won’t be covered in this series. Next I’ll start talking about
+training the byte pair encoder, starting with a naive &lt;code&gt;O(n^2)&lt;&#x2F;code&gt; algorithm.&lt;&#x2F;p&gt;
+</description>
+      </item>
       <item>
           <title>Struct of Arrays (SoA) in TypeScript with metaprogramming</title>
           <pubDate>Wed, 17 Sep 2025 00:00:00 +0000</pubDate>
