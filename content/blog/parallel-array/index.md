@@ -11,14 +11,14 @@ performance in many gamedev specific operations. You might also encounter SoAs
 in analytic and processing heavy databases such as
 [Pandas](//pandas.pydata.org/) or [DuckDB](//duckdb.org/). Of course, in the
 web development space nobody cares about data layout and optimization. Despite
-that, I wrote a SoA library in TypeScript, not for the performance gain, but
+that, I wrote an SoA library in TypeScript, not for the performance gain, but
 for trying out TypeScript's type-level metaprogramming.
 
 <!-- more -->
 
 # Why do we need SoA
 
-I won't go too in depth about the difference between Struct of Arrays (SoA) and
+I won't go too in-depth about the difference between Struct of Arrays (SoA) and
 Array of Structs (AoS). The gist of it is to store each struct field in
 separate arrays, which has the following benefits:
 
@@ -29,7 +29,7 @@ separate arrays, which has the following benefits:
 In JavaScript, we get even more benefits thanks to typed arrays
 
 - More compact and stored contiguously, reducing memory consumption
-- Allows for smaller types than 64-bit floating point numbers
+- Allows for smaller types than 64-bit floating-point numbers
 
 Here's an example of the difference between AoS and SoA in TypeScript. This is
 the AoS approach, where we use a single array to store all fields.
@@ -67,8 +67,8 @@ function countAlive(monsters: readonly Monster[]): number {
 
 With the current V8 engine, the runtime has to iterate over the `monsters`
 array, follow the pointer to get the actual `Monster` object, and access the
-`hp` property. This polutes the cache with unnecessary informations such as the
-monster's coordinate, while the upcoming `hp` are not loaded. In contrast with
+`hp` property. This pollutes the cache with unnecessary information such as the
+monsters' coordinates, while the upcoming `hp` are not loaded. In contrast with
 the SoA approach:
 
 ```ts
@@ -83,7 +83,7 @@ const monsters: Monsters = /* ... */
 
 The first difference is that the fields are properly typed with the exact
 numeric type, and it uses way less memory than the AoS approach --- 9 bytes per
-elment instead of at least 32 bytes. Also, counting alive monsters is
+element instead of at least 32 bytes. Also, counting alive monsters is
 significantly more optimized:
 
 ```ts
@@ -97,8 +97,9 @@ function countAlive(monsters: Monsters): number {
 ```
 
 There's no more pointer chasing, no more property access, no more cache
-pollution, just a sinple, sequential memory access. However, there's a catch,
-with the AoS approach, adding an element to the monster list is easy:
+pollution, just a simple, sequential memory access. However like always,
+there's a catch. With the AoS approach, adding an element to the monster list
+is easy:
 
 ```ts
 function addMonster(monsters: Monster[], monster: Monster) {
@@ -107,10 +108,10 @@ function addMonster(monsters: Monster[], monster: Monster) {
 ```
 
 For the SoA with typed arrays, to begin with, how do you even push an element
-to the end of typed arrays. You'll have to write dynamic array implementation
+to the end of typed arrays? You'll have to write dynamic array implementation
 on top of typed array. It's actually quite simple, as I covered
 [before](/blog/queue/), but then you need to make sure that you push to all
-arrays and that they are syncronized:
+arrays and that they are synchronized:
 
 ```ts
 function addMonster(monsters: Monsters, monster: Monster) {
@@ -121,9 +122,9 @@ function addMonster(monsters: Monsters, monster: Monster) {
 ```
 
 This is one of the reasons why some people want SoAs to be a first-class
-language feature, so that we can use them with better ergonomy. In other words,
-we want the performance of SoAs, while retaining intuitiveness of AoSs. I
-wanted to see if this is possible with TypeScript metaprogramming.
+language feature so that we can use them with better ergonomics. In other
+words, we want the performance of SoAs while retaining the intuitiveness of
+AoSs. I wanted to see if this is possible with TypeScript metaprogramming.
 
 # Implementation
 
@@ -137,8 +138,8 @@ In this case, we need to support the following basic operations:
 
 Only the first operation is unique to this data structure, so I mostly focused
 on it. I decided to call it `view`, as we are "viewing" into the underlying
-layout of the array. Using previous example, here's how I'd like to use this
-operation:
+layout of the array. Using the previous example, here's how I'd like to use
+this operation:
 
 ```ts
 const {x, y, hp} = monsters.view()
@@ -146,7 +147,7 @@ const {x, y, hp} = monsters.view()
 
 Note that `x`, `y`, and `hp` must be of the correct type, `Float32Array`,
 `Float32Array`, and `Uint8Array`, respectively. The `Monsters` type above is in
-this type already, so our class needs to behave as follow:
+this type already, so our class needs to behave as follows:
 
 ```ts
 monsters.view() => Monsters
@@ -164,16 +165,17 @@ class SoAMonsters {
 }
 ```
 
-The view is marked as `Readonly` not because we can't write to the data, but we
-want to disallow changing the properties itself:
+The view is marked as `Readonly` not because we can't write to the data, but
+because we want to disallow changing the properties themselves (JS/TS
+immutability is weird, I know):
 
 ```ts
 monsters.view().x = new Float32Array() // should give type error
 ```
 
-However, you'll soon realize that certain operations requires iterating over
-the properties, so it's better to store the data as an array instead of an
-object. And we can reconstruct the objects using another keys array.
+However, you'll soon realize that certain operations require iterating over the
+properties, so it's better to store the data as an array instead of an object.
+And we can reconstruct the objects using another keys array.
 
 ```ts
 class SoAMonsters {
@@ -237,16 +239,16 @@ class SoAMonsters {
 }
 ```
 
-Note that this constructs/decomposes an object every operation, so it likely to
-be very slow. But it makes working with the array a bit easier, just try to
+Note that this constructs/decomposes an object every operation, so it is likely
+to be very slow. But it makes working with the array a bit easier; just try to
 avoid them in tight loops.
 
 ## Initialize, push and memory allocation
 
-I'd argue that for a SoA abstraction, size-affecting operations are the most
+I'd argue that for an SoA abstraction, size-affecting operations are the most
 important, as it ensures that the backing arrays are all consistent and
-syncronized. In [another article](/blog/queue), I demonstrated how to create a
-dynamic array with the push to end operation. Here's a simplified
+synchronized. In [another article](/blog/queue), I demonstrated how to create a
+dynamic array with the push-to-end operation. Here's a simplified
 implementation in JavaScript:
 
 ```ts
@@ -297,15 +299,15 @@ class SoAMonsters {
 }
 ```
 
-If you noticed this is our first usage of type-system metaprogramming, the
+If you noticed, this is our first usage of type-system metaprogramming, the
 `typeof` keyword, `as const` operator, and `InstanceType` utility type. We'll
 dive deeper into it later when we generalize the array to support arbitrary
-object shape. But for now it's used so that we don't have to define the
+object shapes. But for now it's used so that we don't have to define the
 constructors and types separately.
 
-Finally, let's initialize the array and starts pushing items into it. I
-strictly follow the static factory method over constructor principle, which I
-might write about in the future.
+Finally, let's initialize the array and start pushing items into it. I strictly
+follow the static factory method over constructor principle, which I might
+write about in the future.
 
 ```ts
 class SoAMonsters {
@@ -336,11 +338,11 @@ class SoAMonsters {
 This avoids the confusion between initialization with a preallocated capacity
 and initialization with an existing length (like `new Array(length)`) among
 other things. Notice that I also made all properties private, the length
-read-only and used `size` as the internal name.
+read-only, and used `size` as the internal name.
 
 This works, but we can optimize it further. Instead of allocating a typed array
-for each property, we can just allocate a single, large array buffer. Then for
-each property we create an non-overlapping view onto the allocated array
+for each property, we can just allocate a single, large array buffer. Then, for
+each property, we create a non-overlapping view onto the allocated array
 buffer. You can think of it as allocating the typed arrays from an
 [arena](/blog/arena) instead of arbitrarily from the heap.
 
@@ -403,8 +405,8 @@ class SoAMonsters {
 }
 ```
 
-That's basically it, implementing "pop", or remove and return the last item, is
-left as an exercise for the reader.
+That's basically it. Implementing "pop", or removing and returning the last
+item, is left as an exercise for the reader.
 
 # Generalize to arbitrarily shape
 
@@ -424,10 +426,11 @@ Now we need to think of a constraint for the layout. Here's what I came up with:
 
 1. It must be an object type
 2. The key can be any arbitrary string
-3. The value must be one of the value corresponding to the available typed array
+3. The value must be one of the values corresponding to the available typed
+   array
 
-To address the first two constraint, we can use the `Record` like we used
-above, and for the final constraint we can use a union. But since the values
+To address the first two constraints, we can use the `Record` like we used
+above, and for the final constraint, we can use a union. But since the values
 are related to the available typed array, let's make a mapping and
 automatically generate types.
 
@@ -446,11 +449,11 @@ const arrayTypes = {
 type Constraint = Record<string, keyof typeof arrayTypes>
 ```
 
-Notice that we used a value object which is not erased during TypeScript
-transpilation, this is because we might use it later for looking up the typed
+Notice that we used a value object, which is not erased during TypeScript
+transpilation. This is because we might use it later for looking up the typed
 array constructors. Taking the `typeof` operator gives us a mapped type from a
 string union to typed array constructors. Taking the `keyof` operator gives us
-the union itself, which evaluates to:
+the union itself, which evaluates to
 
 ```ts
 'i8' | 'u8' | 'i16' | 'u16' | 'i32' | 'u32' | 'f32' | 'f64'
@@ -465,14 +468,14 @@ type Constructors = (typeof arrayTypes)[keyof typeof arrayTypes]
 type ArrayTypes = InstanceType<Constructors>
 ```
 
-If `keyof T` returns the key of a mapped type then `T[keyof T]` returns the
+If `keyof T` returns the key of a mapped type, then `T[keyof T]` returns the
 values. This is pretty straightforward and reflects property access at run
 time. Notice that the type of, for example, `Uint32Array` is
-`Uint32ArrayConstructor`, this is because the arrayTypes object operates in run
+`Uint32ArrayConstructor`. this is because the `arrayTypes` object operates in run
 time, so we are dealing with the actual value `Uint32Array` which is a
 constructor. To get back the class, we can use the utility type `InstanceType`.
 
-This gives us the types needed to annotate the functions above, such as:
+This gives us the types needed to annotate the functions above, such as
 
 ```ts
 function allocateArrays(
@@ -521,14 +524,14 @@ const monsters = ParallelArray.init<MonsterLayout>()
 ```
 
 This seems like a solid interface, but you'll soon realize that you can't do
-anything with the generic parameter other than defining types. Implementing the
+anything with the generic parameter other than define types. Implementing the
 `init` function is impossible because we didn't pass in anything. This gives us
 an important takeaway of TypeScript type-level metaprogramming: You can
 generate types from values, but not the other way around. So you have to move
-as much logic to value-level as possible, even though it's called type-level
-metaprogramming. This is one of TypeScript's limitations, but in this case it's
-easy to get around. We can make the layout a run time parameter, and let the
-type system infer the generic parameter.
+as much logic to the value-level as possible, even though it's called
+type-level metaprogramming. This is one of TypeScript's limitations, but in
+this case it's easy to get around. We can make the layout a run time parameter
+and let the type system infer the generic parameter.
 
 ```ts
 class ParallelArray<T extends Constraint> {
@@ -580,7 +583,7 @@ class ParallelArray<T extends Constraint> {
 }
 ```
 
-The implementation is simlar to before, the only difference is that we have to
+The implementation is smilar to before. The only difference is that we have to
 populate the read-only properties `keys` and `constructors` from the layout
 type. You can see that some duplicate code started to emerge:
 
@@ -604,15 +607,15 @@ class ParallelArray<T extends Constraint> {
 
 We have to both define the type of `keys` as `keyof T` type and initialize the
 value with `Object.keys(layout)` where `layout` is of type `T`. Similar story
-with `constructors` and it's even worse. This happens a lot with TypeScript and
-the only way is to keep the type-level logic as minimal as possible and let
+with `constructors` and it's even worse. This happens a lot with TypeScript,
+and the only way is to keep the type-level logic as minimal as possible and let
 type inference do its thing.
 
 ## Type transformation
 
 Finally, we need to generalize the `Monster` and `Monsters` types. The first
 one is a record with the same keys as the layout and number values, so
-implementing is straightforward.
+implementing it is straightforward.
 
 ```ts
 type Item<T extends Constraint> = Record<keyof T, number>
@@ -621,7 +624,7 @@ type Monster = Item<typeof monsterLayout>
 ```
 
 With the `Item<T>` generic type, we can implement the `get`, `set`, `push`,
-`pop` methods. I'll only show the method signature, the implementation is the
+`pop` methods. I'll only show the method signature; the implementation is the
 same as above.
 
 ```ts
@@ -633,7 +636,7 @@ class ParallelArray<T extends Constraint> {
 }
 ```
 
-For the `Monsters` type, it's also a record, but the values depends on the keys
+For the `Monsters` type, it's also a record, but the values depend on the keys
 based on the `arrayTypes` object, so we need to create our own mapped type.
 
 ```ts
@@ -642,7 +645,7 @@ type View<T extends Constraint> = {
 }
 ```
 
-This is a bit convoluted, so let's break down a concrete exammple: the monster
+This is a bit convoluted, so let's break down a concrete example: the monster
 layout that we've been working with.
 
 ```ts
@@ -655,18 +658,18 @@ const monsterLayout = {
 type Monsters = View<typeof monsterLayout>
 ```
 
-In this case, `T` is `typeof monsterLayout`, which is the type that only accept
-the value of `monsterLayout`. You can think of it as the same thing, but at
-type-level. Therefore, `keyof T` is the union containing all keys of
-`monsterLayout`, in other words:
+In this case, `T` is `typeof monsterLayout`, which is the type that only
+accepts the value of `monsterLayout`. You can think of it as the same thing but
+operates on type-level. Therefore, `keyof T` is the union containing all keys
+of `monsterLayout`, in other words:
 
 ```ts
 'x' | 'y' | 'hp'
 ```
 
 The syntax of mapped type `{[K in keyof T] ...}` means that we iterate over all
-posible value of `keyof T`, and construct a corresponding value for each value
-of `K`. The `Monsters` type will be expanded as follow:
+possible values of `keyof T`, and construct a corresponding value for each
+value of `K`. The `Monsters` type will be expanded as follows:
 
 ```ts
 type Monsters = {
@@ -688,7 +691,7 @@ type Monsters = {
 } 
 ```
 
-But `u8` and `f32` are literal types, so we can drop the `typeof`, giving us:
+But `u8` and `f32` are literal types, so we can drop the `typeof`, giving us
 
 ```ts
 type Monsters = {
@@ -710,9 +713,9 @@ type Monsters = {
 ```
 
 This is exactly the `Monsters` type we manually defined before, and hopefully
-you can see how it will works with any objects that satisfies `Constraint`.
-From the `View<T>` type, you can annotate and implement the `view` method. So
-this concludes the implementation of the `ParallelArray` class.
+you can see how it will work with any objects that satisfies `Constraint`. From
+the `View<T>` type, you can annotate and implement the `view` method. So this
+concludes the implementation of the `ParallelArray` class.
 
 # Extra features
 
@@ -720,15 +723,15 @@ Here are some extra features that I left out of this article. Mainly because
 they are not specific to the idea of SoA and can be trivially implemented from
 the described methods above.
 
-- **Resizing:** Modify the array so that the its length becomes a specified
-  length. If the new length is smaller, the array is truncated, otherwise, the
-  array is padded with zero.
+- **Resizing:** Modify the array so that its length becomes a specified length.
+  If the new length is smaller, the array is truncated; otherwise, the array is
+  padded with zero.
 - **Power of 2 size:** The internal array buffer is aligned to have
-  power-of-two capacity. It may or may not affect performance and it's just a
+  power-of-two capacity. It may or may not affect performance, and it's just a
   matter of taste.
 - **Lazy view updating:** The view is only changed after some operations:
-  `push`, `pop`, `resize`, etc. So these operations mark the view as dirty and
-  they are corrected when requested. Otherwise a cached view is used.
+  `push`, `pop`, `resize`, etc. So these operations mark the view as dirty, and
+  they are corrected when requested. Otherwise, a cached view is used.
 - **Out parameter for get and pop:** This is only for marginally improving the
   performance of single element indexing, especially when the out object is
   reused.
@@ -737,18 +740,18 @@ the described methods above.
 
 There are also some other useful features that I haven't implemented:
 
-- **Slicing:** Creating subarray reference is very useful and makes the
-  implementation of several algorithms extremely clean. However implementing
-  this requires creating a fixed-size variant of the array which requires
-  careful considerations.
+- **Slicing:** Creating subarray references is very useful and makes the
+  implementation of several algorithms extremely clean. However, implementing
+  this requires creating a fixed-size variant of the array, which requires
+  careful consideration.
 - **Sorting:** Naturally, this data structure is not compatible with the native
   `Array.prototype.sort`, but this can be implemented using index sorting and
-  in-place permutation. Also, for integer values we can use radix sort which
+  in-place permutation. Also, for integer values, we can use radix sort, which
   may or may not be faster than the native JavaScript sorting algorithm. This
-  is very interesting and I'll make sure to implement and benchmark in the
-  future.
-- **Arbitrary insert/remove:** I don't use this often, or at all, actually so I
-  don't bother implementing it. If you need to use this feature consider
+  is very interesting, and I'll make sure to implement and perform benchmarks
+  in the future.
+- **Arbitrary insert/remove:** I don't use this often, or at all, actually, so
+  I don't bother implementing it. If you need to use this feature, consider
   alternative data representation (even linked lists).
 
 # Microbenchmarks
@@ -776,14 +779,14 @@ type ParticlesAoS = Particle[]
 We'll test the following operations:
 
 1. Fill an array with `push`
-2. Fill an array by resizing and assign in a loop
+2. Fill an array by resizing and assigning in a loop
 3. Access elements with `get` (wide)
 4. Access elements with `view` (narrow)
 5. Copying
 
-I tested with 1 million random items, for the read tests I tested both random
-access pattern and sequential access pattern. For more information about the
-test procedure, take a look at the [benchmark
+I tested with 1 million random items. For the read tests, I tested both random
+access and sequential access patterns. For more information about the test
+procedure, take a look at the [benchmark
 file](//github.com/ziap/parallel-array/blob/master/src/bench.ts).
 
 | Benchmark                | Array of Objects (AoS) | Parallel Array (SoA) | Difference |
@@ -799,7 +802,7 @@ file](//github.com/ziap/parallel-array/blob/master/src/bench.ts).
 
 There's a lot to unpack here, so I won't. Make of that what you will with the
 benchmark results above. I want to perform more thorough benchmarks to see the
-actual difference in real-world usage. My two cent from just this is that the
+actual difference in real-world usage. My two cents from just this is that the
 SoA `ParallelArray` is an okay implementation with acceptable overhead such
 that we get improvements over the standard, natively implemented JavaScript
 array in places where it is expected to perform better.
@@ -807,16 +810,16 @@ array in places where it is expected to perform better.
 # Conclusion
 
 So that's how I implemented a convenient and type-safe SoA on top of typed
-arrays in TypeScript. As I said at the beginning, I started this endeavour to
+arrays in TypeScript. As I said at the beginning, I started this endeavor to
 learn more about type-level metaprogramming in TypeScript. Is this useful for
-web development? Most likely not, the typical front-end workload does not
-require processing massive amount of data in a tight time window. And if you
-need better performance then [WebAssembly](/blog/wasm) is probably a better
+web development? Most likely not; the typical front-end workload does not
+require processing massive amounts of data in a tight time window. And if you
+need better performance, then [WebAssembly](/blog/wasm) is probably a better
 choice.
 
-I still think that this problem is intesting because it involves
+I still think that this problem is interesting because it involves
 metaprogramming for constructing types on the fly, and there's the challenge of
-balancing between conveience and abstraction overhead. In the next articles
-I'll write about using this data representation to optimize two problems: A
+balancing between convenience and abstraction overhead. In the next articles,
+I'll write about using this data representation to optimize two problems: a
 typical game/simulation scenario and a state-space search algorithm. The full
 implementation is available [here](//github.com/ziap/parallel-array/).

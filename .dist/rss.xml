@@ -35,7 +35,7 @@ performance in many gamedev specific operations. You might also encounter SoAs
 in analytic and processing heavy databases such as
 &lt;a href=&quot;&#x2F;&#x2F;pandas.pydata.org&#x2F;&quot;&gt;Pandas&lt;&#x2F;a&gt; or &lt;a href=&quot;&#x2F;&#x2F;duckdb.org&#x2F;&quot;&gt;DuckDB&lt;&#x2F;a&gt;. Of course, in the
 web development space nobody cares about data layout and optimization. Despite
-that, I wrote a SoA library in TypeScript, not for the performance gain, but
+that, I wrote an SoA library in TypeScript, not for the performance gain, but
 for trying out TypeScript’s type-level metaprogramming.&lt;&#x2F;p&gt;
 </description>
       </item>
