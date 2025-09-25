@@ -10,6 +10,8 @@ for sharing the design decisions and optimization techniques I applied. For the
 first entry I wanted to talk about an overview of the algorithm and an
 efficient decoder implementation.
 
+<!-- more -->
+
 # Overview of the BPE Algorithm
 
 BPE originally started as a text compression algorithm. But in order to
