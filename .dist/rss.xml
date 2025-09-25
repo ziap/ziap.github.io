@@ -14,11 +14,11 @@
           <author>Zap</author>
           <link>https://ziap.github.io/blog/bpe-1/</link>
           <guid>https://ziap.github.io/blog/bpe-1/</guid>
-          <description xml:base="https://ziap.github.io/blog/bpe-1/">&lt;p&gt;This is the first entry of a series of article about designing a efficient byte
-pair encoder (BPE) tokenizer. The tokenized text are then used to train an
+          <description xml:base="https://ziap.github.io/blog/bpe-1/">&lt;p&gt;This is the first entry of a series of articles about designing an efficient
+byte pair encoder (BPE) tokenizer. The tokenized text is then used to train an
 n-gram model for the task of synthesizing placeholder text. These articles are
 for sharing the design decisions and optimization techniques I applied. For the
-first entry I wanted to talk about an overview of the algorithm and an
+first entry, I wanted to talk about an overview of the algorithm and an
 efficient decoder implementation.&lt;&#x2F;p&gt;
 </description>
       </item>

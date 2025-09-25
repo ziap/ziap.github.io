@@ -3,11 +3,11 @@ title = "Fast BPE tokenizer - Overview and arena allocated decoding"
 date  = "2025-09-24"
 +++
 
-This is the first entry of a series of article about designing a efficient byte
-pair encoder (BPE) tokenizer. The tokenized text are then used to train an
+This is the first entry of a series of articles about designing an efficient
+byte pair encoder (BPE) tokenizer. The tokenized text is then used to train an
 n-gram model for the task of synthesizing placeholder text. These articles are
 for sharing the design decisions and optimization techniques I applied. For the
-first entry I wanted to talk about an overview of the algorithm and an
+first entry, I wanted to talk about an overview of the algorithm and an
 efficient decoder implementation.
 
 <!-- more -->
@@ -17,7 +17,7 @@ efficient decoder implementation.
 BPE originally started as a text compression algorithm. But in order to
 losslessly compress any data, you need to "learn" and exploit redundancies in
 the dataset. It turns out that this particular compression technique learns
-patterns and grammars so well that running machine learning model on the
+patterns and grammars so well that running machine learning models on the
 compressed text helps with convergence and accuracy. This is why BPE
 tokenization is a crucial component of modern LLMs.
 
@@ -29,11 +29,11 @@ For my implementation, this algorithm is separated into two parts:
 
 ## BPE Decoding
 
-Just like most compression algorithm, decoding is relatively simpler and
-faster. In fact, unlike the encoder, this article will fully cover process of
-implementing an optimized BPE decoder. I'll also start explaining the decoder
-first. For the example, we will use the first two sentences from the "Lorem
-Ipsum" placeholder text.
+Just like most compression algorithms, decoding is relatively simpler and
+faster. In fact, unlike the encoder, this article will fully cover the process
+of implementing an optimized BPE decoder. I'll also start explaining the
+decoder first. For the example, we will use the first two sentences from the
+"Lorem Ipsum" placeholder text.
 
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
 > tempor incididunt ut labore et dolore magna aliqua.
@@ -96,7 +96,7 @@ Note that the tokens start at `256` since `0` to `255` are reserved for
 single-byte characters. So, how do you decode the token `274`. Looking up the
 table, the token `274` consists of the token `264` on the left and the token
 `273` on the right. So we expand into them. We do this recursively until each
-token are single-byte or less than `256`.
+token is a single-byte token or is less than `256`.
 
 ```
 274 => (>264, 273<)
@@ -105,7 +105,7 @@ token are single-byte or less than `256`.
     => " conse"
 ```
 
-Note that this parttern appears twice in the input text (`amet,| conse|ctetur`
+Note that this pattern appears twice in the input text (`amet,| conse|ctetur`
 and `commodo| conse|quat`). This example is only for demonstrating BPE
 decoding. A larger example is required to comment on the behavior of the
 algorithm and the characteristics of the generated tokens.
@@ -115,16 +115,16 @@ algorithm and the characteristics of the generated tokens.
 The algorithm for generating tokens from an input text proceeds as follow:
 
 - While not enough tokens generated:
-  - Select the pair that occurs the most in the input text
-  - If that pairs occurs only once, stop
-  - Create and store a new token from the pair
-  - Replace all instances of that pair with the newly created token
+  - Select the pair that occurs the most in the input text.
+  - If that pair occurs only once, stop.
+  - Create and store a new token from the pair.
+  - Replace all instances of that pair with the newly created token.
 
 Because the algorithm is a bit more complicated, we'll use a smaller example
 from the [huggingface LLM
 course](//huggingface.co/learn/llm-course/chapter6/5), just `hug pug pun bun
-hugs`. This examples uses lowercase characters as singe-byte characters, and
-upper case characters as the generated tokens.
+hugs`. This example uses lowercase characters as single-byte characters, and
+uppercase characters as the generated tokens.
 
 First, enumerate over all pairs in the text:
 
@@ -149,7 +149,7 @@ gs => 1
 ```
 
 The pair that occurs the most is `ug`, so we'll create a new token `A = (u, g)`
-and substitutes all instances of `ug` with `A`.
+and substitute all instances of `ug` with `A`.
 
 ```
 A = (u, g)
@@ -157,7 +157,8 @@ A = (u, g)
 hA pA pun bun hAs
 ```
 
-Repeat this until we generated enough tokens or all pairs in the final text is unique.
+Repeat this until we have generated enough tokens or all pairs in the final
+text are unique.
 
 ```
 text: "hug pug pun bun hugs"
@@ -198,10 +199,10 @@ that this encoding is lossless.
 
 # Implementation
 
-I implemented the algorithm in Rust, because the algorithm is quite complex and
+I implemented the algorithm in Rust because the algorithm is quite complex and
 I want the extra bits of correctness aid that Rust provides. I was also not
 trying to squeeze every bit of performance. Nor will I try to compete with
-production-ready solutions such as [tiktoken](//github.com/openai/tiktoken), or
+production-ready solutions such as [tiktoken](//github.com/openai/tiktoken) or
 [the huggingface tokenizer](//github.com/huggingface/tokenizers). As such, the
 implementation will not be optimized with SIMD, multi-threading, and aggressive
 bound check removal. Here are the goals of the implementation:
@@ -213,18 +214,18 @@ bound check removal. Here are the goals of the implementation:
   structuring data based on how they are accessed and manipulated. Avoid small,
   decentralized allocations and strive for compact, fast (de)serialization.
 
-I also hardcoded the target tokens to `65536 - 256 = 65280` tokens, such that
-we can represent them as 16-bit unsigned integers. The encoder will run until
-all token pairs in the tokenized text are unique, or we exhausted 16-bits of
+I also hardcoded the target tokens to `65536 - 256 = 65280` tokens such that we
+can represent them as 16-bit unsigned integers. The encoder will run until all
+token pairs in the tokenized text are unique, or we have exhausted 16-bits of
 tokens. GPT2 has [50257](//huggingface.co/docs/transformers/model_doc/gpt2)
 tokens, so there's enough wiggle room for even an early LLM model.
 
 ## Decoding and Token Representation
 
-Let's start with the decoder, we only have to think about how to decode as
-single token, as the most efficient way to decode a sequence of token is to
+Let's start with the decoder. We only have to think about how to decode a
+single token, as the most efficient way to decode a sequence of tokens is to
 sequentially decode each individual token. I also defined the input of the
-decoder to be a simple list of pairs, and the index into the list denodes the
+decoder to be a simple list of pairs, and the index into the list denotes the
 associated token. For example, the token table from above:
 
 | Token | Left | Right |
@@ -251,10 +252,10 @@ let pairs: [(u16, u16)] = &[
 ];
 ```
 
-To get, for example, token `262`, we first subtract by the smallest non
-singe-byte token, which is `256`, and index the array, or `pairs[262 - 256]`.
-The optimal time complexity decoding algorithm can be implemented recursively
-as described above:
+To get, for example, token `262`, we first subtract by the smallest
+non-singe-byte token, which is `256`, and index the array, or `pairs[262 -
+256]`. The optimal time complexity decoding algorithm can be implemented
+recursively as described above:
 
 ```rs
 struct Decoder {
@@ -291,7 +292,7 @@ fn decode_all(decoder: &Decoder, tokens: &[u16]) -> Vec<u8> {
 ```
 
 Or directly into a stream such as `stdout`. But there are two main problems:
-It's a recursive function and the memory access pattern is horrible. Let's use
+it's a recursive function, and the memory access pattern is horrible. Let's use
 the example from above.
 
 ```
@@ -301,13 +302,13 @@ the example from above.
     => " conse"
 ```
 
-Running the recursive algorithm will result in an access pattern as follow:
+Running the recursive algorithm will result in an access pattern as follows:
 
 ```
 18 -> 8 -> 5 -> 17 -> 15
 ```
 
-The pattern is random, and has no spatial locality. This is not very
+The pattern is random and has no spatial locality. This is not very
 cache-friendly, especially when we scale up the input data size and number of
 tokens. What if, instead, we eagerly precompute the decoded value of all
 tokens, and decoding a token is just a simple table lookup?
@@ -329,17 +330,17 @@ impl Decoder {
 ```
 
 It's just a simple array lookup, branchless (except for the bound check), and
-gives you more flexibility. Previously you need to provide a sink to write the
-data to, now you have direct access to the slice and can do whatever you want
-with it. The caveat is that we now use more memory, but that was a trade-off
-that I was willing to accept.
+gives you more flexibility. Previously you needed to provide a sink to write
+the data to. Now you have direct access to the slice and can do whatever you
+want with it. The caveat is that we now use more memory, but that was a
+trade-off that I was willing to accept.
 
-Now the problem becomes how to fill up the `data` array, again, the optimal
+Now the problem becomes how to fill up the `data` array. Again, the optimal
 algorithm in terms of time complexity is to iterate over all tokens and call
-the recursive algorithm since we have to construct byte by byte anyways.
+the recursive algorithm since we have to construct byte by byte anyway.
 However, if you need to compute many values of a recursive sequence, [dynamic
-programming](//cp-algorithms.com/dynamic_programming/intro-to-dp.html) comes
-into mind.
+programming](//cp-algorithms.com/dynamic_programming/intro-to-dp.html) comes to
+mind.
 
 ```rs
 struct Decoder {
@@ -369,16 +370,16 @@ impl Decoder {
 }
 ```
 
-This is much better already as it effectively eliminated the recursion.
+This is much better already, as it effectively eliminated the recursion.
 However, we used a [jagged array](//en.wikipedia.org/wiki/Jagged_array) which
 is usually not good. Each token is potentially small (about 5 characters), so
 this creates a lot of small, fragmented heap allocations. As usual, this is
-also bad for cache locality and put extra work on the memory allocator. We can
-fix this using one of my favorite technique: [arena allocation](/blog/arena).
+also bad for cache locality and puts extra work on the memory allocator. We can
+fix this using one of my favorite techniques: [arena allocation](/blog/arena).
 
 In this approach, all of the data is stored in a contiguous buffer (or arena),
 and the lookup table can be implemented as an array of slices into the buffer.
-Each element is now a numeric offset and the length can be infered from the
+Each element is now a numeric offset, and the length can be inferred from the
 next offset.
 
 ```rs
@@ -416,25 +417,25 @@ impl Decoder {
 }
 ```
 
-I mean, just look at the layout of this thing, like it's begging to be
-serialized. Usually the decoder is an auxiliary data structure and are
+I mean, just look at the layout of this thing. Like it's begging to be
+serialized. Usually the decoder is an auxiliary data structure and is usually
 instantiated on-the-fly instead of being serialized. But you can easily add
-serialization if you wanted to, just directly copy the buffers instead of
+serialization if you want to: just directly copy the buffers instead of
 traversing an array of arrays and collecting elements. I'm still deciding
 between serializing the entire `Decoder` or only the `pairs` and reconstructing
 the `Decoder` on-the-fly.
 
 This streamlined the memory usage by reducing allocation overhead of small
-decoded token strings, each lookup entry is now a single `u32` which is 4
+decoded token strings. Each lookup entry is now a single `u32` which is 4
 bytes, instead of a `Box<[u8]>` which is a pointer and a `usize`, so 16 bytes
-on 64-bit architectures. Using a single buffer also helps with cache locality
+on 64-bit architectures. Using a single buffer also helps with cache locality,
 so decoding speed is likely to be improved.
 
 # Conclusion
 
 So that's it for the decoding process. I think that it fits really well with
-the criterias that we established earlier. Decoding is relatively simple, and
-even the naive implementation is optimal in term of time complexity. But even
+the criteria that we established earlier. Decoding is relatively simple, and
+even the naive implementation is optimal in terms of time complexity. But even
 then we can still optimize for the memory access pattern, data layout, and
 allocation overhead.
 
