@@ -349,10 +349,8 @@ struct Decoder {
 
 impl Decoder {
   fn new(pairs: &[(u16, u16)]) -> Self {
-    let mut dp: Vec<Box<[u8]>> = Vec::with_capacity(256 + pairs.len());
-    for i in 0..=255 {
-      dp.push([i].into());
-    }
+    let mut dp: Vec<Box<[u8]>> = (0..=255).map(|x| [x].into()).collect();
+    dp.reserve(pairs.len());
 
     for &(left, right) in pairs {
       let mut buf: Vec<u8> = Vec::new();

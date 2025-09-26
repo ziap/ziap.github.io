@@ -107,10 +107,8 @@
 </span><span>
 </span><span style=color:#c678dd>impl </span><span>Decoder {
 </span><span>  </span><span style=color:#c678dd>fn </span><span style=color:#61afef>new</span><span>(</span><span style=color:#e06c75>pairs</span><span>: </span><span style=color:#c678dd>&</span><span>[(</span><span style=color:#e06c75>u16</span><span>, </span><span style=color:#e06c75>u16</span><span>)]) -> </span><span style=color:#c678dd>Self </span><span>{
-</span><span>    </span><span style=color:#c678dd>let mut</span><span> dp: Vec&LTBox<[</span><span style=color:#c678dd>u8</span><span>]>> </span><span style=color:#c678dd>= </span><span>Vec::with_capacity(</span><span style=color:#e5c07b>256 </span><span style=color:#c678dd>+</span><span> pairs.</span><span style=color:#61afef>len</span><span>());
-</span><span>    </span><span style=color:#c678dd>for</span><span> i </span><span style=color:#c678dd>in </span><span style=color:#e5c07b>0</span><span style=color:#c678dd>..=</span><span style=color:#e5c07b>255 </span><span>{
-</span><span>      dp.</span><span style=color:#61afef>push</span><span>([i].</span><span style=color:#61afef>into</span><span>());
-</span><span>    }
+</span><span>    </span><span style=color:#c678dd>let mut</span><span> dp: Vec&LTBox<[</span><span style=color:#c678dd>u8</span><span>]>> </span><span style=color:#c678dd>= </span><span>(</span><span style=color:#e5c07b>0</span><span style=color:#c678dd>..=</span><span style=color:#e5c07b>255</span><span>).</span><span style=color:#61afef>map</span><span>(|</span><span style=color:#e06c75>x</span><span>| [x].</span><span style=color:#61afef>into</span><span>()).</span><span style=color:#61afef>collect</span><span>();
+</span><span>    dp.</span><span style=color:#61afef>reserve</span><span>(pairs.</span><span style=color:#61afef>len</span><span>());
 </span><span>
 </span><span>    </span><span style=color:#c678dd>for &</span><span>(left, right) </span><span style=color:#c678dd>in</span><span> pairs {
 </span><span>      </span><span style=color:#c678dd>let mut</span><span> buf: Vec<</span><span style=color:#c678dd>u8</span><span>> </span><span style=color:#c678dd>= </span><span>Vec::new();
