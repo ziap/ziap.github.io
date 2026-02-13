@@ -57,8 +57,8 @@
         {% for work in works.projects | filter(attribute="web_demo") | slice(end=3) %}
           <div class="works__card">
             <div class="works__card__desc">
-            <img class="works__card__img" src="/images/projects/{{ work.id }}.png" alt="Preview of the {{ work.name }} project">
-              <h3>{{ work.name }}</h3>
+              <img class="works__card__img" src="/images/projects/{{ work.id }}.png" alt="Preview of the {{ work.name }} project">
+              <h3 class="works__card__title">{{ work.name }}</h3>
               {{ work.description | markdown | safe }}
             </div>
             <div class="works__card__menu">

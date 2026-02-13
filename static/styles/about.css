@@ -1,9 +1,18 @@
 .about__info {
-  background: var(--bg-color1);
+  position: relative;
+  overflow-x: unset !important;
   padding: 2rem 1rem;
-  border-radius: 16px;
-  box-shadow: -1.5rem 0 0 var(--bg-color1), 1.5rem 0 0 var(--bg-color1);
   margin: 3rem -1rem;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 -1rem;
+    background: var(--bg-color1);
+    border: solid 2px var(--accent-color);
+    border-radius: 0.5rem;
+    z-index: -1;
+  }
 
   &>.about__info__title {
     margin: 0;

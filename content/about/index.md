@@ -18,11 +18,11 @@ interesting or had the most trouble articulating.
 
 <div class="about__info">
 
-## Looking for something? {.about__info__title}
+<h2 class="about__info__title">Looking for something?</h2>
 
-- Read my [blog posts](/blog).
+- Read my blog posts [here](/blog).
 - View my projects [here](/works) or on [my GitHub](//github.com/ziap).
-- My setup and programs are available on [my dotfiles](//github.com/ziap/dotfiles).
+- My setup and programs are available in [my dotfiles](//github.com/ziap/dotfiles).
 
 </div>
 

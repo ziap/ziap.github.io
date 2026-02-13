@@ -19,8 +19,7 @@ byte pair encoder (BPE) tokenizer. The tokenized text is then used to train an
 n-gram model for the task of synthesizing placeholder text. These articles are
 for sharing the design decisions and optimization techniques I applied. For the
 first entry, I wanted to talk about an overview of the algorithm and an
-efficient decoder implementation.&lt;&#x2F;p&gt;
-</description>
+efficient decoder implementation.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Struct of Arrays (SoA) in TypeScript with metaprogramming</title>
@@ -36,8 +35,7 @@ in analytic and processing heavy databases such as
 &lt;a href=&quot;&#x2F;&#x2F;pandas.pydata.org&#x2F;&quot;&gt;Pandas&lt;&#x2F;a&gt; or &lt;a href=&quot;&#x2F;&#x2F;duckdb.org&#x2F;&quot;&gt;DuckDB&lt;&#x2F;a&gt;. Of course, in the
 web development space nobody cares about data layout and optimization. Despite
 that, I wrote an SoA library in TypeScript, not for the performance gain, but
-for trying out TypeScript’s type-level metaprogramming.&lt;&#x2F;p&gt;
-</description>
+for trying out TypeScript’s type-level metaprogramming.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Implementing a 64-bit Pseudo-random number generator</title>
@@ -48,8 +46,7 @@ for trying out TypeScript’s type-level metaprogramming.&lt;&#x2F;p&gt;
           <description xml:base="https://ziap.github.io/blog/prng/">&lt;p&gt;Let’s face it, determinism is boring. I’ve been using Pseudo-random number
 generators (PRNGs) for as long as I can remember. My usual PRNG is PCG-32 with
 a fixed increment, but it’s time for me to pick a larger PRNG for 64-bit output
-and multithreaded generation.&lt;&#x2F;p&gt;
-</description>
+and multithreaded generation.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Writing a 15-puzzle solver</title>
@@ -66,8 +63,7 @@ considerations to come up with suboptimal, but good-enough solutions.&lt;&#x2F;p
 10^13, average branching factor of 2, and longest solution length of 80, it’s
 impossible to find the shortest solution using conventional search algorithms.
 However, I implemented an algorithm that can optimally solve a vast majority of
-random instances pretty quickly.&lt;&#x2F;p&gt;
-</description>
+random instances pretty quickly.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Setting up a reproducible cross-compiling environment in NixOS</title>
@@ -85,8 +81,7 @@ following:&lt;&#x2F;p&gt;
 &lt;li&gt;Cross-compile the application to Windows and run the .exe file with Wine.&lt;&#x2F;li&gt;
 &lt;&#x2F;ul&gt;
 &lt;p&gt;To do either of these, a cross-compiling NixOS environment is required, so this
-article documents my process of setting that up for Rust, Zig, C, and C++.&lt;&#x2F;p&gt;
-</description>
+article documents my process of setting that up for Rust, Zig, C, and C++.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>What I learned in 2024</title>
@@ -97,8 +92,7 @@ article documents my process of setting that up for Rust, Zig, C, and C++.&lt;&#
           <description xml:base="https://ziap.github.io/blog/2024-wrap-up/">&lt;p&gt;Usually, people write this kind of post somewhere at the end of the year. But I
 had another deadline and haven’t collected my thoughts yet, so this post came
 quite late. Nonetheless, I really wanted to look back at 2024 because it’s been
-quite an interesting year for me.&lt;&#x2F;p&gt;
-</description>
+quite an interesting year for me.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>My desktop customization journey</title>
@@ -111,8 +105,7 @@ fix them. I prefer breaking software because if it goes too far, I can just
 reinstall everything. It was a great learning experience, and I’m glad that I
 had the time and opportunity to do it. As I grow up, messing with software is
 no longer just for fun and learning, it’s had become a way for me to optimize
-my workflow, to be more in tune with technology.&lt;&#x2F;p&gt;
-</description>
+my workflow, to be more in tune with technology.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>String matching with compile time hash tables</title>
@@ -126,8 +119,7 @@ express the intention well (if-else chain). It was sad, but I accepted long ago
 that switch statements only work on numeric types and usually use the
 alternatives on strings and arrays. But switching on a string has become a
 common operation for me, and I recently ended up with a reasonably good
-solution for it.&lt;&#x2F;p&gt;
-</description>
+solution for it.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Approximating sin(2πx)</title>
@@ -139,8 +131,7 @@ solution for it.&lt;&#x2F;p&gt;
 programming. They show up everywhere, especially in graphics, and while they’re
 not the most efficient operation, they are widely available in programming
 languages. This is not the case if you’re programming in embedded systems or
-&lt;a href=&quot;&#x2F;blog&#x2F;wasm&quot;&gt;WebAssembly&lt;&#x2F;a&gt;, so I tried to compute them myself.&lt;&#x2F;p&gt;
-</description>
+&lt;a href=&quot;&#x2F;blog&#x2F;wasm&quot;&gt;WebAssembly&lt;&#x2F;a&gt;, so I tried to compute them myself.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Introduction to freestanding WebAssembly</title>
@@ -153,8 +144,7 @@ resources are sparse and incomplete. This is especially true for freestanding
 WASM, or using WASM directly without using tools that make interacting with the
 web easier. This is an attempt for me to reflect on what I discovered and
 hopefully introduce more people to this weird intersection of system
-programming and web development.&lt;&#x2F;p&gt;
-</description>
+programming and web development.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>I switched to Fish as my interactive shell</title>
@@ -167,8 +157,7 @@ workflow. It’s a popular shell with a &lt;a href=&quot;&#x2F;&#x2F;github.com&
 &lt;a href=&quot;&#x2F;&#x2F;ohmyz.sh&#x2F;&quot;&gt;community&lt;&#x2F;a&gt; and an unprecedented level of customizability. ZSH is
 also POSIX-compliant, which was very important to me for some reason. However,
 after some reconsideration, I decided to port my config to the Fish shell, and
-this is why.&lt;&#x2F;p&gt;
-</description>
+this is why.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>My personal strategies for arena allocation</title>
@@ -182,8 +171,7 @@ incentivize grouping data into large, contiguous memory regions to make them
 faster and more manageable. However, small, random allocations are sometimes
 unavoidable, and there should still be a way to manage them. Instead of
 grouping data into arrays, we can instead group data by their &lt;em&gt;lifetime&lt;&#x2F;em&gt;, and
-this is where the “arena” allocator comes in.&lt;&#x2F;p&gt;
-</description>
+this is where the “arena” allocator comes in.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>A game I made as a course project</title>
@@ -194,8 +182,7 @@ this is where the “arena” allocator comes in.&lt;&#x2F;p&gt;
           <description xml:base="https://ziap.github.io/blog/programming-techniques-project/">&lt;p&gt;I recently programmed a large chunk of the game from scratch for a university
 course project. This is one of a few projects that I delivered with enough
 quality and presentability. So I wanted to document my process of making it,
-what I learned, and how I applied my knowledge from and outside the course.&lt;&#x2F;p&gt;
-</description>
+what I learned, and how I applied my knowledge from and outside the course.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Easy, efficient, and practical queue implementation</title>
@@ -209,8 +196,7 @@ languages&lt;&#x2F;a&gt; support them,
 I think that it’s important to understand and know how to implement them. I
 like to implement data structures on-the-fly and customize them for the problem
 I’m trying to solve. A more practical reason to understand queues is that
-JavaScript doesn’t have an efficient queue implementation.&lt;&#x2F;p&gt;
-</description>
+JavaScript doesn’t have an efficient queue implementation.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>A faster, more flexible alternative to run-time polymorphism in C++ feat. Rust</title>
@@ -224,8 +210,7 @@ this?” Then I continued to ignore it because I could always just work around i
 instead of using it. Until recently, my college lecturer told me that using
 virtual methods is great for designing and maintaining applications with
 thousands of objects. I figured that I should write about what run-time
-polymorphism is, and why I still think that I don’t need it.&lt;&#x2F;p&gt;
-</description>
+polymorphism is, and why I still think that I don’t need it.&lt;&#x2F;p&gt;</description>
       </item>
       <item>
           <title>Rewriting my website and starting a blog</title>
@@ -237,8 +222,7 @@ polymorphism is, and why I still think that I don’t need it.&lt;&#x2F;p&gt;
 ago as a way to quickly browse and access my web projects. Basically, it was
 just a grid of project thumbnails, which is pretty boring. During the last 2
 years, I changed bits and pieces of it, but it’s still the same boring layout
-with only a list of projects and some basic information.&lt;&#x2F;p&gt;
-</description>
+with only a list of projects and some basic information.&lt;&#x2F;p&gt;</description>
       </item>
     </channel>
 </rss>

@@ -3,7 +3,7 @@
 }
 
 :root {
-  --body-width: 1120px;
+  --body-width: 1280px;
   --accent-color: #1aa8f4;
   --secondary-color: #033451;
   --text-color: #363a3e;
@@ -31,7 +31,7 @@ body {
 }
 
 pre, code {
-  font-family: "Fira Code",ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-weight: 500;
 }
 
@@ -70,6 +70,7 @@ ul, ol {
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .content {
