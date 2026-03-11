@@ -18,7 +18,7 @@ interesting or had the most trouble articulating.
 
 <div class="about__info">
 
-<h2 class="about__info__title">Looking for something?</h2>
+<h3 class="about__info__title">Looking for something?</h3>
 
 - Read my blog posts [here](/blog).
 - View my projects [here](/works) or on [my GitHub](//github.com/ziap).
