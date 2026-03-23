@@ -171,3 +171,9 @@
     fill: var(--secondary-color);
   }
 }
+
+.giallo-ln {
+  display: inline-block;
+  user-select: none;
+  margin-right: 2ch;
+}
