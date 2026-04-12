@@ -17,6 +17,7 @@
 .error__cta {
   display: block;
   padding: 0.5rem 1.5rem;
+  text-decoration: none;
   width: fit-content;
   border-radius: 10px;
   margin: 3rem 0 1rem 0;
