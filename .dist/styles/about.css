@@ -2,7 +2,7 @@
   position: relative;
   overflow-x: visible;
   padding: 2rem 1rem;
-  margin: 3rem -1rem;
+  margin: 1.5rem -1rem;
 
   &::before {
     content: "";

@@ -6,7 +6,7 @@
 
 .posts__title {
   font-size: 1.602rem;
-  margin: 0 0 2rem 0;
+  margin: 0 0 1.5rem 0;
 }
 
 .posts__list {
@@ -38,7 +38,7 @@
   text-decoration: none;
   display: flex;
   align-items: center;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   gap: 1ch;
   transition: transform 300ms ease-out;
 

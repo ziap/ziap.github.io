@@ -1,7 +1,7 @@
 .works__header {
   display: flex;
-  margin-bottom: 2rem;
-  gap: 1rem 2rem;
+  margin-bottom: 1.5rem;
+  gap: 1rem 1.5rem;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
