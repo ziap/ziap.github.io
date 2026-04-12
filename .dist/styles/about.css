@@ -1,6 +1,6 @@
-.about__info {
+.content__body>.about__info {
   position: relative;
-  overflow-x: unset !important;
+  overflow-x: visible;
   padding: 2rem 1rem;
   margin: 3rem -1rem;
 
@@ -11,13 +11,5 @@
     background: var(--bg-color1);
     border-radius: 0.5rem;
     z-index: -1;
-  }
-
-  &>.about__info__title {
-    margin: 0;
-  }
-
-  &>* {
-    margin: 0.5rem 0 0 0;
   }
 }
