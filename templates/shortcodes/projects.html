@@ -5,7 +5,9 @@
   {% for work in works.projects %}
   <div class="project">
     <div class="project__info">
-      <img class="project__img" src="/images/projects/{{ work.id }}.png" alt="Preview of the {{ work.name }} project">
+      <div class="project__img">
+        <img src="/images/projects/{{ work.id }}.png" alt="Preview of the {{ work.name }} project">
+      </div>
       <h3 class="project__title">{{ work.name }}</h3>
       {{ work.description | markdown | safe }}
     </div>

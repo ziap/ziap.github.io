@@ -17,6 +17,18 @@
   gap: 1.25rem;
 }
 
+.posts__item {
+  display: block;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  margin: -0.5rem -0.75rem;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background: var(--bg-color2);
+  }
+}
+
 .posts__item__title {
   margin: 0;
 }
@@ -28,9 +40,9 @@
   align-items: center;
   margin-top: 2rem;
   gap: 1ch;
-  transition: padding 300ms;
+  transition: transform 300ms ease-out;
 
   &:hover {
-    padding-left: 0.5rem; 
+    transform: translateX(0.5rem);
   }
 }

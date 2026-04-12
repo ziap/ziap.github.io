@@ -15,8 +15,25 @@
     overflow-x: auto;
   }
 
+  #continue-reading {
+    display: block;
+    margin: 0.5rem 0;
+  }
+
+  p, ul, ol {
+    margin: 0;
+
+    &+p {
+      margin-top: 1rem;
+    }
+
+    &+ul, &+ol {
+      margin-top: 0.25rem;
+    }
+  }
+
   h1, h2, h3, h4, h5, h6 {
-    margin: 2rem 0 0 0;
+    margin: 2rem 0 0.5rem 0;
     color: var(--secondary-color);
   }
 
@@ -27,6 +44,10 @@
   figure {
     margin: 2rem 0;
     text-align: center;
+
+    img, video {
+      margin: 0 auto;
+    }
 
     figcaption {
       margin-top: 0.5rem;
@@ -66,10 +87,10 @@
   }
 
   blockquote {
-    margin: 0;
-    padding: 0 1em;
+    margin: 1rem 0;
+    padding: 0 1rem;
     color: #656d76;
-    border-left: solid var(--bg-color2) .3em;
+    border-left: solid var(--bg-color2) .3rem;
   }
 
   ol ol,
@@ -155,7 +176,7 @@
 }
 
 .post-header__meta {
-  margin: 1rem 0;
+  margin: 0.5rem 0;
   display: flex;
   gap: 0.5rem 2rem;
   flex-wrap: wrap;

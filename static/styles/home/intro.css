@@ -147,11 +147,11 @@
 
 .intro__cta1 {
   color: var(--accent-color);
-  transition: color 300ms, border-color 300ms;
+  transition: color 300ms ease-out, border-color 300ms ease-out;
 
   &>svg {
     fill: var(--accent-color);
-    transition: fill 300ms;
+    transition: fill 300ms ease-out;
   }
 
   &:hover {
@@ -166,7 +166,7 @@
 .intro__cta2 {
   color: #fff;
   background: var(--accent-color);
-  transition: background 300ms, border-color 300ms;
+  transition: background 300ms ease-out, border-color 300ms ease-out;
 
   &>svg {
     fill: #fff;

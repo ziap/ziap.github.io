@@ -60,6 +60,15 @@ body {
 a {
   color: var(--text-color);
   text-decoration: underline 0.125rem var(--accent-color);
+  transition: background 300ms ease-out, color 300ms ease-out;
+
+  &:not([class]) {
+    &:hover {
+      color: var(--secondary-color);
+      background: var(--accent-color);
+    }
+    border-radius: 0.125rem;
+  }
 }
 
 ul, ol {
