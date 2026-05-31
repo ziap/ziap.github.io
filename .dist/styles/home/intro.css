@@ -55,19 +55,19 @@
   border-radius: 0.5rem;
 
   &.slide-left {
-    animation: 300ms 1 ease slideleft;
+    animation: 250ms 1 ease-in slideleft;
   }
 
   &.slide-right {
-    animation: 300ms 1 ease slideright;
+    animation: 250ms 1 ease-in slideright;
   }
 
   &.slide-up {
-    animation: 300ms 1 ease slideup;
+    animation: 250ms 1 ease-in slideup;
   }
 
   &.slide-down {
-    animation: 300ms 1 ease slidedown;
+    animation: 250ms 1 ease-in slidedown;
   }
 }
 

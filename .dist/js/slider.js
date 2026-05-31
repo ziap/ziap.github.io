@@ -42,7 +42,7 @@ function step() {
   current = next_empty
   current_el = next
 
-  setTimeout(step, 1000 * Math.random() + 1000)
+  setTimeout(step, 500 * Math.random() + 1000)
 }
 
 step()
