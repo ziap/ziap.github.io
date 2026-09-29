@@ -7,7 +7,22 @@
       <generator>Zola</generator>
       <language>en</language>
       <atom:link href="https://ziap.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-      <lastBuildDate>Wed, 24 Sep 2025 00:00:00 +0000</lastBuildDate>
+      <lastBuildDate>Wed, 30 Sep 2026 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>The frequency queue data structure</title>
+          <pubDate>Wed, 30 Sep 2026 00:00:00 +0000</pubDate>
+          <author>Zap</author>
+          <link>https://ziap.github.io/blog/frequency-queue/</link>
+          <guid>https://ziap.github.io/blog/frequency-queue/</guid>
+          <description xml:base="https://ziap.github.io/blog/frequency-queue/">&lt;p&gt;My &lt;a href=&quot;&#x2F;blog&#x2F;bpe-1&quot;&gt;previous endeavor into byte pair encoding&lt;&#x2F;a&gt; didn’t go anywhere
+worth writing about, but it posed an interesting problem: design a data
+structure from which you can query and remove the mode, or the element that
+appears most often. We can treat the number of appearances, or frequency, as a
+priority and use a binary heap for O(log n) operations. But we can exploit
+certain properties of frequencies to do better. This article introduces a
+“frequency queue” data structure with O(1) operations that is arguably easier
+to implement than a binary heap.&lt;&#x2F;p&gt;</description>
+      </item>
       <item>
           <title>Fast BPE tokenizer - Overview and arena allocated decoding</title>
           <pubDate>Wed, 24 Sep 2025 00:00:00 +0000</pubDate>
